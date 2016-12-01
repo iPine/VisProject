@@ -1,0 +1,13 @@
+div{
+	float:left;
+	width:30px;
+	height: 20px;
+	margin:5px;
+	background: #0f0;
+	line-height: 30px;
+	text-align: center;
+}
+ul{
+	list-style:none;
+	padding:5px;
+}

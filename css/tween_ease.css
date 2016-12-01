@@ -1,0 +1,7 @@
+.ball{
+	position:absolute;
+	border-radius:50%;
+	background:#c3cbf0;
+	border:1px solid #000;
+	text-align:center;
+}

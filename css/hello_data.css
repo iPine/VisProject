@@ -1,0 +1,11 @@
+#barChart{
+	background:#f0f0f0;
+	padding:10px;
+	font-family:Verdana;
+}
+#barChart .bar{
+	left:0px;
+	height:20px;
+	background:#00ff00;
+	margin:5px;
+}

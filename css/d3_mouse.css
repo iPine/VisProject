@@ -1,0 +1,13 @@
+#o1{
+	padding: 20px;
+	background: orange;
+}
+#o2{
+	padding: 20px;
+	background: purple;
+}
+#o3{
+	padding: 20px;
+	background: blue;
+	min-height: 40px;
+}
