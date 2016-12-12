@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+  <style>
+    .dimple-series-1{
+      fill: red;
+    }
+    h2 {
+      text-align: center;
+    }
+  </style>
+    <script type="text/javascript">
+      function draw(data) {
+      
+      /*
+        D3.js setup code
+      */
+
+          "use strict";//使用严格模式，特点是在JS可能无征兆出错时，能强制浏览器丢掷直接错误
+          var margin = 75,
+              width = 1400 - margin,
+              height = 600 - margin;
+
+           d3.select("body")
+            .append("h2")
+              .text("World Cup Attendance")
+              .attr("id","title");
+              
+          var svg = d3.select("body")
+            .append("svg")
+              .attr("width", width + margin)
+              .attr("height", height + margin)
+            .append('g')
+                .attr('class','chart');
+
+      /*
+        Dimple.js Chart construction code
+      */
+
+          var myChart = new dimple.chart(svg, data);
+          //使用约定包括：轴、串
+          var x = myChart.addTimeAxis("x", "year"); 
+          myChart.addMeasureAxis("y", "attendance");
+          //更改日期格式，不用默认形式
+          x.dateParseFormat = "%Y";
+          x.tickFormat = "%Y";
+          x.timeInterval = 4;
+          //字段，规定了我们准备制作的图表类型
+          //第一个参数规定了一个用于创建类别的字段，图表将根据这些类别对数据分组
+          //第二个字段是调用采用的图表类型
+          myChart.addSeries(null, dimple.plot.line);
+          //组合使用两种类型，突出显示数据点
+          myChart.addSeries(null, dimple.plot.scatter);
+          myChart.draw();
+        };
+      </script>
+  </head>
+<body>
+  <script type="text/javascript">
+  /*
+    Use D3 (not dimple.js) to load the TSV file
+    and pass the contents of it to the draw function
+    */
+  d3.tsv("world_cup.tsv", draw);
+  </script>
+</body>
+</html>
