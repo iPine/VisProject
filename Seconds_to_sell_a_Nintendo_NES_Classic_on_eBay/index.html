@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>sells volume</title>
+	<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+	<style>
+		.dimple-series-1{
+			fill:black;
+		}
+	</style>
+</head>
+<body>
+<h2 style="padding-left: 230px">Seconds to sell a Nintendo NES Classic on eBay</h2>
+<script type="text/javascript">
+	function draw(data){
+		 "use strict";
+		var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+		    width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top-margin.bottom;
+		
+		var svg = d3.select('body').append('svg')
+		    .attr('width', width + margin.left + margin.right)
+		    .attr('height', height + margin.top+margin.bottom)
+		  .append('g')
+		  	.attr("class","chart")
+		    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+		/*
+        Dimple.js Chart construction code
+      */
+      	var myChart = new dimple.chart(svg,data);
+      	var x = myChart.addTimeAxis("x","date");
+      	  //更改日期格式，不用默认形式
+             x.dateParseFormat = "%b.%d";
+        	 x.tickFormat = "%b.%d";
+        	 // x.timeInterval = 1;
+      	var y = myChart.addMeasureAxis("y","seconds to sell");
+      	myChart.addSeries(null,dimple.plot.line);
+      	myChart.addSeries(null,dimple.plot.scatter);
+      	myChart.draw();
+
+	}
+	// var csv = d3.dsv(",", "text/csv;charset=gb2312"); 
+	d3.csv("sells_volume.csv",draw);
+</script>
+</body>
+</html>
