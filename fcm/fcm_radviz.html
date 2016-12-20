@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>fcm_radviz</title>
+	<script type="text/javascript" src="lib/d3.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<style type="text/css">
+		body{
+			width:1400;
+			margin: 0 auto;
+			border:2px solid #ccc;
+			font-size: 12px;
+			font-family: sans-serif;
+		}
+		#container{
+			height: 650px;
+			width:100%;
+			border-top: 1px solid #ccc;
+			border-bottom: 1px solid #ccc;
+		}
+		#tleft{
+			float:left;
+			width:300px;
+			height: 100%;
+			border-right: 1px solid #ccc;
+		}
+		#tmiddle{
+			float: left;
+			width: 700px;
+			height: 100%;
+			border-right: 1px solid #ccc;
+		}
+		#radviz{
+			margin-left: 20px;
+			width: 600px;
+			height: 600px;
+		}
+		#tright{
+			float: left;
+			width: 400px;
+			height: 100%;
+		}
+		.list-container {
+            padding-top: 100px;
+        }
+	</style>
+</head>
+<body>
+<!-- <script type="text/javascript" src="lib/require.js" data-main="js/radviz"></script> -->
+<script type="text/javascript" src="js/radviz-min.js"></script>
+<div id="container">
+	<div id="tleft"></div>
+	<div id="tmiddle">
+		<div id="radviz"></div>
+	</div>
+	<div id="tright">
+		<div class="list-container"></div>
+	</div>
+</div>
+<script type="text/javascript">
+	 var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
+	var radviz = radvizComponent()
+    .config({
+        el: document.querySelector('#radviz'), // container node or selector
+        size: 600, // size of the whole SVG
+        margin: 100, // margin around the circular panel, to leave some room for the labels
+        dimensions: dimensions, // data keys to use as dimensions
+        useTooltip: true, // a simple tooltip component is provided
+        // tooltipFormatter: function(d){ return d.foo; }, // the datum for the hovered node is given as argument
+        colorAccessor: function(d){ return d[0]; }, // dimension to use for coloring
+        colorScale: d3.scale.ordinal().range(['#FF8c8c', '#de3669', '#52b5f3', '#ffcceb', '#6ab82c',
+                '#f2cc03', '#58c3e0', '#b58453', '#e3701e', '#aaff7b',
+                '#FFCEA6', '#bfbfbf']), // color palette
+        drawLinks: true, // wether to draw links or not
+        // zoomFactor: 1, // gets the dimension nodes on a bigger radius than the panel, to pull nodes away from the center
+        dotRadius: 4, // radius of each dot
+        useRepulsion: true // special repulsion effect to spread the nodes from each others so they can be better selected
+    })
+    .on('panelEnter', function() {
+                console.log('panelEnter');
+    })
+    .on('panelLeave', function() {
+                console.log('panelLeave');
+    })
+    .on('dotEnter', function(d) {
+                console.log('dotEnter', d);
+                renderList(d);
+    })
+    .on('dotLeave', function(d) {
+                console.log('dotLeave', d);
+    });
+
+
+    var renderList = function(datum) {
+            // d3.select('.state').text(datum.State);
+
+            var list = d3.select('.list-container')
+                .selectAll('div.item')
+                .data(dimensions);
+            list.enter().append('div').classed('item', true);
+            list.transition().style({
+                    width: function(d) {
+                        return datum[d] / 300000 + 'px';
+                    }
+                })
+                .text(function(d) {
+                    return d + ': ' + d3.format(',')(datum[d]);
+                });
+            list.exit().remove();
+        }
+    d3.csv('serum_9.csv', function(err,data) {
+    	console.log(data);
+    	radviz.render(data);
+    });
+</script>
+</body>
+</html>
