@@ -4,115 +4,269 @@
 	<meta charset="utf-8">
 	<title>fcm_radviz</title>
 	<script type="text/javascript" src="lib/d3.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<style type="text/css">
 		body{
-			width:1400;
-			margin: 0 auto;
+			width:100%;
+			height: 650px;
+			margin: 0;
 			border:2px solid #ccc;
 			font-size: 12px;
 			font-family: sans-serif;
 		}
 		#container{
-			height: 650px;
-			width:100%;
+			height: 100%;
+			width: 100%;
 			border-top: 1px solid #ccc;
 			border-bottom: 1px solid #ccc;
 		}
 		#tleft{
+			position: relative;
 			float:left;
-			width:300px;
+			width:25%;
 			height: 100%;
 			border-right: 1px solid #ccc;
+			display:inline-block;
+
 		}
+		#tlt {
+			margin: 30px;
+			height: 120px;
+			width: 100%;
+			font-size: 17px;
+			color: black;
+		}
+		.control-group{
+			margin-top: 15px;
+		}
+		.clusters_buttons{
+	        position: relative;
+	        top: 10px;
+	        /*left: 5px;*/
+      	}
+      	.clusters_buttons div{
+      		display: inline-block;
+	        background-color: skyblue;
+	        padding: 3px; 
+	        margin: 5px 5px 5px 2px;
+	        width: 30px;
+	        height: 20px;
+	        border: 1px solid black;
+      	}
+
 		#tmiddle{
+			position: relative;
 			float: left;
-			width: 700px;
+			width: 50%;
 			height: 100%;
 			border-right: 1px solid #ccc;
+			display:inline-block;
 		}
 		#radviz{
-			margin-left: 20px;
-			width: 600px;
-			height: 600px;
+			margin-left: 5%;
+			width: 90%;
+			height: auto;
 		}
 		#tright{
+			position: relative;
 			float: left;
-			width: 400px;
+			width: 20%;
 			height: 100%;
+			display:inline-block;
+			
 		}
-		.list-container {
-            padding-top: 100px;
+        #state {
+        	margin-top: 100px;
+            font-weight: bold;
+            font-size: 1.2em;
         }
+        .item {
+            border: 2px solid white;
+            background-color: skyblue;
+            opacity: 0.8;
+            overflow: visible;
+            padding: 6px 0;
+            white-space: nowrap;
+        }
+     
+
 	</style>
 </head>
 <body>
-<!-- <script type="text/javascript" src="lib/require.js" data-main="js/radviz"></script> -->
 <script type="text/javascript" src="js/radviz-min.js"></script>
+
 <div id="container">
-	<div id="tleft"></div>
+	<div id="tleft">
+		<div id="tlt">
+			<div class="control-group" >
+
+			Select the number of clusters:
+				
+			</div>
+		</div>
+	</div>
 	<div id="tmiddle">
 		<div id="radviz"></div>
 	</div>
 	<div id="tright">
-		<div class="list-container"></div>
+			<div id="state"></div>
+	        <div id="list"></div>
 	</div>
 </div>
 <script type="text/javascript">
-	 var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
+	 // var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
+	 var cNum = 9;
+
 	var radviz = radvizComponent()
     .config({
         el: document.querySelector('#radviz'), // container node or selector
-        size: 600, // size of the whole SVG
-        margin: 100, // margin around the circular panel, to leave some room for the labels
-        dimensions: dimensions, // data keys to use as dimensions
-        useTooltip: true, // a simple tooltip component is provided
-        // tooltipFormatter: function(d){ return d.foo; }, // the datum for the hovered node is given as argument
-        colorAccessor: function(d){ return d[0]; }, // dimension to use for coloring
-        colorScale: d3.scale.ordinal().range(['#FF8c8c', '#de3669', '#52b5f3', '#ffcceb', '#6ab82c',
-                '#f2cc03', '#58c3e0', '#b58453', '#e3701e', '#aaff7b',
-                '#FFCEA6', '#bfbfbf']), // color palette
-        drawLinks: true, // wether to draw links or not
-        // zoomFactor: 1, // gets the dimension nodes on a bigger radius than the panel, to pull nodes away from the center
-        dotRadius: 4, // radius of each dot
-        useRepulsion: true // special repulsion effect to spread the nodes from each others so they can be better selected
+        size: 600, 
+        margin: 80, // margin around the circular panel, to leave some room for the labels
+        dimensions: dimensions(cNum), // data keys to use as dimensions
+        colorAccessor: function(d){return d.class;}, // dimension to use for coloring
+        colorScale: d3.scale.ordinal().range(['orange', '#de3669', '#52b5f3', 'purple', '#6ab82c',
+                '#802A2A', '#58c3e0', ' #385E0F', '#e3701e', 'teal',
+                '#04389A', 'black']),//d3.scale.category10(), // color palette
+        drawLinks: true, 
+        zoomFactor: 1, 
+        dotRadius: 6, 
+        useTooltip: false,
+        // useRepulsion: true,
+
     })
-    .on('panelEnter', function() {
-                console.log('panelEnter');
-    })
-    .on('panelLeave', function() {
-                console.log('panelLeave');
-    })
+    // .on('panelEnter', function() {
+    //             console.log('panelEnter');
+    // })
+    // .on('panelLeave', function() {
+    //             console.log('panelLeave');
+    // })
     .on('dotEnter', function(d) {
-                console.log('dotEnter', d);
+    	// console.log(d);
                 renderList(d);
+                
     })
     .on('dotLeave', function(d) {
-                console.log('dotLeave', d);
+                // console.log('dotLeave', d);
     });
 
 
     var renderList = function(datum) {
-            // d3.select('.state').text(datum.State);
 
-            var list = d3.select('.list-container')
+    	var width_scale = d3.scale.linear()
+    						.domain([0,1])
+    						.range([0,200]);
+
+            d3.select('#state')
+            	.text(function(d){
+            		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.class;
+            	});
+          
+            var list = d3.select('#list')
                 .selectAll('div.item')
-                .data(dimensions);
-            list.enter().append('div').classed('item', true);
-            list.transition().style({
+                .data(dimensions(cNum));
+
+            list.enter()
+            	.append('div')
+            	.classed('item', true);
+
+            list.transition()
+            	.style({
                     width: function(d) {
-                        return datum[d] / 300000 + 'px';
+                        return width_scale(datum[d]) + 'px';
                     }
                 })
                 .text(function(d) {
-                    return d + ': ' + d3.format(',')(datum[d]);
+                    return d + ': ' + datum[d];
                 });
             list.exit().remove();
-        }
-    d3.csv('serum_9.csv', function(err,data) {
-    	console.log(data);
+        };
+
+    function dimensions(cNum){
+	 	 var dimensions = [];
+		 for(var i=0; i<cNum; i++){
+		 	dimensions.push("C" + (i+1));
+		 }
+		 return dimensions;
+	};
+
+	function maxLabel(data){
+    	for(var i=0; i<data.length; i++){
+
+	    	var keys = d3.keys(data[i]);
+
+	    	var max = 0, maxlabel = '';
+
+	    	keys.forEach(function(key){
+
+	    		var num = +data[i][key] + 0.0;
+
+	    		maxlabel = max > num ? maxlabel : key;
+
+	    		 max = max > num ? max : num;
+
+	    	})
+
+	    	data[i].class = maxlabel;
+    	}
+    };
+
+    function update(cluster_selection){
+    	
+    	// dimensions(cNum);
+    	// radviz.remove();
+    	if(cluster_selection == 10){
+    		cNum = 10;
+    		var cluster10 ;
+    		d3.csv('data/serum_10.csv',function(err,data){
+		    	cluster10 = data;
+		    	maxLabel(cluster10);
+	    		radviz.render(cluster10);
+	    		console.log(cluster10)
+	    		
+    		})	
+    	}
+
+
+    };
+    
+
+    var cluster_selection = [7,8,9,10,11,13];
+
+    var buttons = d3.select(".control-group")
+    				.append("div")
+    				.attr("class","clusters_buttons") 
+    				.selectAll("div")
+    				.data(cluster_selection)
+    				.enter()
+    				.append("div")
+    				.text(function(d){
+    					return d;
+    				});
+
+    buttons.on("click",function(d){
+
+    	d3.select(".clusters_buttons")
+    		.selectAll("div")
+    		.transition()
+    		.duration(500)
+    		.style('color',"black")
+    		.style("background-color","lightBlue");
+
+    	d3.select(this)
+    		.transition()
+    		.duration(500)
+    		.style("color","white")
+    		.style("background-color","orange");
+    	update(d);
+    })
+
+   d3.csv('data/serum_9.csv', function(err,data) {
+   		// console.log(data);
+    	maxLabel(data);
     	radviz.render(data);
-    });
+    	
+   });
+   
 </script>
 </body>
 </html>
