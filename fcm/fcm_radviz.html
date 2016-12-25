@@ -52,6 +52,7 @@
 	        width: 30px;
 	        height: 20px;
 	        border: 1px solid black;
+	        text-align: center;
       	}
 
 		#tmiddle{
@@ -117,9 +118,9 @@
 	 // var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
 	 var cNum = 9;
 
-	var radviz = radvizComponent()
-    .config({
-        el: document.querySelector('#radviz'), // container node or selector
+	 var radvizConfig = {
+
+	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
         margin: 80, // margin around the circular panel, to leave some room for the labels
         dimensions: dimensions(cNum), // data keys to use as dimensions
@@ -131,23 +132,18 @@
         zoomFactor: 1, 
         dotRadius: 6, 
         useTooltip: false,
-        // useRepulsion: true,
+	 }
 
-    })
-    // .on('panelEnter', function() {
-    //             console.log('panelEnter');
-    // })
-    // .on('panelLeave', function() {
-    //             console.log('panelLeave');
-    // })
+	var radviz = radvizComponent()
+    .config(radvizConfig)
     .on('dotEnter', function(d) {
     	// console.log(d);
                 renderList(d);
                 
-    })
-    .on('dotLeave', function(d) {
-                // console.log('dotLeave', d);
     });
+    // .on('dotLeave', function(d) {
+    //             // console.log('dotLeave', d);
+    // });
 
 
     var renderList = function(datum) {
@@ -211,26 +207,107 @@
     };
 
     function update(cluster_selection){
+
+    	d3.select('#radviz').selectAll('*').remove();
+    	d3.select('#state').selectAll('text').remove();
+    	d3.select('#list').selectAll('*').remove();
+
     	
-    	// dimensions(cNum);
-    	// radviz.remove();
     	if(cluster_selection == 10){
     		cNum = 10;
     		var cluster10 ;
     		d3.csv('data/serum_10.csv',function(err,data){
 		    	cluster10 = data;
 		    	maxLabel(cluster10);
+		    	radvizConfig.dimensions = dimensions(cNum);
+		    	var radviz = radvizComponent()
+    			.config(radvizConfig)
+		    	.on('dotEnter', function(d) {
+                renderList(d);
+    			});
 	    		radviz.render(cluster10);
-	    		console.log(cluster10)
-	    		
     		})	
     	}
-
+    	else if(cluster_selection == 7){
+    		cNum = 7;
+    		var cluster7 ;
+    		d3.csv('data/serum_7.csv',function(err,data){
+		    	cluster7 = data;
+		    	maxLabel(cluster7);
+		    	radvizConfig.dimensions = dimensions(cNum);
+		    	var radviz = radvizComponent()
+    			.config(radvizConfig)
+    			.on('dotEnter', function(d) {
+                renderList(d);
+    			});		    	
+	    		radviz.render(cluster7);
+    		})	
+    	}
+    	else if(cluster_selection == 8){
+    		cNum = 8;
+    		var cluster8 ;
+    		d3.csv('data/serum_8.csv',function(err,data){
+		    	cluster8 = data;
+		    	maxLabel(cluster8);
+		    	radvizConfig.dimensions = dimensions(cNum);
+		    	var radviz = radvizComponent()
+    			.config(radvizConfig)
+    			.on('dotEnter', function(d) {
+                renderList(d);
+    			});		    	
+	    		radviz.render(cluster8);
+    		})	
+    	}
+    	else if(cluster_selection == 9){
+    		cNum = 9;
+    		var cluster9 ;
+    		d3.csv('data/serum_9.csv',function(err,data){
+		    	cluster9 = data;
+		    	maxLabel(cluster9);
+		    	radvizConfig.dimensions = dimensions(cNum);
+		    	var radviz = radvizComponent()
+    			.config(radvizConfig)
+    			.on('dotEnter', function(d) {
+                renderList(d);
+    			});		    	
+	    		radviz.render(cluster9);
+    		})	
+    	}
+    	else if(cluster_selection == 11){
+    		cNum = 11;
+    		var cluster11 ;
+    		d3.csv('data/serum_11.csv',function(err,data){
+		    	cluster11 = data;
+		    	maxLabel(cluster11);
+		    	radvizConfig.dimensions = dimensions(cNum);
+		    	var radviz = radvizComponent()
+    			.config(radvizConfig)
+    			.on('dotEnter', function(d) {
+                renderList(d);
+    			});		    	
+	    		radviz.render(cluster11);
+    		})	
+    	}
+    	else if(cluster_selection == 12){
+    		cNum = 12;
+    		var cluster12 ;
+    		d3.csv('data/serum_12.csv',function(err,data){
+		    	cluster12 = data;
+		    	maxLabel(cluster12);
+		    	radvizConfig.dimensions = dimensions(cNum);
+		    	var radviz = radvizComponent()
+    			.config(radvizConfig)
+    			.on('dotEnter', function(d) {
+                renderList(d);
+    			});		    	
+	    		radviz.render(cluster12);
+    		})	
+    	}
 
     };
     
 
-    var cluster_selection = [7,8,9,10,11,13];
+    var cluster_selection = [7,8,9,10,11,12];
 
     var buttons = d3.select(".control-group")
     				.append("div")
