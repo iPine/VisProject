@@ -94,16 +94,27 @@
 	</style>
 </head>
 <body>
-<script type="text/javascript" src="js/radviz-min.js"></script>
+<script type="text/javascript" src="js/radviz.js"></script>
 
 <div id="container">
 	<div id="tleft">
 		<div id="tlt">
-			<div class="control-group" >
+			<div class="control-group" id="one">
 
-			Select the number of clusters:
+			<p>Serum dataset:</p>
+            <!-- Select the number of clusters: -->
 				
 			</div>
+            <div class="control-group" id="two">
+            <p>Select the number of clusters:</p>
+            
+                
+            </div>
+            <div class="control-group" id="three">
+
+             <p>Select the number of clusters:</p>
+                
+            </div>
 		</div>
 	</div>
 	<div id="tmiddle">
@@ -116,8 +127,8 @@
 </div>
 <script type="text/javascript">
 	 // var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
-	 var cNum = 9;
-
+	
+      var cNum = 9;
 	 var radvizConfig = {
 
 	 	el: document.querySelector('#radviz'), // container node or selector
@@ -132,28 +143,45 @@
         zoomFactor: 1, 
         dotRadius: 6, 
         useTooltip: false,
+        useRepulsion: true,
 	 }
 
 	var radviz = radvizComponent()
     .config(radvizConfig)
     .on('dotEnter', function(d) {
-    	// console.log(d);
+    	 // console.log(d);
+         d3.selectAll('.dot')
+            .attr("opacity",function(d){
+                return d.classValue;
+            })
                 renderList(d);
                 
+    })
+    .on('dotLeave', function(d) {
+                // console.log('dotLeave', d);
+    })
+    .on('panelEnter', function() {
+        // mouse entered the circular panel
+    })
+    .on('panelLeave', function() {
+        // mouse left the circular panel
     });
-    // .on('dotLeave', function(d) {
-    //             // console.log('dotLeave', d);
-    // });
 
 
     var renderList = function(datum) {
+
 
     	var width_scale = d3.scale.linear()
     						.domain([0,1])
     						.range([0,200]);
 
-            d3.select('#state')
-            	.text(function(d){
+        d3.select('#state').selectAll("div").remove();
+
+            var text = d3.select('#state')
+                .append('div')
+                .attr('class',"label");
+
+            text.text(function(d){
             		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.class;
             	});
           
@@ -175,6 +203,7 @@
                     return d + ': ' + datum[d];
                 });
             list.exit().remove();
+            
         };
 
     function dimensions(cNum){
@@ -185,160 +214,101 @@
 		 return dimensions;
 	};
 
-	function maxLabel(data){
-    	for(var i=0; i<data.length; i++){
+    var cluster_selection = [7,8,9,10,11,12];
+    button_slected(cluster_selection);
 
-	    	var keys = d3.keys(data[i]);
+    function button_slected(cluster_selectio){
+        var buttons = d3.select("#one")
+                    .append("div")
+                    .attr("class","clusters_buttons") 
+                    .selectAll("div")
+                    .data(cluster_selection)
+                    .enter()
+                    .append("div")
+                    .text(function(d){
+                        return d;
+                    });
 
-	    	var max = 0, maxlabel = '';
+        buttons.on("click",function(d){
 
-	    	keys.forEach(function(key){
+            d3.select(".clusters_buttons")
+                .selectAll("div")
+                .transition()
+                .duration(500)
+                .style('color',"black")
+                .style("background-color","lightBlue");
 
-	    		var num = +data[i][key] + 0.0;
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .style("color","white")
+                .style("background-color","orange");
 
-	    		maxlabel = max > num ? maxlabel : key;
-
-	    		 max = max > num ? max : num;
-
-	    	})
-
-	    	data[i].class = maxlabel;
-    	}
-    };
+            update(d);
+        })
+    }
 
     function update(cluster_selection){
 
-    	d3.select('#radviz').selectAll('*').remove();
-    	d3.select('#state').selectAll('text').remove();
-    	d3.select('#list').selectAll('*').remove();
+        d3.select('#radviz').selectAll('*').remove();
+        d3.select('#state').selectAll("div").remove();
+        d3.select('#list').selectAll('*').remove();
 
-    	
-    	if(cluster_selection == 10){
-    		cNum = 10;
-    		var cluster10 ;
-    		d3.csv('data/serum_10.csv',function(err,data){
-		    	cluster10 = data;
-		    	maxLabel(cluster10);
-		    	radvizConfig.dimensions = dimensions(cNum);
-		    	var radviz = radvizComponent()
-    			.config(radvizConfig)
-		    	.on('dotEnter', function(d) {
-                renderList(d);
-    			});
-	    		radviz.render(cluster10);
-    		})	
-    	}
-    	else if(cluster_selection == 7){
-    		cNum = 7;
-    		var cluster7 ;
-    		d3.csv('data/serum_7.csv',function(err,data){
-		    	cluster7 = data;
-		    	maxLabel(cluster7);
-		    	radvizConfig.dimensions = dimensions(cNum);
-		    	var radviz = radvizComponent()
-    			.config(radvizConfig)
-    			.on('dotEnter', function(d) {
-                renderList(d);
-    			});		    	
-	    		radviz.render(cluster7);
-    		})	
-    	}
-    	else if(cluster_selection == 8){
-    		cNum = 8;
-    		var cluster8 ;
-    		d3.csv('data/serum_8.csv',function(err,data){
-		    	cluster8 = data;
-		    	maxLabel(cluster8);
-		    	radvizConfig.dimensions = dimensions(cNum);
-		    	var radviz = radvizComponent()
-    			.config(radvizConfig)
-    			.on('dotEnter', function(d) {
-                renderList(d);
-    			});		    	
-	    		radviz.render(cluster8);
-    		})	
-    	}
-    	else if(cluster_selection == 9){
-    		cNum = 9;
-    		var cluster9 ;
-    		d3.csv('data/serum_9.csv',function(err,data){
-		    	cluster9 = data;
-		    	maxLabel(cluster9);
-		    	radvizConfig.dimensions = dimensions(cNum);
-		    	var radviz = radvizComponent()
-    			.config(radvizConfig)
-    			.on('dotEnter', function(d) {
-                renderList(d);
-    			});		    	
-	    		radviz.render(cluster9);
-    		})	
-    	}
-    	else if(cluster_selection == 11){
-    		cNum = 11;
-    		var cluster11 ;
-    		d3.csv('data/serum_11.csv',function(err,data){
-		    	cluster11 = data;
-		    	maxLabel(cluster11);
-		    	radvizConfig.dimensions = dimensions(cNum);
-		    	var radviz = radvizComponent()
-    			.config(radvizConfig)
-    			.on('dotEnter', function(d) {
-                renderList(d);
-    			});		    	
-	    		radviz.render(cluster11);
-    		})	
-    	}
-    	else if(cluster_selection == 12){
-    		cNum = 12;
-    		var cluster12 ;
-    		d3.csv('data/serum_12.csv',function(err,data){
-		    	cluster12 = data;
-		    	maxLabel(cluster12);
-		    	radvizConfig.dimensions = dimensions(cNum);
-		    	var radviz = radvizComponent()
-    			.config(radvizConfig)
-    			.on('dotEnter', function(d) {
-                renderList(d);
-    			});		    	
-	    		radviz.render(cluster12);
-    		})	
-    	}
-
+        selected(cluster_selection);
+        
     };
+
+    function selected(k){ 
+            cNum = k;
+            var fileName = "data/" + "serum_" + k;
+            var fullName = fileName + '.csv'
+            // console.log(fullName);
+            var csv;
+           d3.csv(fullName,function(err,data){
+                csv = data;
+                 // console.log(csv);
+                maxLabel(csv);
+                radvizConfig.dimensions = dimensions(cNum);
+                var radviz = radvizComponent()
+                .config(radvizConfig)
+                .on('dotEnter', function(d) {
+                    d3.selectAll('.dot')
+                        .attr("opacity",function(d){
+                            return d.classValue;
+                    })
+                    renderList(d);
+                });
+                radviz.render(csv);
+            })
+   
+    }
     
+    function maxLabel(data){
+        for(var i=0; i<data.length; i++){
 
-    var cluster_selection = [7,8,9,10,11,12];
+            var keys = d3.keys(data[i]);
 
-    var buttons = d3.select(".control-group")
-    				.append("div")
-    				.attr("class","clusters_buttons") 
-    				.selectAll("div")
-    				.data(cluster_selection)
-    				.enter()
-    				.append("div")
-    				.text(function(d){
-    					return d;
-    				});
+            var max = 0, maxlabel = '';
 
-    buttons.on("click",function(d){
+            keys.forEach(function(key){
 
-    	d3.select(".clusters_buttons")
-    		.selectAll("div")
-    		.transition()
-    		.duration(500)
-    		.style('color',"black")
-    		.style("background-color","lightBlue");
+                var num = +data[i][key] + 0.0;
 
-    	d3.select(this)
-    		.transition()
-    		.duration(500)
-    		.style("color","white")
-    		.style("background-color","orange");
-    	update(d);
-    })
+                maxlabel = max > num ? maxlabel : key;
 
-   d3.csv('data/serum_9.csv', function(err,data) {
+                 max = max > num ? max : num;
+
+            })
+
+            data[i].class = maxlabel;
+            data[i].classValue = max;
+        }
+    }
+
+   
+    d3.csv('data/serum_9.csv', function(err,data) {
    		// console.log(data);
+        
     	maxLabel(data);
     	radviz.render(data);
     	
