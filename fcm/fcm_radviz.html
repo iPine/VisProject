@@ -8,14 +8,15 @@
 	<style type="text/css">
 		body{
 			width:100%;
-			height: 650px;
+			height: 900px;
 			margin: 0;
 			border:2px solid #ccc;
 			font-size: 12px;
 			font-family: sans-serif;
 		}
 		#container{
-			height: 100%;
+			/*height: 100%;*/
+            height: 600px;
 			width: 100%;
 			border-top: 1px solid #ccc;
 			border-bottom: 1px solid #ccc;
@@ -31,7 +32,7 @@
 		}
 		#tlt {
 			margin: 30px;
-			height: 120px;
+			height: 100%;
 			width: 100%;
 			font-size: 17px;
 			color: black;
@@ -42,17 +43,7 @@
 		.clusters_buttons{
 	        position: relative;
 	        top: 10px;
-	        /*left: 5px;*/
-      	}
-      	.clusters_buttons div{
-      		display: inline-block;
-	        background-color: skyblue;
-	        padding: 3px; 
-	        margin: 5px 5px 5px 2px;
-	        width: 30px;
-	        height: 20px;
-	        border: 1px solid black;
-	        text-align: center;
+	       
       	}
 
 		#tmiddle{
@@ -89,32 +80,82 @@
             padding: 6px 0;
             white-space: nowrap;
         }
-     
+        
+        #menu{ width: 300px; margin-top: 100px; }
+        p{color: gray;}
+        .clusters_buttons{ background: white; color: gray; cursor: pointer; margin-top: 20px; }
+        .highlight{ display: inline-block;}
+        .clusters_buttons div{
+            display: none;
+            background-color: skyblue;
+            padding: 3px; 
+            margin: 5px 5px 5px 2px;
+            width: 25px;
+            height: 20px;
+            border: 1px solid black;
+            text-align: center;
+            /*float: left;*/
+        }
+        .clusters_buttons p{ display: none; width: 300px; padding-left: 5px;}
+        
+
 
 	</style>
 </head>
 <body>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="js/radviz.js"></script>
 
 <div id="container">
 	<div id="tleft">
 		<div id="tlt">
-			<div class="control-group" id="one">
-
-			<p>Serum dataset:</p>
-            <!-- Select the number of clusters: -->
-				
-			</div>
-            <div class="control-group" id="two">
-            <p>Select the number of clusters:</p>
+        
+        <div id='menu'>
+        <p>Which one of the datasets do you want to view?</p>
+            <div class="clusters_buttons" id="ecoli">
+                <span><label><input name="Datas" type="radio" value="ecoli" />ecoli </label></span>
+                <p>Select the number of clusters:</p>   
+                    <div class="num">1</div>
+                    <div class="num">2</div>
+                    <div class="num">3</div>
+                    <div class="num">4</div>
+                    <div class="num">5</div>
+                    <div class="num">6</div>
+        
+            </div>
+            <div class="clusters_buttons" id="iris">
+                <span><label><input name="Datas" type="radio" value="iris" />iris </label></span>
+                <p>Select the number of clusters:</p>
+                    <div class="num">1</div>
+                    <div class="num">2</div>
+                    <div class="num">3</div>
+                    <div class="num">4</div>            
             
-                
             </div>
-            <div class="control-group" id="three">
+            <div class="clusters_buttons" id="wine">
+                <span><label><input name="Datas" type="radio" value="wine" />wine </label></span>
+                <p>Select the number of clusters:</p>  
+                    <div class="num">1</div>
+                    <div class="num">2</div>
+                    <div class="num">3</div>
+                    <div class="num">4</div>
+                    <div class="num">5</div>
+                    <div class="num">6</div>
+                    <div class="num">7</div>
+                   
+            </div>
+            <div class="clusters_buttons" id="Synthetic">
+                <span><label><input name="Datas" type="radio" value="Synthetic" />Synthetic </label></span>
+                <p>Select the number of clusters:</p>  
+                    <div class="num">1</div>
+                    <div class="num">2</div>
+                    <div class="num">3</div>
+                    <div class="num">4</div>
+                    <div class="num">5</div>
+                   
+            </div>
 
-             <p>Select the number of clusters:</p>
-                
-            </div>
+        </div>
 		</div>
 	</div>
 	<div id="tmiddle">
@@ -126,16 +167,44 @@
 	</div>
 </div>
 <script type="text/javascript">
+
+    $(".clusters_buttons").click(function(){
+        
+        var idName = $(this).attr('id');
+        // console.log(className);
+        $(this).children('p').show().end().siblings().children("p").hide();
+        
+        $(this).children('div').addClass("highlight").show().end().siblings().children("div").removeClass("highlight").hide();
+
+       changeRadio(this,idName);
+
+    });
+
+    function changeRadio(butt,name){
+        var cluster_selection;
+
+        if(name == "ecoli"){
+            cluster_selection = [1,2,3,4,5,6];
+        }else if(name == "iris"){
+            cluster_selection = [1,2,3,4];
+        }else if(name == "wine"){
+            cluster_selection = [1,2,3,4,5,6,7];
+        }else if(name == "Synthetic"){
+            cluster_selection = [1,2,3,4,5];
+        }
+        button_slected(butt,name,cluster_selection);
+    }
+
 	 // var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
 	
-      var cNum = 9;
-	 var radvizConfig = {
+    var cNum = 2;
+	var radvizConfig = {
 
 	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
         margin: 80, // margin around the circular panel, to leave some room for the labels
         dimensions: dimensions(cNum), // data keys to use as dimensions
-        colorAccessor: function(d){return d.class;}, // dimension to use for coloring
+        colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
         colorScale: d3.scale.ordinal().range(['orange', '#de3669', '#52b5f3', 'purple', '#6ab82c',
                 '#802A2A', '#58c3e0', ' #385E0F', '#e3701e', 'teal',
                 '#04389A', 'black']),//d3.scale.category10(), // color palette
@@ -182,7 +251,7 @@
                 .attr('class',"label");
 
             text.text(function(d){
-            		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.class;
+            		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
             	});
           
             var list = d3.select('#list')
@@ -214,29 +283,19 @@
 		 return dimensions;
 	};
 
-    var cluster_selection = [7,8,9,10,11,12];
-    button_slected(cluster_selection);
 
-    function button_slected(cluster_selectio){
-        var buttons = d3.select("#one")
-                    .append("div")
-                    .attr("class","clusters_buttons") 
-                    .selectAll("div")
-                    .data(cluster_selection)
-                    .enter()
-                    .append("div")
-                    .text(function(d){
-                        return d;
-                    });
+    function button_slected(dataset,name,clusterNum){
+
+
+        var buttons = d3.select(dataset).selectAll('div').data(clusterNum);
 
         buttons.on("click",function(d){
-
-            d3.select(".clusters_buttons")
-                .selectAll("div")
+        
+            d3.selectAll(".num")
                 .transition()
                 .duration(500)
                 .style('color',"black")
-                .style("background-color","lightBlue");
+                .style("background-color","skyblue");
 
             d3.select(this)
                 .transition()
@@ -244,23 +303,23 @@
                 .style("color","white")
                 .style("background-color","orange");
 
-            update(d);
+            update(d,name);
         })
     }
 
-    function update(cluster_selection){
+    function update(cluster_selection,name){
 
         d3.select('#radviz').selectAll('*').remove();
         d3.select('#state').selectAll("div").remove();
         d3.select('#list').selectAll('*').remove();
 
-        selected(cluster_selection);
+        selectedNum(cluster_selection,name);
         
     };
 
-    function selected(k){ 
+    function selectedNum(k,name){ 
             cNum = k;
-            var fileName = "data/" + "serum_" + k;
+            var fileName = "data/" + name +"_" + k;
             var fullName = fileName + '.csv'
             // console.log(fullName);
             var csv;
@@ -300,14 +359,14 @@
 
             })
 
-            data[i].class = maxlabel;
+            data[i].classId = maxlabel;
             data[i].classValue = max;
         }
     }
 
    
-    d3.csv('data/serum_9.csv', function(err,data) {
-   		// console.log(data);
+    d3.csv('data/ecoli_2.csv', function(err,data) {
+   		console.log(data);
         
     	maxLabel(data);
     	radviz.render(data);
