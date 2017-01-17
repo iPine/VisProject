@@ -131,7 +131,8 @@ var radvizComponent = function() {
             r: config.dotRadius,
             fill: function(d) {
                 return config.colorScale(config.colorAccessor(d));
-            }
+            },
+            
         }).on("mouseenter", function(d) {
             if (config.useTooltip) {
                 var mouse = d3.mouse(config.el);

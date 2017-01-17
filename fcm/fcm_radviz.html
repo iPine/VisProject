@@ -4,11 +4,17 @@
 	<meta charset="utf-8">
 	<title>fcm_radviz</title>
 	<script type="text/javascript" src="lib/d3.min.js"></script>
+    <script src="lib/d3.svg.multibrush.js"></script>
+    
+
+
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/d3.parcoords.css">
+
 	<style type="text/css">
 		body{
 			width:100%;
-			height: 900px;
+			height: 800px;
 			margin: 0;
 			border:2px solid #ccc;
 			font-size: 12px;
@@ -97,14 +103,39 @@
             /*float: left;*/
         }
         .clusters_buttons p{ display: none; width: 300px; padding-left: 5px;}
-        
+        #tbottom{
+            position: relative;
+            float: left;
+            width: 100%;
+            height: 200px;
+            display:inline-block;
+            border-top: 1px solid #ccc;
+            
+        }
+
+        #switch{
+            position: relative;
+            float:left;
+            width:20%;
+            height: 90%;
+            display:inline-block;
+        }
+        #example{
+            padding-top: 15px;
+            position: relative;
+            float:left;
+            width:80%;
+            height: 90%;
+            display:inline-block;
+        }
 
 
 	</style>
 </head>
 <body>
-<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="js/radviz.js"></script>
+<script src="js/d3.parcoords.js"></script>
 
 <div id="container">
 	<div id="tleft">
@@ -165,6 +196,13 @@
 			<div id="state"></div>
 	        <div id="list"></div>
 	</div>
+
+    <div id="tbottom">
+
+        <div id="switch" ></div>
+
+        <div id="example" class="parcoords" ></div>
+    </div>
 </div>
 <script type="text/javascript">
 
@@ -197,7 +235,7 @@
 
 	 // var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
 	
-    var cNum = 2;
+    var cNum = 4;
 	var radvizConfig = {
 
 	 	el: document.querySelector('#radviz'), // container node or selector
@@ -205,6 +243,7 @@
         margin: 80, // margin around the circular panel, to leave some room for the labels
         dimensions: dimensions(cNum), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
+        // opacityAccessor: function(d){return d.classValue;},
         colorScale: d3.scale.ordinal().range(['orange', '#de3669', '#52b5f3', 'purple', '#6ab82c',
                 '#802A2A', '#58c3e0', ' #385E0F', '#e3701e', 'teal',
                 '#04389A', 'black']),//d3.scale.category10(), // color palette
@@ -219,21 +258,31 @@
     .config(radvizConfig)
     .on('dotEnter', function(d) {
     	 // console.log(d);
+
          d3.selectAll('.dot')
             .attr("opacity",function(d){
                 return d.classValue;
-            })
-                renderList(d);
+            });
+
+            renderList(d);
+
+        pcz.highlight([d]);
+
                 
     })
     .on('dotLeave', function(d) {
                 // console.log('dotLeave', d);
+    
+                 
     })
     .on('panelEnter', function() {
         // mouse entered the circular panel
     })
     .on('panelLeave', function() {
         // mouse left the circular panel
+
+        pcz.unhighlight
+
     });
 
 
@@ -312,6 +361,7 @@
         d3.select('#radviz').selectAll('*').remove();
         d3.select('#state').selectAll("div").remove();
         d3.select('#list').selectAll('*').remove();
+        d3.select('#example').selectAll('*').remove();
 
         selectedNum(cluster_selection,name);
         
@@ -326,6 +376,7 @@
            d3.csv(fullName,function(err,data){
                 csv = data;
                  // console.log(csv);
+                 parcoordsRender(csv);
                 maxLabel(csv);
                 radvizConfig.dimensions = dimensions(cNum);
                 var radviz = radvizComponent()
@@ -336,7 +387,11 @@
                             return d.classValue;
                     })
                     renderList(d);
+                    pcz.highlight([d]);
                 });
+                // .on('dotLeave',function(d){
+                //     pcz.unhighlight;
+                // });
                 radviz.render(csv);
             })
    
@@ -364,13 +419,39 @@
         }
     }
 
-   
-    d3.csv('data/ecoli_2.csv', function(err,data) {
-   		console.log(data);
-        
+    var pcz;
+    function parcoordsRender(data){
+
+        var blue_to_brown = d3.scale.linear()
+        .domain([0, 1])
+        .range(["steelblue", "brown"])
+        .interpolate(d3.interpolateLab);
+
+        var color = function(d){return blue_to_brown(d['C1']);};
+
+        pcz = d3.parcoords()("#example")
+                .color(color)
+                .alpha(0.6);
+                
+
+         pcz.data(data)
+                .hideAxis(['name'])
+                .composite("darker")
+                .render()
+                .shadows()
+                .reorderable()
+                .brushMode("1D-axes");  
+
+    }
+
+
+    d3.csv('data/iris_4.csv', function(err,data) {
+   		// console.log(data);    
+        parcoordsRender(data);
     	maxLabel(data);
-    	radviz.render(data);
-    	
+        // parcoordsRender(data); 
+    	radviz.render(data); 
+          	
    });
    
 </script>
