@@ -88,9 +88,13 @@
         }
         
         #menu{ width: 300px; margin-top: 100px; }
+        #menu_bottom{margin-top: 50px; margin-left: 30px; width: 200px;}
         p{color: gray;}
-        .clusters_buttons{ background: white; color: gray; cursor: pointer; margin-top: 20px; }
+        .clusters_buttons,
+        .mode_buttons{ background: white; color: gray; cursor: pointer; margin-top: 20px; }
+
         .highlight{ display: inline-block;}
+
         .clusters_buttons div{
             display: none;
             background-color: skyblue;
@@ -102,7 +106,19 @@
             text-align: center;
             /*float: left;*/
         }
-        .clusters_buttons p{ display: none; width: 300px; padding-left: 5px;}
+        .mode_buttons div{
+            display: none;
+            background-color: skyblue;
+            padding: 3px; 
+            margin: 5px 5px 5px 2px;
+            width: 50px;
+            height: 20px;
+            border: 1px solid black;
+            text-align: center;
+            float: left;
+        }
+        .clusters_buttons p,
+        .mode_buttons p{ display: none; width: 300px; padding-left: 5px;font-size: 15px;}
         #tbottom{
             position: relative;
             float: left;
@@ -110,7 +126,6 @@
             height: 200px;
             display:inline-block;
             border-top: 1px solid #ccc;
-            
         }
 
         #switch{
@@ -119,6 +134,7 @@
             width:20%;
             height: 90%;
             display:inline-block;
+            font-size: 17px;
         }
         #example{
             padding-top: 15px;
@@ -128,6 +144,8 @@
             height: 90%;
             display:inline-block;
         }
+        .dataset{font-size: 10px;}
+       
 
 
 	</style>
@@ -199,7 +217,21 @@
 
     <div id="tbottom">
 
-        <div id="switch" ></div>
+        <div id="switch" >
+            <div id="menu_bottom">
+                <div class="mode_buttons">
+                    <span><label><input name="switch" type="radio" value="" />original dimensions </label></span>
+                    <p>Select a dataset:</p>  
+                    <div class="dataset" id="ecoli">ecoli</div>
+                    <div class="dataset" id="iris">iris</div>
+                    <div class="dataset" id="wine">wine</div>
+                    <div class="dataset" id="Synthetic">Synthetic</div>
+                </div>
+                
+            </div>
+                 
+           
+        </div>
 
         <div id="example" class="parcoords" ></div>
     </div>
@@ -218,6 +250,55 @@
 
     });
 
+    $(".mode_buttons").click(function(){
+
+        $(this).children('p').show().end().siblings().children("p").hide();
+        
+        $(this).children('div').addClass("highlight").show().end().siblings().children("div").removeClass("highlight").hide();
+
+        changeMode(this);
+
+    })
+
+    function changeMode(butt){
+
+        var dataset_selection = ["ecoli","iris","wine","Synthetic"];
+        
+        var buttons = d3.select(butt).selectAll('div').data(dataset_selection);
+
+        buttons.on("click",function(d){
+        
+            d3.selectAll(".dataset")
+                .transition()
+                .duration(500)
+                .style('color',"black")
+                .style("background-color","skyblue");
+
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .style("color","white")
+                .style("background-color","orange");
+
+            updateMode(d);
+        })      
+    }
+
+    function updateMode(name){
+        
+        d3.select('#example').selectAll('*').remove();
+
+        selectMode(name);
+    }
+
+    function selectMode(name){
+        var fillName = "data/raw/" + name + "-raw.csv";       
+             d3.csv(fillName,function(data){
+                    parcoordsRender(data);
+                }) 
+    }
+
+    
     function changeRadio(butt,name){
         var cluster_selection;
 
@@ -243,15 +324,15 @@
         margin: 80, // margin around the circular panel, to leave some room for the labels
         dimensions: dimensions(cNum), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
-        // opacityAccessor: function(d){return d.classValue;},
+        opacityAccessor: function(d){return d.classValue;},
         colorScale: d3.scale.ordinal().range(['orange', '#de3669', '#52b5f3', 'purple', '#6ab82c',
                 '#802A2A', '#58c3e0', ' #385E0F', '#e3701e', 'teal',
                 '#04389A', 'black']),//d3.scale.category10(), // color palette
-        drawLinks: true, 
+        drawLinks: false, 
         zoomFactor: 1, 
-        dotRadius: 6, 
+        dotRadius: 4, 
         useTooltip: false,
-        useRepulsion: true,
+        useRepulsion: false,
 	 }
 
 	var radviz = radvizComponent()
@@ -259,10 +340,10 @@
     .on('dotEnter', function(d) {
     	 // console.log(d);
 
-         d3.selectAll('.dot')
-            .attr("opacity",function(d){
-                return d.classValue;
-            });
+         // d3.selectAll('.dot')
+         //    .attr("opacity",function(d){
+         //        return d.classValue;
+         //    });
 
             renderList(d);
 
@@ -272,6 +353,7 @@
     })
     .on('dotLeave', function(d) {
                 // console.log('dotLeave', d);
+        pcz.unhighlight([d]);
     
                  
     })
@@ -280,8 +362,6 @@
     })
     .on('panelLeave', function() {
         // mouse left the circular panel
-
-        pcz.unhighlight
 
     });
 
@@ -382,16 +462,12 @@
                 var radviz = radvizComponent()
                 .config(radvizConfig)
                 .on('dotEnter', function(d) {
-                    d3.selectAll('.dot')
-                        .attr("opacity",function(d){
-                            return d.classValue;
-                    })
                     renderList(d);
                     pcz.highlight([d]);
+                })
+                .on('dotLeave',function(d){
+                    pcz.unhighlight([d]);
                 });
-                // .on('dotLeave',function(d){
-                //     pcz.unhighlight;
-                // });
                 radviz.render(csv);
             })
    
@@ -431,8 +507,7 @@
 
         pcz = d3.parcoords()("#example")
                 .color(color)
-                .alpha(0.6);
-                
+                .alpha(0.4);  
 
          pcz.data(data)
                 .hideAxis(['name'])
@@ -446,7 +521,7 @@
 
 
     d3.csv('data/iris_4.csv', function(err,data) {
-   		// console.log(data);    
+   		console.log(data);    
         parcoordsRender(data);
     	maxLabel(data);
         // parcoordsRender(data); 

@@ -36,20 +36,23 @@ var radvizComponent = function() {
         margin: 50,
         colorScale: d3.scale.ordinal().range([ "skyblue", "orange", "lime" ]),
         colorAccessor: null,
+        opacityAccessor: null,
         dimensions: [],
-        drawLinks: true,
+        drawLinks: false,
         zoomFactor: 1,
         dotRadius: 6,
         useRepulsion: false,
-        useTooltip: true,
+        useTooltip: false,
         tooltipFormatter: function(d) {
             return d;
         }
+        
     };
     var events = d3.dispatch("panelEnter", "panelLeave", "dotEnter", "dotLeave");
     var force = d3.layout.force().chargeDistance(0).charge(-60).friction(.5);
     var render = function(data) {
         data = addNormalizedValues(data);
+
         var normalizeSuffix = "_normalized";
         var dimensionNamesNormalized = config.dimensions.map(function(d) {
             return d + normalizeSuffix;
@@ -127,11 +130,16 @@ var radvizComponent = function() {
             var links = root.selectAll(".link").data(linksData).enter().append("line").classed("link", true);
         }
         //绘制数据点，添加数据点显示隶属度条的事件
+
+        // var circlePosition = dotPosition(chartRadius,data.length);
         var nodes = root.selectAll("circle.dot").data(data).enter().append("circle").classed("dot", true).attr({
             r: config.dotRadius,
             fill: function(d) {
                 return config.colorScale(config.colorAccessor(d));
             },
+            opacity: function(d){
+                return config.opacityAccessor(d);
+            }
             
         }).on("mouseenter", function(d) {
             if (config.useTooltip) {
@@ -184,7 +192,7 @@ var radvizComponent = function() {
         }).text(function(d) {
             return d.name;
         });
-        //设置数据点和连线的位置
+        // 更新数据点和连线的位置
         force.on("tick", function() {
             if (config.drawLinks) {
                 links.attr({
@@ -287,3 +295,15 @@ var tooltipComponent = function(tooltipNode) {
         hide: hide
     };
 };
+
+// var circlePosition = dotPosition();
+function dotPosition(radius,dataLength){
+    var newPoints=[];
+    var circleStep = (Math.PI * 2) / dataLength;
+        for(var i=0;i<=dataLength;i++){
+        var x=2*radius - Math.round((Math.cos(i*circleStep) * radius) + radius) + 10;
+        var y=2*radius - Math.round((Math.sin(i*circleStep) * radius) + radius);
+        newPoints.push({x: x, y: y});
+        }
+        return newPoints;
+}
