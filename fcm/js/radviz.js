@@ -40,7 +40,7 @@ var radvizComponent = function() {
         dimensions: [],
         drawLinks: false,
         zoomFactor: 1,
-        dotRadius: 6,
+        dotRadius: 4,
         useRepulsion: false,
         useTooltip: false,
         tooltipFormatter: function(d) {
@@ -49,8 +49,9 @@ var radvizComponent = function() {
         
     };
     var events = d3.dispatch("panelEnter", "panelLeave", "dotEnter", "dotLeave");
-    var force = d3.layout.force().chargeDistance(0).charge(-60).friction(.5);
+    var force = d3.layout.force().chargeDistance(0).charge(-10).friction(0.5);
     var render = function(data) {
+
         data = addNormalizedValues(data);
 
         var normalizeSuffix = "_normalized";
@@ -63,6 +64,8 @@ var radvizComponent = function() {
         var chartRadius = config.size / 2 - config.margin;
         var nodeCount = data.length;
         var panelSize = config.size - config.margin * 2;
+
+        
 
         //初始化维度锚点
         var dimensionNodes = config.dimensions.map(function(d, i) {
@@ -78,6 +81,7 @@ var radvizComponent = function() {
                 name: d
             };
         });
+
         //初始化连接线
         var linksData = [];
         data.forEach(function(d, i) {
@@ -126,37 +130,59 @@ var radvizComponent = function() {
                 events.panelLeave();
             });
         }
+
+        // Links
         if (config.drawLinks) {
             var links = root.selectAll(".link").data(linksData).enter().append("line").classed("link", true);
         }
-        //绘制数据点，添加数据点显示隶属度条的事件
 
-        // var circlePosition = dotPosition(chartRadius,data.length);
-        var nodes = root.selectAll("circle.dot").data(data).enter().append("circle").classed("dot", true).attr({
-            r: config.dotRadius,
-            fill: function(d) {
-                return config.colorScale(config.colorAccessor(d));
-            },
-            opacity: function(d){
-                return config.opacityAccessor(d);
-            }
-            
-        }).on("mouseenter", function(d) {
-            if (config.useTooltip) {
-                var mouse = d3.mouse(config.el);
-                tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
-            }
-            events.dotEnter(d);
-            this.classList.add("active");
-        }).on("mouseout", function(d) {
-            if (config.useTooltip) {
-                tooltip.hide();
-            }
-            events.dotLeave(d);
-            this.classList.remove("active");
-        });
-        //小圆圈聚类
-        var labelNodes = root.selectAll("circle.label-node").data(dimensionNodes).enter().append("circle").classed("label-node", true).attr({
+        //绘制数据点，添加鼠标事件显示隶属度条
+        var nodes = root.selectAll("circle.dot")
+                    .data(data.sort(function(a,b){
+                        return b['classValue'] - a['classValue'];
+                    }))
+                    .enter()
+                    .append("circle")
+                    .classed("dot", true)
+                    .attr({
+                        r: config.dotRadius,
+                        fill: function(d) {
+                            return config.colorScale(config.colorAccessor(d));
+                        },
+                        opacity: function(d){
+                            return config.opacityAccessor(d);
+                        },
+                         
+                        // cx: function(d) {
+                        //     return d.x;
+                        // },
+                        // cy: function(d) {
+                        //     return d.y;
+                        // }
+                       
+                    })
+                    .on("mouseenter", function(d) {
+                        if (config.useTooltip) {
+                            var mouse = d3.mouse(config.el);
+                            tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
+                        }
+                        events.dotEnter(d);
+                        this.classList.add("active");
+                    })
+                    .on("mouseout", function(d) {
+                        if (config.useTooltip) {
+                            tooltip.hide();
+                        }
+                        events.dotLeave(d);
+                        this.classList.remove("active");
+                    });
+        //绘制代表聚类的圆圈
+        var labelNodes = root.selectAll("circle.label-node")
+            .data(dimensionNodes)
+            .enter()
+            .append("circle")
+            .classed("label-node", true)
+            .attr({
             cx: function(d) {
                 return d.x;
             },
@@ -225,6 +251,7 @@ var radvizComponent = function() {
         });
         var tooltip = tooltipComponent(tooltipContainer.node());
         return this;
+
     };
 
     var setConfig = function(_config) {
@@ -234,24 +261,38 @@ var radvizComponent = function() {
     //ci_normalized(i<该数据点所属的聚类个数)为每个隶属度占总隶属度的比例(一个数据点的总隶属度和为1，即数据表中的每行和为1)
     //是每个聚类对该数据点的弹簧拉力大小
     var addNormalizedValues = function(data) {
-        data.forEach(function(d) {
+        data.forEach(function(d,i) {
             config.dimensions.forEach(function(dimension) {
                 d[dimension] = +d[dimension];
             });
+
         });
+
         var normalizationScales = {};
         config.dimensions.forEach(function(dimension) {
             normalizationScales[dimension] = d3.scale.linear().domain(d3.extent(data.map(function(d, i) {
                 return d[dimension];
             }))).range([ 0, 1 ]);
         });
+
         data.forEach(function(d) {
             config.dimensions.forEach(function(dimension) {
                 d[dimension + "_normalized"] = normalizationScales[dimension](d[dimension]);
             });
         });
+
+    //添加计算出的数据点位置
+        // var circlePosition = dotPosition(data);
+        // data.forEach(function(d,i){
+        //     d.x = circlePosition[i].x;
+        //     d.y = circlePosition[i].y;
+        // })
+
+
         return data;
     };
+
+
     var exports = {
         config: setConfig,
         render: render
@@ -296,14 +337,4 @@ var tooltipComponent = function(tooltipNode) {
     };
 };
 
-// var circlePosition = dotPosition();
-function dotPosition(radius,dataLength){
-    var newPoints=[];
-    var circleStep = (Math.PI * 2) / dataLength;
-        for(var i=0;i<=dataLength;i++){
-        var x=2*radius - Math.round((Math.cos(i*circleStep) * radius) + radius) + 10;
-        var y=2*radius - Math.round((Math.sin(i*circleStep) * radius) + radius);
-        newPoints.push({x: x, y: y});
-        }
-        return newPoints;
-}
+

@@ -12,7 +12,7 @@ d3.parcoords = function(config) {
     width: 600,
     height: 300,
     margin: { top: 24, right: 0, bottom: 12, left: 0 },
-    nullValueSeparator: "undefined", // set to "top" or "bottom"
+    nullValueSeparator: null, // set to "top" or "bottom"
     nullValueSeparatorPadding: { top: 8, right: 0, bottom: 8, left: 0 },
     color: "#069",
     composite: "source-over",
@@ -655,9 +655,10 @@ function getNullPosition() {
 		return h()+1;
 	} else if (__.nullValueSeparator=="top") {
 		return 1;
-	} else {
-		console.log("A value is NULL, but nullValueSeparator is not set; set it to 'bottom' or 'top'.");
 	}
+  // else{
+  //   console.log()
+  // }
 	return h()+1;
 };
 
