@@ -127,6 +127,14 @@
             display:inline-block;
             border-top: 1px solid #ccc;
         }
+        #tdbottom{
+            position: relative;
+            float: left;
+            width: 100%;
+            height: 200px;
+            display:inline-block;
+            border-bottom: 1px solid #ccc;
+        }
 
         #switch{
             position: relative;
@@ -136,7 +144,16 @@
             display:inline-block;
             font-size: 17px;
         }
+        #switch p{ width: 300px; padding-left: 30px; padding-top:30px;font-size: 15px;color:gray;}
         #example{
+            padding-top: 15px;
+            position: relative;
+            float:left;
+            width:70%;
+            height: 80%;
+            display:inline-block;
+        }
+        #example1{
             padding-top: 15px;
             position: relative;
             float:left;
@@ -147,13 +164,14 @@
         .dataset{font-size: 10px;}
        
 
-
 	</style>
 </head>
 <body>
 <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="js/radviz.js"></script>
 <script src="js/d3.parcoords.js"></script>
+<script src="js/d3-donut-chart.js"></script>
+
 
 <div id="container">
 	<div id="tleft">
@@ -218,28 +236,35 @@
     <div id="tbottom">
 
         <div id="switch" >
+        <p>Clustering dimensions:</p>           
+        </div>
+
+        <div id="example" class="parcoords" ></div>
+    </div>
+
+    <div id="tdbottom">
+
+        <div id="switch" >
             <div id="menu_bottom">
                 <div class="mode_buttons">
                     <span><label><input name="switch" type="radio" value="" />original dimensions </label></span>
-                    <p>Select a dataset:</p>  
                     <div class="dataset" id="ecoli">ecoli</div>
                     <div class="dataset" id="iris">iris</div>
                     <div class="dataset" id="wine">wine</div>
                     <div class="dataset" id="Synthetic">Synthetic</div>
                 </div>
                 
-            </div>
-                 
+            </div>                 
            
         </div>
 
-        <div id="example" class="parcoords" ></div>
+        <div id="example1" class="parcoords" ></div>
     </div>
+
 </div>
 <script type="text/javascript">
 
-    
-
+ /*聚类模式的更新切换*/   
     $(".clusters_buttons").click(function(){
         
         var idName = $(this).attr('id');
@@ -249,69 +274,9 @@
         $(this).children('div').addClass("highlight").show().end().siblings().children("div").removeClass("highlight").hide();
 
        changeRadio(this,idName);
-       result = false;
-      
-
-
+           
     });
 
-    $(".mode_buttons").click(function(){
-        
-        $(this).children('p').show().end().siblings().children("p").hide();
-        
-        $(this).children('div').addClass("highlight").show().end().siblings().children("div").removeClass("highlight").hide();
-
-        changeMode(this);
-
-        
-
-
-    })
-
-    function changeMode(butt){
-
-        var dataset_selection = ["ecoli","iris","wine","Synthetic"];
-        
-        var buttons = d3.select(butt).selectAll('div').data(dataset_selection);
-
-        buttons.on("click",function(d){
-
-
-            d3.selectAll(".dataset")
-                .transition()
-                .duration(500)
-                .style('color',"black")
-                .style("background-color","skyblue");
-
-            d3.select(this)
-                .transition()
-                .duration(500)
-                .style("color","white")
-                .style("background-color","orange");
-
-            updateMode(d);
-        }) 
-
-        result = true;
-        // console.log(result);     
-    }
-
-    function updateMode(name){
-        
-        
-        d3.select('#example').selectAll('*').remove();
-
-        selectMode(name);
-    }
-
-    function selectMode(name){
-        var fillName = "data/raw/" + name + "-raw.csv";       
-             d3.csv(fillName,function(data){
-                    parcoordsRender(data);
-                }) 
-    }
-
-    
     function changeRadio(butt,name){
         var cluster_selection;
 
@@ -326,109 +291,14 @@
         }
         button_slected(butt,name,cluster_selection);
 
-
     }
 
-	 // var dimensions = ['C1', 'C2', 'C3', 'C4','C5','C6','C7','C8','C9',];
-	
-    var cNum = 4;
-	var radvizConfig = {
-
-	 	el: document.querySelector('#radviz'), // container node or selector
-        size: 600, 
-        margin: 100, // margin around the circular panel, to leave some room for the labels
-        dimensions: dimensions(cNum), // data keys to use as dimensions
-        colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
-        opacityAccessor: function(d){return d.classValue;},
-        colorScale: d3.scale.ordinal().range(['orange', '#de3669', '#52b5f3', 'purple', '#6ab82c',
-                '#802A2A', '#58c3e0', ' #385E0F', '#e3701e', 'teal',
-                '#04389A', 'black']),//d3.scale.category10(), // color palette
-        drawLinks: false, 
-        zoomFactor: 1, 
-        dotRadius: 4, 
-        useTooltip: false,
-        useRepulsion: false,
-	 }
-
-var result = false;
-	var radviz = radvizComponent()
-    .config(radvizConfig)
-    .on('dotEnter', function(d) {
-    	 // console.log(d);
-            renderList(d);
-        
-        if(!result){pcz.highlight([d]);}
-        // console.log(result);
-                
-    })
-    .on('dotLeave', function(d) {
-                // console.log('dotLeave', d);
-        
-        pcz.unhighlight([d]);
-                 
-    })
-    .on('panelEnter', function() {
-        // mouse entered the circular panel
-    })
-    .on('panelLeave', function() {
-        // mouse left the circular panel
-    });
-
-
-    var renderList = function(datum) {
-
-
-    	var width_scale = d3.scale.linear()
-    						.domain([0,1])
-    						.range([0,200]);
-
-        d3.select('#state').selectAll("div").remove();
-
-            var text = d3.select('#state')
-                .append('div')
-                .attr('class',"label");
-
-            text.text(function(d){
-            		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
-            	});
-          
-            var list = d3.select('#list')
-                .selectAll('div.item')
-                .data(dimensions(cNum));
-
-            list.enter()
-            	.append('div')
-            	.classed('item', true);
-
-            list.transition()
-            	.style({
-                    width: function(d) {
-                        return width_scale(datum[d]) + 'px';
-                    }
-                })
-                .text(function(d) {
-                    return d + ': ' + datum[d];
-                });
-            list.exit().remove();
-            
-        };
-
-    function dimensions(cNum){
-	 	 var dimensions = [];
-		 for(var i=0; i<cNum; i++){
-		 	dimensions.push("C" + (i+1));
-		 }
-		 return dimensions;
-	};
-
-
     function button_slected(dataset,name,clusterNum){
-
 
         var buttons = d3.select(dataset).selectAll('div').data(clusterNum);
 
         buttons.on("click",function(d){
-        
+ 
             d3.selectAll(".num")
                 .transition()
                 .duration(500)
@@ -465,24 +335,173 @@ var result = false;
            d3.csv(fullName,function(err,data){
                 csv = data;
                  // console.log(csv);
-                 // parcoordsRender(csv);
                 maxLabel(csv);
-                parcoordsRender(csv);
+
+                selection = "#example";
+                parcoordsRender(csv,"#example");
+                
                 radvizConfig.dimensions = dimensions(cNum);
                 var radviz = radvizComponent()
                 .config(radvizConfig)
                 .on('dotEnter', function(d) {
                     renderList(d);
-                    if(!result){pcz.highlight([d])};
+           
+                pcz.highlight([d]);
+                    
                 })
                 .on('dotLeave',function(d){
                     pcz.unhighlight([d]);
                 });
                 radviz.render(csv);
+
+                // var dataset = newData(data);
+       
+                // new DonutChart('#radviz', dataset,config);
             })
-   
+    }
+
+/*原始模式的切换更新
+*/
+    $(".mode_buttons").click(function(){
+        
+        $(this).children('p').show().end().siblings().children("p").hide();
+        
+        $(this).children('div').addClass("highlight").show().end().siblings().children("div").removeClass("highlight").hide();
+
+        changeMode(this);
+
+    })
+
+
+    function changeMode(butt){
+
+        var dataset_selection = ["ecoli","iris","wine","Synthetic"];
+        
+        var buttons = d3.select(butt).selectAll('div').data(dataset_selection);
+
+        buttons.on("click",function(d){
+
+            d3.selectAll(".dataset")
+                .transition()
+                .duration(500)
+                .style('color',"black")
+                .style("background-color","skyblue");
+
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .style("color","white")
+                .style("background-color","orange");
+
+            updateMode(d);
+        })    
+    }
+
+    function updateMode(name){
+             
+        d3.select('#example1').selectAll('*').remove();
+        selectMode(name);
+    }
+
+    function selectMode(name){
+        var fillName = "data/raw/" + name + "-raw.csv";       
+             d3.csv(fillName,function(data){
+
+                    parcoordsRender(data,"#example1");
+                }) 
     }
     
+
+/*雷达图的配置*/
+	
+    var cNum = 4;
+	var radvizConfig = {
+
+	 	el: document.querySelector('#radviz'), // container node or selector
+        size: 600, 
+        margin: 100, // margin around the circular panel, to leave some room for the labels
+        dimensions: dimensions(cNum), // data keys to use as dimensions
+        colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
+        opacityAccessor: function(d){return d.classValue;},
+        colorScale: d3.scale.ordinal().range(['orange', '#de3669', '#52b5f3', 'purple', '#6ab82c',
+                '#802A2A', '#58c3e0', ' #385E0F', '#e3701e', 'teal',
+                '#04389A', 'black']),//d3.scale.category10(), // color palette
+        drawLinks: false, 
+        zoomFactor: 1, 
+        dotRadius: 4, 
+        useTooltip: false,
+        useRepulsion: false,
+	 }
+
+	var radviz = radvizComponent()
+    .config(radvizConfig)
+    .on('dotEnter', function(d) {
+    	 // console.log(d);
+            renderList(d);
+        
+        pcz.highlight([d]);
+              
+    })
+    .on('dotLeave', function(d) {
+                // console.log('dotLeave', d);
+        
+        pcz.unhighlight([d]);
+                 
+    })
+    .on('panelEnter', function() {
+        // mouse entered the circular panel
+    })
+    .on('panelLeave', function() {
+        // mouse left the circular panel
+    });
+
+/*隶属度条型图展示*/
+    var renderList = function(datum) {
+
+    	var width_scale = d3.scale.linear()
+    						.domain([0,1])
+    						.range([0,200]);
+
+        d3.select('#state').selectAll("div").remove();
+
+            var text = d3.select('#state')
+                .append('div')
+                .attr('class',"label");
+
+            text.text(function(d){
+            		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
+            	});
+          
+            var list = d3.select('#list')
+                .selectAll('div.item')
+                .data(dimensions(cNum));
+
+            list.enter()
+            	.append('div')
+            	.classed('item', true);
+
+            list.transition()
+            	.style({
+                    width: function(d) {
+                        return width_scale(datum[d]) + 'px';
+                    }
+                })
+                .text(function(d) {
+                    return d + ': ' + datum[d];
+                });
+            list.exit().remove();
+            
+        };
+
+
+    function dimensions(cNum){
+	 	 var dimensions = [];
+		 for(var i=0; i<cNum; i++){
+		 	dimensions.push("C" + (i+1));
+		 }
+		 return dimensions;
+	};
+   
     function maxLabel(data){
         for(var i=0; i<data.length; i++){
 
@@ -505,8 +524,11 @@ var result = false;
         }
     }
 
+/*平行坐标绘制*/
     var pcz;
-    function parcoordsRender(data){
+    var selection = "#example";
+
+    function parcoordsRender(data,containerId){
 
         var blue_to_brown = d3.scale.linear()
         .domain([0, 1])
@@ -515,86 +537,108 @@ var result = false;
 
         var color = function(d){return blue_to_brown(d['classValue']);};
 
-
-        pcz = d3.parcoords()("#example")
+        if(containerId === "#example"){
+        pcz = d3.parcoords()(containerId)
                 .color(color)
                 .alpha(0.4);  
 
-         pcz.data(data)
+        pcz.data(data)
                 .hideAxis(['name'])
                 .composite("darker")
                 .render()
                 .shadows()
                 .reorderable()
-                .brushMode("1D-axes");  
+                .brushMode("1D-axes"); 
+        }else{
+
+        var pc;
+        pc = d3.parcoords()(containerId)
+                .color(color)
+                .alpha(0.4);  
+
+        pc.data(data)
+                .hideAxis(['name'])
+                .composite("darker")
+                .render()
+                .shadows()
+                .reorderable()
+                .brushMode("1D-axes"); 
+        }
 
     }
 
-    // function position(data){
-    //     var circlePosition = dotPosition(data);
-    //     for(var i=0; i<data.length; i++){
-    //         data[i].x0 = circlePosition[i].x;
-    //         data[i].y0 = circlePosition[i].y;
-    //     }
-    // }
+/*获取属于每个聚类的数据点，及其个数*/
+    function cluster_sum(leaves){
+            // console.log(leaves);
+            // debugger;
+            var total = leaves.length;
+            return {
+                sum: total,
+            }
+    }
 
-    //  var chartRadius = radvizConfig.size / 2 - radvizConfig.margin;
-    //         //计算数据点位置
-    //         function dotPosition(data){
-    //             var newPoints=[];
-                
-    //                 for(var i=0;i<data.length;i++){
-    //                     var point = data[i];
+    function newData(data){
+         var nested = d3.nest()
+                           .key(function(d) {
+                             // debugger;//检查d及d.date
+                              return d['classId'];
+                           })
+                           .rollup(cluster_sum)
+                           .entries(data);
+        // console.log(nested);
 
-    //                     var sumDown = getSumDown(point);
-    //                     var sumUp = getSumUp(point);
+        var dataset = [];
+        for(var i=0; i<nested.length; i++){
+            dataset.push([nested[i].key,nested[i].values.sum]);
+        }
 
-    //                         var sumUpX = sumUp.sumUpX;
-    //                         var sumUpY = sumUp.sumUpY;
-    //                         var coordX = sumUpX / sumDown;
-    //                         var coordY = sumUpY / sumDown;
-                    
-    //                     newPoints[i] = {
-    //                         x: coordX + chartRadius,
-    //                         y: coordY + chartRadius,
-    //                     }
-    //                 }
-    //                 return newPoints;
-    //         }
+        return dataset;
+    }
 
-    //         function getSumUp(item) {
-
-    //             var sumUpX = 0;
-    //             var sumUpY = 0;
-    //             for (var i = 0; i < radvizConfig.dimensions.length; i++) {
-    //                 var radius = radvizConfig.dotRadius[i];
-    //                 sumUpX = sumUpX + item[i] * Math.cos(radius) * chartRadius;
-    //                 sumUpY = sumUpY + item[i] * Math.sin(radius) * chartRadius;
-    //             }
-
-    //             return {
-    //                 sumUpX: sumUpX,
-    //                 sumUpY: sumUpY
-    //             };
-    //         }
-
-    //         function getSumDown(item) {
-    //             var sumDown = 0;
-    //             for (var i = 0; i < radvizConfig.dimensions.length; i++) {
-    //                 sumDown += item[i];
-    //             }
-
-    //             return sumDown;
-    //         }
-
+    // var config = {
+    //   width: 600,
+    //   height: 600,
+  
+    //   radius: 250,
+    //   innerRadius: 150,
+    //   strokeColor: "#FFF",
+    //   strokeWidth: 2,
+  
+    //   enableLabels: true,
+    //   labelGroupOffset: 5,
+    //   labelColor: "#333",
+  
+    //   labelValueText: function(arc) {
+    //     return Math.floor((arc.value / _donutChart.totals) * 100) + "%";
+    //   },
+    //   labelValueOffset: 0, // from label-group
+  
+    //   labelNameText: function(arc) {
+    //     return arc.name + ":" + arc.value;
+    //   },
+    //   labelNameOffset: 0, // from label-group
+  
+    //   tickColor: "#333",
+    //   tickWidth: 1,
+    //   tickOffset: [0,0,2,4], // [x1, x2, y1, y2]
+  
+    //   easeFunction: 'cubic',
+    //   animationDuration: 250,
+    //   colors: d3.scale.ordinal().range([ '#E7E1E1'])
+    //  };
 
     d3.csv('data/iris_4.csv', function(err,data) {
-   		    
+   		  
     	maxLabel(data);
         // position(data);
         console.log(data);
-        parcoordsRender(data); 
-    	radviz.render(data); 
+        parcoordsRender(data,"#example");     
+
+         radviz.render(data); 
+
+        // var dataset = newData(data);
+       
+        // new DonutChart('#radviz', dataset,config);
           	
    });
    
