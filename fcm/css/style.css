@@ -2,7 +2,7 @@ body {
     font-family: sans-serif;
 }
 .panel {
-    stroke: black;
+    stroke: white;
     fill: white;
 }
 .bg {

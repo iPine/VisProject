@@ -61,9 +61,9 @@ var radvizComponent = function() {
 
         var thetaScale = d3.scale.linear().domain([ 0, dimensionNamesNormalized.length ]).range([ 0, Math.PI * 2 ]);
         
-        var chartRadius = config.size / 2 - config.margin;
+        var chartRadius = config.size / 2 - config.margin - 50;
         var nodeCount = data.length;
-        var panelSize = config.size - config.margin * 2;
+        var panelSize = config.size - config.margin * 2 - 200;
 
         
 
@@ -102,22 +102,23 @@ var radvizComponent = function() {
                 .links(linksData)
                 .start();
 
-        var svg = d3.select(config.el).append("svg").attr({
-            width: config.size,
-            height: config.size
-        });
-        svg.append("rect").classed("bg", true).attr({
-            width: config.size,
-            height: config.size
-        });
+        // var svg = d3.select(config.el).append("svg").attr({
+        //     width: config.size,
+        //     height: config.size
+        // });
+        var svg = d3.select("svg");
+        // svg.append("rect").classed("bg", true).attr({
+        //     width: config.size,
+        //     height: config.size
+        // });
         var root = svg.append("g").attr({
-            transform: "translate(" + [ config.margin, config.margin ] + ")"
+            transform: "translate(" + [ 300, 300 ] + ")"
         });
 
         var panel = root.append("circle").classed("panel", true).attr({
             r: chartRadius,
             cx: chartRadius,
-            cy: chartRadius
+            cy: chartRadius,
         });
 
         if (config.useRepulsion) {
@@ -130,121 +131,109 @@ var radvizComponent = function() {
                 events.panelLeave();
             });
         }
+ 
 
-        // Links
-        if (config.drawLinks) {
-            var links = root.selectAll(".link").data(linksData).enter().append("line").classed("link", true);
-        }
+        // //绘制代表聚类的圆圈
+        // var labelNodes = root.selectAll("circle.label-node")
+        //     .data(dimensionNodes)
+        //     .enter()
+        //     .append("circle")
+        //     .classed("label-node", true)
+        //     .attr({
+        //     cx: function(d) {
+        //         return d.x;
+        //     },
+        //     cy: function(d) {
+        //         return d.y;
+        //     },
+        //     r: 4
+        // });
 
-        //绘制数据点，添加鼠标事件显示隶属度条
-        var nodes = root.selectAll("circle.dot")
-                    .data(data.sort(function(a,b){
-                        return b['classValue'] - a['classValue'];
-                    }))
-                    .enter()
-                    .append("circle")
-                    .classed("dot", true)
-                    .attr({
-                        r: config.dotRadius,
-                        fill: function(d) {
-                            return config.colorScale(config.colorAccessor(d));
-                        },
-                        opacity: function(d){
-                            return config.opacityAccessor(d);
-                        },
-                         
-                        // cx: function(d) {
-                        //     return d.x;
-                        // },
-                        // cy: function(d) {
-                        //     return d.y;
-                        // }
-                       
-                    })
-                    .on("mouseenter", function(d) {
-                        if (config.useTooltip) {
-                            var mouse = d3.mouse(config.el);
-                            tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
-                        }
-                        events.dotEnter(d);
-                        this.classList.add("active");
-                    })
-                    .on("mouseout", function(d) {
-                        if (config.useTooltip) {
-                            tooltip.hide();
-                        }
-                        events.dotLeave(d);
-                        this.classList.remove("active");
-                    });
-        //绘制代表聚类的圆圈
-        var labelNodes = root.selectAll("circle.label-node")
-            .data(dimensionNodes)
-            .enter()
-            .append("circle")
-            .classed("label-node", true)
-            .attr({
-            cx: function(d) {
-                return d.x;
-            },
-            cy: function(d) {
-                return d.y;
-            },
-            r: 4
-        });
-        //聚类名字
-        var labels = root.selectAll("text.label").data(dimensionNodes).enter().append("text").classed("label", true).attr({
-            x: function(d) {
-                return d.x;
-            },
-            y: function(d) {
-                return d.y;
-            },
-            "text-anchor": function(d) {
-                if (d.x > panelSize * .4 && d.x < panelSize * .6) {
-                    return "middle";
-                } else {
-                    return d.x > panelSize / 2 ? "start" : "end";
-                }
-            },
-            "dominant-baseline": function(d) {
-                return d.y > panelSize * .6 ? "hanging" : "auto";
-            },
-            dx: function(d) {
-                return d.x > panelSize / 2 ? "6px" : "-6px";
-            },
-            dy: function(d) {
-                return d.y > panelSize * .6 ? "6px" : "-6px";
+        // //聚类名字
+        // var labels = root.selectAll("text.label").data(dimensionNodes).enter().append("text").classed("label", true).attr({
+        //     x: function(d) {
+        //         return d.x;
+        //     },
+        //     y: function(d) {
+        //         return d.y;
+        //     },
+        //     "text-anchor": function(d) {
+        //         if (d.x > panelSize * .4 && d.x < panelSize * .6) {
+        //             return "middle";
+        //         } else {
+        //             return d.x > panelSize / 2 ? "start" : "end";
+        //         }
+        //     },
+        //     "dominant-baseline": function(d) {
+        //         return d.y > panelSize * .6 ? "hanging" : "auto";
+        //     },
+        //     dx: function(d) {
+        //         return d.x > panelSize / 2 ? "6px" : "-6px";
+        //     },
+        //     dy: function(d) {
+        //         return d.y > panelSize * .6 ? "6px" : "-6px";
+        //     }
+        // }).text(function(d) {
+        //     return d.name;
+        // });
+
+        
+        setTimeout(function(){
+            var n = 100;
+            for(var i = n*n; i>0; --i){
+
+                force.tick();
             }
-        }).text(function(d) {
-            return d.name;
-        });
-        // 更新数据点和连线的位置
-        force.on("tick", function() {
+
+            force.stop();
+
+            // Links
             if (config.drawLinks) {
-                links.attr({
-                    x1: function(d) {
-                        return d.source.x;
-                    },
-                    y1: function(d) {
-                        return d.source.y;
-                    },
-                    x2: function(d) {
-                        return d.target.x;
-                    },
-                    y2: function(d) {
-                        return d.target.y;
-                    }
-                });
+                var links = root.selectAll(".link").data(linksData).enter().append("line").classed("link", true);
             }
-            nodes.attr({
-                cx: function(d) {
-                    return d.x;
-                },
-                cy: function(d) {
-                    return d.y;
-                }
-            });
-        });
+
+            //绘制数据点，添加鼠标事件显示隶属度条
+            var nodes = root.selectAll("circle.dot")
+                        .data(data.sort(function(a,b){
+                            return b['classValue'] - a['classValue'];
+                        }))
+                        .enter()
+                        .append("circle")
+                        .classed("dot", true)
+                        .attr({
+                            r: config.dotRadius,
+                            fill: function(d) {
+                                return config.colorScale(config.colorAccessor(d));
+                            },
+                            opacity: function(d){
+                                return config.opacityAccessor(d);
+                            },
+                             
+                            cx: function(d) {
+                                return d.x;
+                            },
+                            cy: function(d) {
+                                return d.y;
+                            }
+                           
+                        })
+                        .on("mouseenter", function(d) {
+                            if (config.useTooltip) {
+                                var mouse = d3.mouse(config.el);
+                                tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
+                            }
+                            events.dotEnter(d);
+                            this.classList.add("active");
+                        })
+                        .on("mouseout", function(d) {
+                            if (config.useTooltip) {
+                                tooltip.hide();
+                            }
+                            events.dotLeave(d);
+                            this.classList.remove("active");
+                        });
+        },1);
+        
 
         var tooltipContainer = d3.select(config.el).append("div").attr({
             id: "radviz-tooltip"

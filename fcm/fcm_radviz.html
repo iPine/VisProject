@@ -3,8 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<title>fcm_radviz</title>
+
 	<script type="text/javascript" src="lib/d3.min.js"></script>
-    <script src="lib/d3.svg.multibrush.js"></script>
+    <script type="text/javascript" src="lib/crossfilter.min.js"></script>>
+    <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
+    <!-- <script src="lib/d3.svg.multibrush.js"></script> -->
     
 
 
@@ -14,7 +17,7 @@
 	<style type="text/css">
 		body{
 			width:100%;
-			height: 800px;
+			height: 1000px;
 			margin: 0;
 			border:2px solid #ccc;
 			font-size: 12px;
@@ -22,7 +25,7 @@
 		}
 		#container{
 			/*height: 100%;*/
-            height: 600px;
+            height: 800px;
 			width: 100%;
 			border-top: 1px solid #ccc;
 			border-bottom: 1px solid #ccc;
@@ -55,20 +58,20 @@
 		#tmiddle{
 			position: relative;
 			float: left;
-			width: 55%;
+			width: 60%;
 			height: 100%;
 			border-right: 1px solid #ccc;
 			display:inline-block;
 		}
 		#radviz{
-			margin-left: 5%;
-			width: 90%;
+			/*margin-left: 5%;*/
+			width: 100%;
 			height: auto;
 		}
 		#tright{
 			position: relative;
 			float: left;
-			width: 15%;
+			width: 13%;
 			height: 100%;
 			display:inline-block;
 			
@@ -167,10 +170,11 @@
 	</style>
 </head>
 <body>
-<script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="js/radviz.js"></script>
+
+<script src="js/radviz.js"></script>
 <script src="js/d3.parcoords.js"></script>
-<script src="js/d3-donut-chart.js"></script>
+<script src="js/arc.js"></script>
+<!-- <script src="render.js"></script> -->
 
 
 <div id="container">
@@ -264,6 +268,10 @@
 </div>
 <script type="text/javascript">
 
+     var svg = d3.select("#radviz").append("svg")
+                .attr("width",800)
+                .attr("height",800);
+
  /*聚类模式的更新切换*/   
     $(".clusters_buttons").click(function(){
         
@@ -317,10 +325,14 @@
 
     function update(cluster_selection,name){
        
-        d3.select('#radviz').selectAll('*').remove();
+        // d3.select('#radviz svg').selectAll('*').remove();
         d3.select('#state').selectAll("div").remove();
         d3.select('#list').selectAll('*').remove();
         d3.select('#example').selectAll('*').remove();
+        d3.select("svg").selectAll(".arcs").remove();
+        d3.select("svg").selectAll(".hists").remove();
+        d3.select("svg").selectAll(".panel").remove();
+        d3.select("svg").selectAll(".dot").remove();
 
         selectedNum(cluster_selection,name);
         
@@ -334,12 +346,16 @@
             var csv;
            d3.csv(fullName,function(err,data){
                 csv = data;
+                 
+                 renderArcs(data);
+
                  // console.log(csv);
+
+                 selection = "#example";
+                parcoordsRender(csv,"#example");
+
                 maxLabel(csv);
 
-                selection = "#example";
-                parcoordsRender(csv,"#example");
-                
                 radvizConfig.dimensions = dimensions(cNum);
                 var radviz = radvizComponent()
                 .config(radvizConfig)
@@ -352,11 +368,9 @@
                 .on('dotLeave',function(d){
                     pcz.unhighlight([d]);
                 });
-                radviz.render(csv);
 
-                // var dataset = newData(data);
-       
-                // new DonutChart('#radviz', dataset,config);
+                radviz.render(csv);
+                 // console.log(csv);
             })
     }
 
@@ -418,8 +432,8 @@
 	var radvizConfig = {
 
 	 	el: document.querySelector('#radviz'), // container node or selector
-        size: 600, 
-        margin: 100, // margin around the circular panel, to leave some room for the labels
+        size: 800, 
+        margin: 250, // margin around the circular panel, to leave some room for the labels
         dimensions: dimensions(cNum), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
         opacityAccessor: function(d){return d.classValue;},
@@ -535,7 +549,7 @@
         .range(["steelblue", "brown"])
         .interpolate(d3.interpolateLab);
 
-        var color = function(d){return blue_to_brown(d['classValue']);};
+        var color = function(d){return blue_to_brown(d['C1']);};
 
         if(containerId === "#example"){
         pcz = d3.parcoords()(containerId)
@@ -595,50 +609,21 @@
         return dataset;
     }
 
-    // var config = {
-    //   width: 600,
-    //   height: 600,
-  
-    //   radius: 250,
-    //   innerRadius: 150,
-    //   strokeColor: "#FFF",
-    //   strokeWidth: 2,
-  
-    //   enableLabels: true,
-    //   labelGroupOffset: 5,
-    //   labelColor: "#333",
-  
-    //   labelValueText: function(arc) {
-    //     return Math.floor((arc.value / _donutChart.totals) * 100) + "%";
-    //   },
-    //   labelValueOffset: 0, // from label-group
-  
-    //   labelNameText: function(arc) {
-    //     return arc.name + ":" + arc.value;
-    //   },
-    //   labelNameOffset: 0, // from label-group
-  
-    //   tickColor: "#333",
-    //   tickWidth: 1,
-    //   tickOffset: [0,0,2,4], // [x1, x2, y1, y2]
-  
-    //   easeFunction: 'cubic',
-    //   animationDuration: 250,
-    //   colors: d3.scale.ordinal().range([ '#E7E1E1'])
-    //  };
 
     d3.csv('data/iris_4.csv', function(err,data) {
-   		  
-    	maxLabel(data);
-        // position(data);
-        console.log(data);
+
+        if(err) throw error;
+
+        renderArcs(data);
+
         parcoordsRender(data,"#example");     
+   	  
+    	maxLabel(data);
+   
+        // console.log(data);
+         radviz.render(data);         
 
-         radviz.render(data); 
-
-        // var dataset = newData(data);
-       
-        // new DonutChart('#radviz', dataset,config);
+        
           	
    });
    
