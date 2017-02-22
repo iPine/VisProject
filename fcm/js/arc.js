@@ -2,14 +2,23 @@ function renderArcs(classes){
 
     var svg = d3.select("svg");
 
-	 classes.forEach(function(meta){
+    var tip = d3.tip()
+        .attr("class","d3-tip")
+        .offset([-10,0])
+        .html(function(d){
+            return "<strong>Numbers:</strong> <span style='color:red'>" + d.value + "</span>";
+        })
 
-        meta.C1 = parseFloat(meta.C1)
-        meta.C2 = parseFloat(meta.C2)
-        meta.C3 = parseFloat(meta.C3)
-        meta.C4 = parseFloat(meta.C4)
+    svg.call(tip);
 
-    })
+	 // classes.forEach(function(meta){
+
+  //       meta.C1 = parseFloat(meta.C1)
+  //       meta.C2 = parseFloat(meta.C2)
+  //       meta.C3 = parseFloat(meta.C3)
+  //       meta.C4 = parseFloat(meta.C4)
+
+  //   })
 
 	var PI = Math.PI;
     var arcMin = 105;        // inner radius of the first arc
@@ -17,6 +26,7 @@ function renderArcs(classes){
     var arcPad = 1;         // padding between arcs
 
     var classNum = d3.keys(classes[0]).length;
+    var className = d3.keys(classes[0]);
 
     var eachAngle = 360 * (PI/180) / classNum;
 
@@ -45,7 +55,7 @@ function renderArcs(classes){
 
     // bind the data
     var arcs = svg.append("g").selectAll('.arcBound')
-        .data(newNum)
+        .data(className)
         .enter()
         .append('path')
         .attr("transform", "translate(400,400)")
@@ -58,7 +68,6 @@ function renderArcs(classes){
         .attr('stroke-width',2)
 
 
-    className = d3.keys(classes[0]);
 
     var counter = 0;
 
@@ -121,9 +130,11 @@ function renderArcs(classes){
         hists.attr("d", drawHist)
             .attr("fill", 'steelblue')
             .attr('stroke','none')
+            .on("mouseover",tip.show)
+            .on("mouseout",tip.hide)
 
         console.log(reducedData);
-        console.log(newNum);
+        // console.log(classes);
 
         counter += 1;
     })

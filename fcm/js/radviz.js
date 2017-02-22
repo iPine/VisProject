@@ -106,11 +106,14 @@ var radvizComponent = function() {
         //     width: config.size,
         //     height: config.size
         // });
+
         var svg = d3.select("svg");
+
         // svg.append("rect").classed("bg", true).attr({
         //     width: config.size,
         //     height: config.size
         // });
+        
         var root = svg.append("g").attr({
             transform: "translate(" + [ 300, 300 ] + ")"
         });
@@ -179,8 +182,8 @@ var radvizComponent = function() {
 
         
         setTimeout(function(){
-            var n = 100;
-            for(var i = n*n; i>0; --i){
+            var n = 100000;
+            for(var i = n; i>0; --i){
 
                 force.tick();
             }
@@ -269,14 +272,6 @@ var radvizComponent = function() {
                 d[dimension + "_normalized"] = normalizationScales[dimension](d[dimension]);
             });
         });
-
-    //添加计算出的数据点位置
-        // var circlePosition = dotPosition(data);
-        // data.forEach(function(d,i){
-        //     d.x = circlePosition[i].x;
-        //     d.y = circlePosition[i].y;
-        // })
-
 
         return data;
     };
