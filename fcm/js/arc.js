@@ -5,8 +5,12 @@ function renderArcs(classes){
     var tip = d3.tip()
         .attr("class","d3-tip")
         .offset([-10,0])
-        .html(function(d){
-            return "<strong>Numbers:</strong> <span style='color:red'>" + d.value + "</span>";
+        .html(function(d,i){
+            var start = 0.05*i;
+            start = start.toFixed(2);
+            var end = 0.05*(i+1);
+            end = end.toFixed(2);
+            return "<strong>Interval:</strong> <span style='color:red'>" + '['+ start + ',' + end + ']' + "</span> </br> <strong>Numbers:</strong> <span style='color:red'>" + d.value + "</span>";
         })
 
     svg.call(tip);
@@ -21,8 +25,8 @@ function renderArcs(classes){
   //   })
 
 	var PI = Math.PI;
-    var arcMin = 105;        // inner radius of the first arc
-    var arcWidth = 120;      // width
+    var arcMin = 102;        // inner radius of the first arc
+    var arcWidth = 90;      // width
     var arcPad = 1;         // padding between arcs
 
     var classNum = d3.keys(classes[0]).length;
@@ -58,12 +62,12 @@ function renderArcs(classes){
         .data(className)
         .enter()
         .append('path')
-        .attr("transform", "translate(400,400)")
+        .attr("transform", "translate(350,300)")
         .attr("class","arcs")
 
     // *** update existing arcs -- redraw them ***
     arcs.attr("d", drawArc)
-        .attr("fill", '#ccc')
+        .attr("fill", '#F5F5DC')
         .attr('stroke','#ccc')
         .attr('stroke-width',2)
 
@@ -123,12 +127,27 @@ function renderArcs(classes){
             .data(reducedData)
             .enter()
             .append('path')
-            .attr("transform", "translate(400,400)")
+            .attr("transform", "translate(350,300)")
             .attr("class","hists")
+
+        var maxValue = d3.max(reducedData,function(d){return d.value;});
+        var linear = d3.scale.linear()
+                            .domain([0,maxValue])
+                            .range([0,1]);
+
+        var a = d3.rgb(79,148,205);
+        var b = d3.rgb(139,35,35);
+
+        var computeColor = d3.interpolate(a,b);
 
         // *** update existing arcs -- redraw them ***
         hists.attr("d", drawHist)
-            .attr("fill", 'steelblue')
+            // .attr("fill", 'steelblue')
+            .attr("fill",function(d,i){
+                var t = linear(i);
+                    var color = computeColor(t);
+                    return color.toString();
+            })
             .attr('stroke','none')
             .on("mouseover",tip.show)
             .on("mouseout",tip.hide)
@@ -137,6 +156,79 @@ function renderArcs(classes){
         // console.log(classes);
 
         counter += 1;
+
+        //定义一个线性渐变
+        var defs = svg.append("defs");
+
+        var linearGradient = defs.append("linearGradient")
+                                        .attr("id","linearColor")
+                                        .attr({
+                                            x1: "0%",
+                                            y1: "0%",
+                                            x2: "100%",
+                                            y2: "0%"
+                                        });
+        var stop1 = linearGradient.append("stop")
+                                    .attr("offset","0%")
+                                    .style("stop-color",a.toString());
+        var stop2 = linearGradient.append("stop")
+                                    .attr("offset","100%")
+                                    .style("stop-color",b.toString()); 
+
+        //添加一个矩形，并应用线性渐变
+        var colorRect = svg.append("rect")
+                                    .attr({
+                                        x: 20,
+                                        y: 500,
+                                        width: 140,
+                                        height: 10
+                                    })
+                                    .style("fill","url(#"+ linearGradient.attr("id") +")"); 
+
+        //添加一个标题
+                svg.append("text")
+                .text("membership degrees")
+                .attr("x","90")
+                .attr("y","480")
+                .attr("font-size","8px")
+                .attr("font-weight","bold")
+                .attr("text-anchor","middle")
+                .attr("fill","gray");
+                var minValueText = svg.append("text")
+                                        .attr("class","valueText")
+                                        .attr({
+                                            x: 20,
+                                            y: 500,
+                                            dy: "-0.3em",
+                                            fill: "gray"
+                                        })
+                                        .text(0);
+                var maxValueText = svg.append("text")
+                                        .attr("class","valueText")
+                                        .attr({
+                                            x: 160,
+                                            y: 500,
+                                            dy: "-0.3em",
+                                            fill: "gray"
+                                        })
+                                        .text(1); 
+
+        var scale = d3.scale.linear()
+                        .domain([0,1])
+                        .range([0,140]);
+
+        var axis = d3.svg.axis()
+                        .scale(scale)
+                        .orient("bottom")
+                        .ticks(5);
+
+        svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(20,510)")
+                .attr("fill","gray")
+                .call(axis);
+        
+
     })
 
 }

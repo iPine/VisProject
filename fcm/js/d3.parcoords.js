@@ -9,9 +9,9 @@ d3.parcoords = function(config) {
     alphaOnBrushed: 0.0,
     mode: "default",
     rate: 20,
-    width: 600,
-    height: 300,
-    margin: { top: 24, right: 0, bottom: 12, left: 0 },
+    width: 400,
+    height: 150,
+    margin: { top: 40, right: 60, bottom: 12, left: 60 },
     nullValueSeparator: null, // set to "top" or "bottom"
     nullValueSeparatorPadding: { top: 8, right: 0, bottom: 8, left: 0 },
     color: "#069",
@@ -58,8 +58,8 @@ var pc = function(selection) {
   // svg tick and brush layers
   pc.svg = selection
     .append("svg")
-      .attr("width", __.width)
-      .attr("height", __.height)
+      .attr("width", (__.width - 80))
+      .attr("height", (__.height - 40))
       .style("font", "14px sans-serif")
       .style("position", "absolute")
 
@@ -69,8 +69,8 @@ var pc = function(selection) {
   return pc;
 };
 var events = d3.dispatch.apply(this,["render", "resize", "highlight", "brush", "brushend", "brushstart", "axesreorder"].concat(d3.keys(__))),
-    w = function() { return __.width - __.margin.right - __.margin.left; },
-    h = function() { return __.height - __.margin.top - __.margin.bottom; },
+    w = function() { return __.width - __.margin.right - __.margin.left - 80; },
+    h = function() { return __.height - __.margin.top - __.margin.bottom - 40; },
     flags = {
       brushable: false,
       reorderable: false,

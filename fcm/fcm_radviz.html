@@ -18,34 +18,33 @@
 
 	<style type="text/css">
 		body{
-			width:100%;
-			height: 1000px;
+			width:1350px;
+			height: 1005px;
 			margin: 0;
-			border:2px solid #ccc;
 			font-size: 12px;
 			font-family: sans-serif;
+            border: 1px solid #ccc;
 		}
 		#container{
 			/*height: 100%;*/
-            height: 800px;
-			width: 100%;
-			border-top: 1px solid #ccc;
+            height: 600px;
+			width: 1350px;
 			border-bottom: 1px solid #ccc;
 		}
 		#tleft{
 			position: relative;
 			float:left;
-			width:25%;
+			width:320px;
 			height: 100%;
 			border-right: 1px solid #ccc;
 			display:inline-block;
 
 		}
 		#tlt {
-			margin: 30px;
+			margin: 10px;
 			height: 100%;
 			width: 100%;
-			font-size: 17px;
+			font-size: 15px;
 			color: black;
 		}
 		.control-group{
@@ -60,7 +59,7 @@
 		#tmiddle{
 			position: relative;
 			float: left;
-			width: 60%;
+			width: 700px;
 			height: 100%;
 			border-right: 1px solid #ccc;
 			display:inline-block;
@@ -73,7 +72,7 @@
 		#tright{
 			position: relative;
 			float: left;
-			width: 13%;
+			width: 310px;
 			height: 100%;
 			display:inline-block;
 			
@@ -127,7 +126,7 @@
         #tbottom{
             position: relative;
             float: left;
-            width: 100%;
+            width: 1350px;
             height: 200px;
             display:inline-block;
             border-top: 1px solid #ccc;
@@ -135,39 +134,76 @@
         #tdbottom{
             position: relative;
             float: left;
-            width: 100%;
+            width: 1350px;
             height: 200px;
             display:inline-block;
-            border-bottom: 1px solid #ccc;
+        }
+
+        #parcoords0{
+            position: relative;
+            float: left;
+            width: 1021px;
+            height: 200px;
+            display:inline-block;
+        }
+
+        #parcoords1{
+            position: relative;
+            float: left;
+            width: 1021px;
+            height: 200px;
+            display:inline-block;
+            border-top: 1px solid #ccc;       
+        }
+
+        #control-panel{
+            position: relative;
+            float: left;
+            width: 320px;
+            height: 100%;
+            display:inline-block;
+            border-left: 1px solid #ccc; 
         }
 
         #switch{
             position: relative;
             float:left;
-            width:20%;
-            height: 90%;
+            width:319px;
+            height: 200px;
             display:inline-block;
             font-size: 17px;
         }
+
         #switch p{ width: 300px; padding-left: 30px; padding-top:30px;font-size: 15px;color:gray;}
         #example{
-            padding-top: 15px;
             position: relative;
             float:left;
-            width:70%;
-            height: 80%;
-            display:inline-block;
+            width:701px;
+            height: 200px;
+            display:inline-block;   
         }
-        #example1{
-            padding-top: 15px;
+
+        #example1{       
             position: relative;
             float:left;
-            width:70%;
-            height: 80%;
+            width:701px;
+            height: 199px;
             display:inline-block;
         }
+
         .dataset{font-size: 10px;}
        
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+
+        .axis text {
+            font-family: sans-serif;
+            font-size: 11px;
+        }
 
 	</style>
 </head>
@@ -240,31 +276,37 @@
 	</div>
 
     <div id="tbottom">
+        <div id="parcoords0">
+            <div id="switch" >
+                <p>Clustering dimensions:</p>           
+            </div>
 
-        <div id="switch" >
-        <p>Clustering dimensions:</p>           
+            <div id="example" class="parcoords" ></div>
         </div>
-
-        <div id="example" class="parcoords" ></div>
+        
+        <div id="control-panel"></div>
     </div>
 
     <div id="tdbottom">
-
-        <div id="switch" >
-            <div id="menu_bottom">
-                <div class="mode_buttons">
-                    <span><label><input name="switch" type="radio" value="" />original dimensions </label></span>
-                    <div class="dataset" id="ecoli">ecoli</div>
-                    <div class="dataset" id="iris">iris</div>
-                    <div class="dataset" id="wine">wine</div>
-                    <div class="dataset" id="Synthetic">Synthetic</div>
-                </div>
-                
-            </div>                 
+        <div id="parcoords1">
+            <div id="switch" >
+                <div id="menu_bottom">
+                    <div class="mode_buttons">
+                        <span><label><input name="switch" type="radio" value="" />original dimensions </label></span>
+                        <div class="dataset" id="ecoli">ecoli</div>
+                        <div class="dataset" id="iris">iris</div>
+                        <div class="dataset" id="wine">wine</div>
+                        <div class="dataset" id="Synthetic">Synthetic</div>
+                    </div>
+                    
+                </div>                 
            
-        </div>
+            </div>
 
-        <div id="example1" class="parcoords" ></div>
+            <div id="example1" class="parcoords" ></div>
+        </div>
+   
+        <div id="control-panel"></div>
     </div>
 
 </div>
