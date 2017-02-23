@@ -115,7 +115,7 @@ var radvizComponent = function() {
         // });
         
         var root = svg.append("g").attr({
-            transform: "translate(" + [ 250, 200 ] + ")"
+            transform: "translate(" + [ 300, 200 ] + ")"
         });
 
         var panel = root.append("circle").classed("panel", true).attr({

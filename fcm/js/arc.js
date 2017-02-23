@@ -62,7 +62,7 @@ function renderArcs(classes){
         .data(className)
         .enter()
         .append('path')
-        .attr("transform", "translate(350,300)")
+        .attr("transform", "translate(400,300)")
         .attr("class","arcs")
 
     // *** update existing arcs -- redraw them ***
@@ -127,7 +127,7 @@ function renderArcs(classes){
             .data(reducedData)
             .enter()
             .append('path')
-            .attr("transform", "translate(350,300)")
+            .attr("transform", "translate(400,300)")
             .attr("class","hists")
 
         var maxValue = d3.max(reducedData,function(d){return d.value;});
@@ -191,7 +191,7 @@ function renderArcs(classes){
                 .attr("x","90")
                 .attr("y","480")
                 .attr("font-size","8px")
-                .attr("font-weight","bold")
+                // .attr("font-weight","bold")
                 .attr("text-anchor","middle")
                 .attr("fill","gray");
                 var minValueText = svg.append("text")

@@ -8,6 +8,8 @@
     <script type="text/javascript" src="lib/crossfilter.min.js"></script>
     <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="lib/d3.tip.v0.6.3.js"></script>
+    <script src="lib/numeric.min.js"></script>
+    <script src="lib/mds.js"></script>
     <!-- <script src="lib/d3.svg.multibrush.js"></script> -->
     
 
@@ -59,7 +61,7 @@
 		#tmiddle{
 			position: relative;
 			float: left;
-			width: 700px;
+			width: 800px;
 			height: 100%;
 			border-right: 1px solid #ccc;
 			display:inline-block;
@@ -72,7 +74,7 @@
 		#tright{
 			position: relative;
 			float: left;
-			width: 310px;
+			width: 210px;
 			height: 100%;
 			display:inline-block;
 			
@@ -92,7 +94,7 @@
         }
         
         #menu{ width: 300px; margin-top: 100px; }
-        #menu_bottom{margin-top: 50px; margin-left: 30px; width: 200px;}
+        #menu_bottom{margin-top: 40px; margin-left: 10px; width: 200px;}
         p{color: gray;}
         .clusters_buttons,
         .mode_buttons{ background: white; color: gray; cursor: pointer; margin-top: 20px; }
@@ -115,14 +117,14 @@
             background-color: skyblue;
             padding: 3px; 
             margin: 5px 5px 5px 2px;
-            width: 50px;
+            width: 55px;
             height: 20px;
             border: 1px solid black;
             text-align: center;
             float: left;
         }
-        .clusters_buttons p,
-        .mode_buttons p{ display: none; width: 300px; padding-left: 5px;font-size: 15px;}
+        .clusters_buttons p{ display: none; width: 300px; padding-left: 5px;font-size: 15px;}
+        .mode_buttons p{ display: none; width: 200px; padding-left: 5px;font-size: 15px;}
         #tbottom{
             position: relative;
             float: left;
@@ -142,7 +144,7 @@
         #parcoords0{
             position: relative;
             float: left;
-            width: 1021px;
+            width: 1121px;
             height: 200px;
             display:inline-block;
         }
@@ -150,7 +152,7 @@
         #parcoords1{
             position: relative;
             float: left;
-            width: 1021px;
+            width: 1121px;
             height: 200px;
             display:inline-block;
             border-top: 1px solid #ccc;       
@@ -159,7 +161,7 @@
         #control-panel{
             position: relative;
             float: left;
-            width: 320px;
+            width: 220px;
             height: 100%;
             display:inline-block;
             border-left: 1px solid #ccc; 
@@ -168,17 +170,17 @@
         #switch{
             position: relative;
             float:left;
-            width:319px;
+            width:205px;
             height: 200px;
             display:inline-block;
             font-size: 17px;
         }
 
-        #switch p{ width: 300px; padding-left: 30px; padding-top:30px;font-size: 15px;color:gray;}
+        #switch p{ width: 180px; padding-left: 10px; padding-top:30px;font-size: 15px;color:gray;}
         #example{
             position: relative;
             float:left;
-            width:701px;
+            width:600px;
             height: 200px;
             display:inline-block;   
         }
@@ -186,9 +188,18 @@
         #example1{       
             position: relative;
             float:left;
-            width:701px;
+            width:600px;
             height: 199px;
             display:inline-block;
+        }
+
+        #MDS{
+            position: relative;
+            float:left;
+            width:310px;
+            height: 199px;
+            display:inline-block;
+            border-left: 1px solid #ccc;
         }
 
         .dataset{font-size: 10px;}
@@ -282,6 +293,7 @@
             </div>
 
             <div id="example" class="parcoords" ></div>
+            <div id="MDS"></div>
         </div>
         
         <div id="control-panel"></div>
@@ -304,6 +316,8 @@
             </div>
 
             <div id="example1" class="parcoords" ></div>
+
+            <div id="MDS"></div>
         </div>
    
         <div id="control-panel"></div>
@@ -658,6 +672,8 @@
 
         if(err) throw error;
 
+        // console.table(data);
+
         renderArcs(data);
 
         parcoordsRender(data,"#example");     
@@ -666,8 +682,7 @@
    
         // console.log(data);
          radviz.render(data);         
-
-        
+       
           	
    });
    
