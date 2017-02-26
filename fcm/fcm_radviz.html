@@ -8,7 +8,7 @@
     <script type="text/javascript" src="lib/crossfilter.min.js"></script>
     <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="lib/d3.tip.v0.6.3.js"></script>
-    <script src="lib/numeric.min.js"></script>
+    <script src="lib/numeric-1.2.6.min.js"></script>
     <script src="lib/mds.js"></script>
     <!-- <script src="lib/d3.svg.multibrush.js"></script> -->
     
@@ -193,7 +193,7 @@
             display:inline-block;
         }
 
-        #MDS{
+        .MDS{
             position: relative;
             float:left;
             width:310px;
@@ -223,6 +223,7 @@
 <script src="js/radviz.js"></script>
 <script src="js/d3.parcoords.js"></script>
 <script src="js/arc.js"></script>
+<script src="js/mds-scatter.js"></script>
 <!-- <script src="render.js"></script> -->
 
 
@@ -293,7 +294,7 @@
             </div>
 
             <div id="example" class="parcoords" ></div>
-            <div id="MDS"></div>
+            <div id="MDS0" class="MDS"></div>
         </div>
         
         <div id="control-panel"></div>
@@ -317,7 +318,7 @@
 
             <div id="example1" class="parcoords" ></div>
 
-            <div id="MDS"></div>
+            <div id="MDS1" class="MDS"></div>
         </div>
    
         <div id="control-panel"></div>
@@ -328,7 +329,7 @@
 
      var svg = d3.select("#radviz").append("svg")
                 .attr("width",800)
-                .attr("height",800);
+                .attr("height",600);
 
  /*聚类模式的更新切换*/   
     $(".clusters_buttons").click(function(){
@@ -391,6 +392,7 @@
         d3.select("svg").selectAll(".hists").remove();
         d3.select("svg").selectAll(".panel").remove();
         d3.select("svg").selectAll(".dot").remove();
+        d3.select("#MDS0").selectAll("*").remove();
 
         selectedNum(cluster_selection,name);
         
@@ -429,6 +431,7 @@
 
                 radviz.render(csv);
                  // console.log(csv);
+                mdsScatter(data,"#MDS0",cNum); 
             })
     }
 
@@ -470,16 +473,22 @@
     }
 
     function updateMode(name){
-             
+
         d3.select('#example1').selectAll('*').remove();
+        d3.select("#MDS1").selectAll("*").remove();
         selectMode(name);
     }
 
     function selectMode(name){
         var fillName = "data/raw/" + name + "-raw.csv";       
              d3.csv(fillName,function(data){
-
+                    var dim;
                     parcoordsRender(data,"#example1");
+                    if(name == "ecoli") dim = 7;
+                    if(name == "iris") dim = 4;
+                    if(name == "wine") dim = 13;
+                    if(name == "Synthetic") dim = 12;
+                    mdsScatter(data,"#MDS1",dim);
                 }) 
     }
     
@@ -672,8 +681,6 @@
 
         if(err) throw error;
 
-        // console.table(data);
-
         renderArcs(data);
 
         parcoordsRender(data,"#example");     
@@ -681,11 +688,13 @@
     	maxLabel(data);
    
         // console.log(data);
-         radviz.render(data);         
-       
+         radviz.render(data); 
+
+         mdsScatter(data,"#MDS0",cNum);               
           	
    });
-   
+
+
 </script>
 </body>
 </html>

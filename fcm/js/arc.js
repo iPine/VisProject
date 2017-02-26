@@ -6,11 +6,15 @@ function renderArcs(classes){
         .attr("class","d3-tip")
         .offset([-10,0])
         .html(function(d,i){
-            var start = 0.05*i;
+ //之前这里有个bug,当一个区间没有值时，i没有累加，导致空白后面的直方条的区间有问题  
+ //现在直接调用d.key，会正常显示是第几个区间
+
+            var start = 0.05*d.key;
             start = start.toFixed(2);
-            var end = 0.05*(i+1);
+            var end = 0.05*(d.key+1);
             end = end.toFixed(2);
             return "<strong>Interval:</strong> <span style='color:red'>" + '['+ start + ',' + end + ']' + "</span> </br> <strong>Numbers:</strong> <span style='color:red'>" + d.value + "</span>";
+          
         })
 
     svg.call(tip);
@@ -152,7 +156,7 @@ function renderArcs(classes){
             .on("mouseover",tip.show)
             .on("mouseout",tip.hide)
 
-        console.log(reducedData);
+        // console.log(reducedData);
         // console.log(classes);
 
         counter += 1;
@@ -194,6 +198,7 @@ function renderArcs(classes){
                 // .attr("font-weight","bold")
                 .attr("text-anchor","middle")
                 .attr("fill","gray");
+
                 var minValueText = svg.append("text")
                                         .attr("class","valueText")
                                         .attr({
