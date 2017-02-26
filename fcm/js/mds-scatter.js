@@ -92,7 +92,7 @@
                 r: 3,
                 cx: function(d) { return xScale(d[0]);},
                 cy: function(d) { return yScale(d[1]);},
-                fill: "brown"
+                fill: "#3AB2A6"
             })
 
     }

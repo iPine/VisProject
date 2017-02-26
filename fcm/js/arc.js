@@ -13,7 +13,7 @@ function renderArcs(classes){
             start = start.toFixed(2);
             var end = 0.05*(d.key+1);
             end = end.toFixed(2);
-            return "<strong>Interval:</strong> <span style='color:red'>" + '['+ start + ',' + end + ']' + "</span> </br> <strong>Numbers:</strong> <span style='color:red'>" + d.value + "</span>";
+            return "<strong>Interval:</strong> <span style='color:#FCA66F'>" + '['+ start + ',' + end + ']' + "</span> </br> <strong>Numbers:</strong> <span style='color:#FCA66F'>" + d.value + "</span>";
           
         })
 
@@ -139,8 +139,9 @@ function renderArcs(classes){
                             .domain([0,maxValue])
                             .range([0,1]);
 
-        var a = d3.rgb(79,148,205);
-        var b = d3.rgb(139,35,35);
+        var a = d3.rgb(180,144,202);
+        // var b = d3.rgb(94,231,223);
+        var b =d3.rgb(58,178,166);
 
         var computeColor = d3.interpolate(a,b);
 
