@@ -66,7 +66,7 @@ function renderArcs(classes){
         .data(className)
         .enter()
         .append('path')
-        .attr("transform", "translate(400,300)")
+        .attr("transform", "translate(380,230)")
         .attr("class","arcs")
 
     // *** update existing arcs -- redraw them ***
@@ -131,7 +131,7 @@ function renderArcs(classes){
             .data(reducedData)
             .enter()
             .append('path')
-            .attr("transform", "translate(400,300)")
+            .attr("transform", "translate(380,230)")
             .attr("class","hists")
 
         var maxValue = d3.max(reducedData,function(d){return d.value;});
@@ -141,7 +141,7 @@ function renderArcs(classes){
 
         var a = d3.rgb(180,144,202);
         // var b = d3.rgb(94,231,223);
-        var b =d3.rgb(58,178,166);
+        var b =d3.rgb(51,161,131);
 
         var computeColor = d3.interpolate(a,b);
 
@@ -184,7 +184,7 @@ function renderArcs(classes){
         var colorRect = svg.append("rect")
                                     .attr({
                                         x: 20,
-                                        y: 500,
+                                        y: 420,
                                         width: 140,
                                         height: 10
                                     })
@@ -194,7 +194,7 @@ function renderArcs(classes){
                 svg.append("text")
                 .text("membership degrees")
                 .attr("x","90")
-                .attr("y","480")
+                .attr("y","400")
                 .attr("font-size","8px")
                 // .attr("font-weight","bold")
                 .attr("text-anchor","middle")
@@ -204,7 +204,7 @@ function renderArcs(classes){
                                         .attr("class","valueText")
                                         .attr({
                                             x: 20,
-                                            y: 500,
+                                            y: 420,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -213,7 +213,7 @@ function renderArcs(classes){
                                         .attr("class","valueText")
                                         .attr({
                                             x: 160,
-                                            y: 500,
+                                            y: 420,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -230,7 +230,7 @@ function renderArcs(classes){
 
         svg.append("g")
                 .attr("class", "axis")
-                .attr("transform", "translate(20,510)")
+                .attr("transform", "translate(20,430)")
                 .attr("fill","gray")
                 .call(axis);
         

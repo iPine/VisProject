@@ -11,7 +11,7 @@ d3.parcoords = function(config) {
     rate: 20,
     width: 400,
     height: 150,
-    margin: { top: 40, right: 10, bottom: 12, left: 80 },
+    margin: { top: 20, right: 10, bottom: 5, left: 10 },
     nullValueSeparator: null, // set to "top" or "bottom"
     nullValueSeparatorPadding: { top: 8, right: 0, bottom: 8, left: 0 },
     color: "#069",
@@ -59,9 +59,10 @@ var pc = function(selection) {
   pc.svg = selection
     .append("svg")
       .attr("width", (__.width))
-      .attr("height", (__.height - 40))
+      .attr("height", (__.height))
       .style("font", "14px sans-serif")
       .style("position", "absolute")
+
 
     .append("svg:g")
       .attr("transform", "translate(" + __.margin.left + "," + __.margin.top + ")");
@@ -70,7 +71,7 @@ var pc = function(selection) {
 };
 var events = d3.dispatch.apply(this,["render", "resize", "highlight", "brush", "brushend", "brushstart", "axesreorder"].concat(d3.keys(__))),
     w = function() { return __.width - __.margin.right - __.margin.left; },
-    h = function() { return __.height - __.margin.top - __.margin.bottom - 40; },
+    h = function() { return __.height - __.margin.top - __.margin.bottom; },
     flags = {
       brushable: false,
       reorderable: false,

@@ -42,8 +42,8 @@
     function mdsScatter(data,idName,dimension){
 
       var padding = 5,
-          width = 310,
-          height = 199;
+          width = 395,
+          height = 99;
 
       var svg;
 
@@ -59,10 +59,10 @@
        var array = getValue(data);
        var matrixData = disMatrix(array,dimension);
 
-       // console.table(matrixData);
+       // console.log(matrixData);
        var points_data = mds_classic(matrixData);
 
-        console.log(points_data);
+       // console.log(points_data);
 
         var min_x = d3.min(points_data, function(d) {
           return d[0];
@@ -80,7 +80,7 @@
           return d[1];
         });
 
-        var xScale = d3.scale.linear().domain([min_x, max_x]).range([padding, width - 2 * padding]);
+        var xScale = d3.scale.linear().domain([min_x, max_x]).range([padding, width - 4 * padding]);
         var yScale = d3.scale.linear().domain([min_y, max_y]).range([height - padding * 2, padding]);
 
         svg.selectAll('.point')
@@ -92,7 +92,7 @@
                 r: 3,
                 cx: function(d) { return xScale(d[0]);},
                 cy: function(d) { return yScale(d[1]);},
-                fill: "#3AB2A6"
+                fill: "#B490CA"
             })
 
     }

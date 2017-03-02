@@ -21,7 +21,7 @@
 	<style type="text/css">
 		body{
 			width:1350px;
-			height: 1005px;
+			height: 671px;
 			margin: 0;
 			font-size: 12px;
 			font-family: sans-serif;
@@ -29,26 +29,12 @@
 		}
 		#container{
 			/*height: 100%;*/
-            height: 600px;
+            height: 671px;
 			width: 1350px;
-			border-bottom: 1px solid #ccc;
+			/*border-bottom: 1px solid #ccc;*/
+            /*background-color: #F5F5DC;*/
 		}
-		#tleft{
-			position: relative;
-			float:left;
-			width:320px;
-			height: 100%;
-			border-right: 1px solid #ccc;
-			display:inline-block;
-
-		}
-		#tlt {
-			margin: 10px;
-			height: 100%;
-			width: 100%;
-			font-size: 15px;
-			color: black;
-		}
+		
 		.control-group{
 			margin-top: 15px;
 		}
@@ -61,40 +47,58 @@
 		#tmiddle{
 			position: relative;
 			float: left;
-			width: 800px;
-			height: 100%;
+			width: 1000px;
+			/*height: 100%;*/
+            height: 470px;
 			border-right: 1px solid #ccc;
 			display:inline-block;
 		}
 		#radviz{
 			/*margin-left: 5%;*/
-			width: 100%;
+			/*width: 100%;*/
+            position: relative;
+            float: left;
+            width:700px;
 			height: auto;
+            display:inline-block;
+            border-right: 1px solid white;
 		}
+        #inforPanel{
+            position: relative;
+            float: left;
+            width: 299px;
+            height: auto;
+            display:inline-block;
+            
+        }
 		#tright{
 			position: relative;
 			float: left;
-			width: 210px;
-			height: 100%;
+			width: 349px;
+			height: 470px;
 			display:inline-block;
+            /*border-right: 1px solid #ccc;*/
 			
 		}
         #state {
-        	margin-top: 100px;
-            font-weight: bold;
+            margin-top: 80px;
+        	margin-left: 5px;
+            font-family: sans-serif;
             font-size: 1.2em;
+            color: gray;
         }
         .item {
-            border: 2px solid white;
-            background-color: #8ec5fc;
+            margin:2px;
+            border: 1px solid white;
+            background-color: #86F3BB;
             opacity: 0.8;
             overflow: visible;
             padding: 6px 0;
             white-space: nowrap;
         }
         
-        #menu{ width: 300px; margin-top: 100px; }
-        #menu_bottom{margin-top: 40px; margin-left: 10px; width: 200px;}
+        #menu{ width: 300px; margin-top: 40px; margin-left: 20px;}
+        #menu_bottom{margin-top: 40px; margin-left: 20px; width: 200px;}
         p{color: gray;}
         .clusters_buttons,
         .mode_buttons{ background: white; color: gray; cursor: pointer; margin-top: 20px; }
@@ -127,48 +131,70 @@
         }
         .clusters_buttons p{ display: none; width: 300px; padding-left: 5px;font-size: 15px;}
         .mode_buttons p{ display: none; width: 200px; padding-left: 5px;font-size: 15px;}
+
+        #parcoords{
+            position: relative;
+            float: left;
+            width: 1000px;
+            height: 201px;
+            display:inline-block;
+            border-top: 1px solid #ccc;
+            
+
+        }
+
+        #controlPanel{
+            position: relative;
+            float: left;
+            width: 349px;
+            height: 201px;
+            display:inline-block;
+            border-top: 1px solid #ccc;
+        }
+        
+
         #tbottom{
             position: relative;
             float: left;
-            width: 1350px;
-            height: 200px;
+            width: 1000px;
+            height: 100px;
             display:inline-block;
-            border-top: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            
         }
         #tdbottom{
             position: relative;
             float: left;
-            width: 1350px;
-            height: 200px;
+            width: 1000px;
+            height: 100px;
             display:inline-block;
+            border-right: 1px solid #ccc;
+            
         }
 
         #parcoords0{
             position: relative;
             float: left;
-            width: 1121px;
-            height: 200px;
+            width: 999px;
+            height: 99px;
             display:inline-block;
+            /*border-right: 1px solid #ccc;*/
+           
         }
 
         #parcoords1{
             position: relative;
             float: left;
-            width: 1121px;
-            height: 200px;
+            width: 999px;
+            height: 99px;
             display:inline-block;
-            border-top: 1px solid #ccc;       
+            border-top: 1px solid #ccc; 
+            /*border-right: 1px solid #ccc;*/
+
+     
         }
 
-        #control-panel{
-            position: relative;
-            float: left;
-            width: 220px;
-            height: 100%;
-            display:inline-block;
-            border-left: 1px solid #ccc; 
-        }
-
+        
         #switch{
             position: relative;
             float:left;
@@ -178,30 +204,33 @@
             font-size: 17px;
         }
 
-        #switch p{ width: 180px; padding-left: 10px; padding-top:30px;font-size: 15px;color:gray;}
+        #switch p{ width: 180px; padding-left: 10px; padding-top:30px;font-size: 14px;color:gray;}
+
         #example{
             position: relative;
             float:left;
-            width:600px;
-            height: 200px;
-            display:inline-block;   
+            width:599px;
+            height: 99px;
+            display:inline-block;  
+            border-right: 1px solid #ccc; 
         }
 
         #example1{       
             position: relative;
             float:left;
-            width:600px;
-            height: 199px;
+            width:599px;
+            height: 99px;
             display:inline-block;
+            border-right: 1px solid #ccc;
         }
 
         .MDS{
             position: relative;
             float:left;
-            width:310px;
-            height: 199px;
+            width:399px;
+            height: 99px;
             display:inline-block;
-            border-left: 1px solid #ccc;
+    
         }
 
         .dataset{font-size: 10px;}
@@ -209,7 +238,7 @@
         .axis path,
         .axis line {
             fill: none;
-            stroke: black;
+            stroke: gray;
             shape-rendering: crispEdges;
         }
 
@@ -226,15 +255,22 @@
 <script src="js/d3.parcoords.js"></script>
 <script src="js/arc.js"></script>
 <script src="js/mds-scatter.js"></script>
-<!-- <script src="render.js"></script> -->
 
 
 <div id="container">
-	<div id="tleft">
-		<div id="tlt">
-        
-        <div id='menu'>
-        <p>Which one of the datasets do you want to view?</p>
+	
+	<div id="tmiddle">
+		<div id="radviz"></div>
+        <div id="inforPanel">
+            <div id="state"></div>
+            <div id="list"></div>
+        </div>
+	</div>
+	<div id="tright">
+			<!-- <div id="state"></div>
+	        <div id="list"></div> -->
+            <div id='menu'>
+        <!-- <p>Which one of the datasets do you want to view?</p> -->
             <div class="clusters_buttons" id="ecoli">
                 <span><label><input name="Datas" type="radio" value="ecoli" />ecoli </label></span>
                 <p>Select the number of clusters:</p>   
@@ -279,59 +315,55 @@
             </div>
 
         </div>
-		</div>
-	</div>
-	<div id="tmiddle">
-		<div id="radviz"></div>
-	</div>
-	<div id="tright">
-			<div id="state"></div>
-	        <div id="list"></div>
-	</div>
-
-    <div id="tbottom">
-        <div id="parcoords0">
-            <div id="switch" >
-                <p>Clustering dimensions:</p>           
-            </div>
-
-            <div id="example" class="parcoords" ></div>
-            <div id="MDS0" class="MDS"></div>
-        </div>
         
-        <div id="control-panel"></div>
-    </div>
+	</div>
 
-    <div id="tdbottom">
-        <div id="parcoords1">
-            <div id="switch" >
-                <div id="menu_bottom">
-                    <div class="mode_buttons">
-                        <span><label><input name="switch" type="radio" value="" />original dimensions </label></span>
-                        <div class="dataset" id="ecoli">ecoli</div>
-                        <div class="dataset" id="iris">iris</div>
-                        <div class="dataset" id="wine">wine</div>
-                        <div class="dataset" id="Synthetic">Synthetic</div>
-                    </div>
-                    
-                </div>                 
-           
+    <div id="parcoords">
+        <div id="tbottom">
+            <div id="parcoords0">
+                <!-- <div id="switch" >
+                    <p>Clustering dimensions:</p>           
+                </div> -->
+
+                <div id="example" class="parcoords" ></div>
+                <div id="MDS0" class="MDS"></div>
             </div>
-
-            <div id="example1" class="parcoords" ></div>
-
-            <div id="MDS1" class="MDS"></div>
+        
         </div>
+
+        <div id="tdbottom">
+            <div id="parcoords1">
+
+                <div id="example1" class="parcoords" ></div>
+
+                <div id="MDS1" class="MDS"></div>
+            </div>
    
-        <div id="control-panel"></div>
+        </div>
+    </div>
+    
+    <div id="controlPanel">
+         <div id="switch" >
+                    <div id="menu_bottom">
+                        <div class="mode_buttons">
+                            <span><label><input name="switch" type="radio" value="" />original dimensions </label></span>
+                            <div class="dataset" id="ecoli">ecoli</div>
+                            <div class="dataset" id="iris">iris</div>
+                            <div class="dataset" id="wine">wine</div>
+                            <div class="dataset" id="Synthetic">Synthetic</div>
+                        </div>
+                        
+                    </div>                 
+               
+         </div>
     </div>
 
 </div>
 <script type="text/javascript">
 
      var svg = d3.select("#radviz").append("svg")
-                .attr("width",800)
-                .attr("height",600);
+                .attr("width",700)
+                .attr("height",470);
 
  /*聚类模式的更新切换*/   
     $(".clusters_buttons").click(function(){
@@ -543,7 +575,7 @@
 
     	var width_scale = d3.scale.linear()
     						.domain([0,1])
-    						.range([0,200]);
+    						.range([0,250]);
 
         d3.select('#state').selectAll("div").remove();
 
@@ -553,7 +585,9 @@
 
             text.text(function(d){
             		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
-            	});
+            	})
+                .style('font-family', 'sans-serif')
+                .style('fill','gray');
           
             var list = d3.select('#list')
                 .selectAll('div.item')
@@ -567,7 +601,10 @@
             	.style({
                     width: function(d) {
                         return width_scale(datum[d]) + 'px';
-                    }
+                    },
+                    // height: function(d,i){
+                    //     return 200 / cNum;
+                    // }
                 })
                 .text(function(d) {
                     return d + ': ' + datum[d];
@@ -615,7 +652,7 @@
 
         var blue_to_brown = d3.scale.linear()
         .domain([0, 1])
-        .range(["#3AB2A6", "#b490ca"])
+        .range(["#86F3BB", "#b490ca"])
         .interpolate(d3.interpolateLab);
 
         // var color = function(d){return blue_to_brown(d['C1']);};
@@ -691,7 +728,7 @@
    	  
     	maxLabel(data);
    
-        // console.log(data);
+     //    // console.log(data);
          radviz.render(data); 
 
          mdsScatter(data,"#MDS0",cNum);               
@@ -700,5 +737,6 @@
 
 
 </script>
+
 </body>
 </html>
