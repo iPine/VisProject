@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>模糊聚类结果可视化</title>
+	<link rel="stylesheet" href="./plug/bootstrap-3.3.5-dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./css/base.css">
+	<link rel="stylesheet" href="./css/index.css">
+	<script type="text/javascript" src="./plug/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="./plug/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="lib/d3.min.js"></script>
+    <script type="text/javascript" src="lib/crossfilter.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="lib/d3.tip.v0.6.3.js"></script>
+    <script src="lib/numeric-1.2.6.min.js"></script>
+    <script src="lib/mds.js"></script>
+    <script src="lib/d3.svg.multibrush.js"></script>
+    <script src="lib/divgrid.js"></script>
+    
+
+	<link rel="stylesheet" type="text/css" href="css/style_radviz.css">
+    <link rel="stylesheet" type="text/css" href="css/style_tips.css">
+    <link rel="stylesheet" type="text/css" href="css/d3.parcoords_top.css">
+
+    <!-- SlickGrid -->
+<link rel="stylesheet" href="lib/slickgrid/slick.grid.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/jquery-ui-1.8.16.custom.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/examples.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/slick.pager.css" type="text/css"/>
+<script src="lib/slickgrid/jquery-1.7.min.js"></script>
+<script src="lib/slickgrid/jquery.event.drag-2.0.min.js"></script>
+<script src="lib/slickgrid/slick.core.js"></script>
+<script src="lib/slickgrid/slick.grid.js"></script>
+<script src="lib/slickgrid/slick.pager.js"></script>
+<script src="lib/slickgrid/slick.dataview.js"></script>
+<!-- End SlickGrid -->
+
+<!-- <link rel="stylesheet" type="text/css" href="d3.parcoords.css"> -->
+<!-- <link rel="stylesheet" type="text/css" href="css/style_parcoords.css"> -->
+    
+</head>
+<body>
+
+<script src="js/radviz.js"></script>
+<script src="js/d3.parcoords.js"></script>
+<script src="js/arc.js"></script>
+<script src="js/mds-scatter.js"></script>
+
+	<div id="leftContainer">
+		<div class="leftTop box">
+			<div class="navStripe">
+				
+				<span class="glyphicon glyphicon-road"></span>Fuzzy Clustering Data
+			</div>
+			<div id="radviz"></div>
+		
+		</div>      
+	</div>
+
+	<div id="rightContainer">
+		<div class="rightTop box">
+            <div class="navStripe">
+            <span class="glyphicon glyphicon-th"></span>Fuzzy Clustering Data
+            <span class="glyphicon glyphicon-th"></span>Original Data
+            <span class="glyphicon glyphicon-th"></span>Control Panel
+            </div>
+            
+            <div id="col">
+                <div id="pager"></div>
+                <div id="grid"></div>
+            </div>
+            <div id="MDS"></div>        
+        </div>
+
+        <div class="rightBottom box">
+            <div class="navStripe">
+            <span class="glyphicon glyphicon-th"></span>Parallel Coordinates  
+            </div>
+
+            <div id="example" class="parcoords"></div>
+            <div id="inforPanel"></div>
+            
+           <!--  <div id="inforPanel0">
+                <div id="state"></div>
+                <div id="list"></div>
+            </div>
+            
+            <div id="inforPanel1">
+                
+                <div id="example0" class="parcoords" ></div>
+                
+                <div id="pager"></div>
+                <div id="grid"></div>
+            </div> -->
+
+        </div>
+        
+         
+    </div>
+		
+
+	<script>
+		var svg = d3.select("#radviz").append("svg")
+                .attr("width",600)
+                .attr("height",600);
+
+         var cNum = 4;
+	var radvizConfig = {
+
+	 	el: document.querySelector('#radviz'), // container node or selector
+        size: 600, 
+        margin: 150, // margin around the circular panel, to leave some room for the labels
+        dimensions: dimensions(cNum), // data keys to use as dimensions
+        colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
+        opacityAccessor: function(d){return d.classValue;},
+        colorScale: d3.scale.ordinal().range(['orange', '#de3669', '#52b5f3', 'purple', '#6ab82c',
+                '#802A2A', '#58c3e0', ' #385E0F', '#e3701e', 'teal',
+                '#04389A', 'black']),//d3.scale.category10(), // color palette
+        drawLinks: false, 
+        zoomFactor: 1, 
+        dotRadius: 4, 
+        useTooltip: false,
+        useRepulsion: false,
+	 }
+
+	var radviz = radvizComponent()
+    .config(radvizConfig)
+    .on('dotEnter', function(d) {
+    	 // console.log(d);
+            renderList(d);
+        
+        // pcz.highlight([d]);
+        parcoords.highlight([d]);
+              
+    })
+    .on('dotLeave', function(d) {
+                // console.log('dotLeave', d);
+        
+        // pcz.unhighlight([d]);
+        parcoords.unhighlight([d]);
+                 
+    })
+    .on('panelEnter', function() {
+        // mouse entered the circular panel
+    })
+    .on('panelLeave', function() {
+        // mouse left the circular panel
+    });
+
+/*隶属度条型图展示*/
+    var renderList = function(datum) {
+
+    	var height_scale = d3.scale.linear()
+    						.domain([0,1])
+    						.range([0,90]);
+
+        d3.select('#state').selectAll("div").remove();
+
+            var text = d3.select('#state')
+                .append('div')
+                .attr('class',"label");
+
+            text.text(function(d){
+            		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
+            	})
+                .style('font-family', 'sans-serif')
+                .style('font-size','11px')
+                .style('fill','gray');
+          
+            var list = d3.select('#list')
+                .selectAll('div.item')
+                .data(dimensions(cNum));
+
+            list.enter()
+            	.append('div')
+            	.classed('item', true);
+
+            list.transition()
+            	.style({
+                    height: function(d) {
+                        return height_scale(datum[d]) + 'px';
+                    },
+                })
+                .text(function(d) {
+                    return d + ': ' + datum[d];
+                })
+                .style('font-size','8px')
+                .style('font-family', 'sans-serif');
+            list.exit().remove();
+            
+        };
+
+
+    function dimensions(cNum){
+	 	 var dimensions = [];
+		 for(var i=0; i<cNum; i++){
+		 	dimensions.push("C" + (i+1));
+		 }
+		 return dimensions;
+	};
+   
+    function maxLabel(data){
+        for(var i=0; i<data.length; i++){
+
+            var keys = d3.keys(data[i]);
+
+            var max = 0, maxlabel = '';
+
+            keys.forEach(function(key){
+
+                var num = +data[i][key] + 0.0;
+
+                maxlabel = max > num ? maxlabel : key;
+
+                 max = max > num ? max : num;
+
+            })
+
+            data[i].classId = maxlabel;
+            data[i].classValue = max;
+        }
+    }
+
+
+    /*平行坐标及table的绘制*/
+
+     function parcoordsRender(data){
+
+        var blue_to_brown = d3.scale.linear()
+        .domain([0, 1])
+        .range(["#4FC5C7", "#b490ca"])
+        .interpolate(d3.interpolateLab);
+
+        var colorline = function(d){return blue_to_brown(d['C1']);};
+
+         data.forEach(function(d,i) { d.id = d.id || i; });
+
+          parcoords
+            .data(data)
+            .color(colorline)
+            .render()
+            .reorderable()
+            .brushMode("2D-strums");
+
+          // setting up grid
+          var column_keys = d3.keys(data[0]);
+          var columns = column_keys.map(function(key,i) {
+            return {
+              id: key,
+              name: key,
+              field: key,
+              sortable: true
+            }
+          });
+
+          var options = {
+            enableCellNavigation: true,
+            enableColumnReorder: false,
+            multiColumnSort: false
+          };
+
+          var dataView = new Slick.Data.DataView();
+          var grid = new Slick.Grid("#grid", dataView, columns, options);
+          var pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
+
+          // wire up model events to drive the grid
+          dataView.onRowCountChanged.subscribe(function (e, args) {
+            grid.updateRowCount();
+            grid.render();
+          });
+
+          dataView.onRowsChanged.subscribe(function (e, args) {
+            grid.invalidateRows(args.rows);
+            grid.render();
+          });
+
+          // column sorting
+          var sortcol = column_keys[0];
+          var sortdir = 1;
+
+          function comparer(a, b) {
+            var x = a[sortcol], y = b[sortcol];
+            return (x == y ? 0 : (x > y ? 1 : -1));
+          }
+          
+          // click header to sort grid column
+          grid.onSort.subscribe(function (e, args) {
+            sortdir = args.sortAsc ? 1 : -1;
+            sortcol = args.sortCol.field;
+
+            if ($.browser.msie && $.browser.version <= 8) {
+              dataView.fastSort(sortcol, args.sortAsc);
+            } else {
+              dataView.sort(comparer, args.sortAsc);
+            }
+          });
+
+          // highlight row in chart
+          grid.onMouseEnter.subscribe(function(e,args) {
+            var i = grid.getCellFromEvent(e).row;
+            var d = parcoords.brushed() || data;
+            parcoords.highlight([d[i]]);
+          });
+          grid.onMouseLeave.subscribe(function(e,args) {
+            parcoords.unhighlight();
+          });
+
+          // fill grid with data
+          gridUpdate(data);
+
+          // update grid on brush
+          parcoords.on("brush", function(d) {
+            gridUpdate(d);
+          });
+
+          function gridUpdate(data) {
+            dataView.beginUpdate();
+            dataView.setItems(data);
+            dataView.endUpdate();
+          };
+    }
+
+
+    var parcoords = d3.parcoords()("#example")
+    .alpha(0.4)
+    .mode("queue") // progressive rendering
+    .height(d3.max([160, 200]))
+    .margin({
+      top: 56,
+      left: 0,
+      right: 0,
+      bottom: 5
+    });
+
+    d3.csv('data/wine_7.csv', function(err,data) {
+
+        if(err) throw error;
+        renderArcs(data);  	  
+    	maxLabel(data);
+        radviz.render(data); 
+        mdsScatter(data,"#MDS",cNum);                    
+          	
+   });
+
+    d3.csv("data/wine_7.csv",function(err,data){
+        parcoordsRender(data);
+    })
+
+	</script>
+</body>
+</html>
