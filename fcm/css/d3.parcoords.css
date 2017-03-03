@@ -1,5 +1,3 @@
-
-/*平行坐标样式*/
 .parcoords > canvas {
   font: 14px sans-serif;
   position: absolute;
@@ -30,5 +28,5 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  /*background-color: white;*/
+  background-color: white;
 }

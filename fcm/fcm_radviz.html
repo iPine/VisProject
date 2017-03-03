@@ -10,7 +10,7 @@
     <script type="text/javascript" src="lib/d3.tip.v0.6.3.js"></script>
     <script src="lib/numeric-1.2.6.min.js"></script>
     <script src="lib/mds.js"></script>
-    <!-- <script src="lib/d3.svg.multibrush.js"></script> -->
+    <script src="lib/d3.svg.multibrush.js"></script>
     
 
 
@@ -23,7 +23,7 @@
 			width:1350px;
 			height: 671px;
 			margin: 0;
-			font-size: 12px;
+			font-size: 11px;
 			font-family: sans-serif;
             border: 1px solid #ccc;
 		}
@@ -90,16 +90,16 @@
         .item {
             margin:2px;
             border: 1px solid white;
-            background-color: #86F3BB;
-            opacity: 0.8;
+            background-color: #4FC5C7;
+            opacity: 0.6;
             overflow: visible;
-            padding: 6px 0;
+            padding: 3px 0;
             white-space: nowrap;
         }
         
         #menu{ width: 300px; margin-top: 40px; margin-left: 20px;}
         #menu_bottom{margin-top: 40px; margin-left: 20px; width: 200px;}
-        p{color: gray;}
+        p{color: gray; font-size: 14px;}
         .clusters_buttons,
         .mode_buttons{ background: white; color: gray; cursor: pointer; margin-top: 20px; }
 
@@ -115,6 +115,7 @@
             border: 0px solid #8ec5fc;
             text-align: center;
             border-radius: 5px;
+
             /*float: left;*/
         }
         .mode_buttons div{
@@ -128,9 +129,10 @@
             text-align: center;
             float: left;
             border-radius: 5px;
+           
         }
-        .clusters_buttons p{ display: none; width: 300px; padding-left: 5px;font-size: 15px;}
-        .mode_buttons p{ display: none; width: 200px; padding-left: 5px;font-size: 15px;}
+        .clusters_buttons p{ display: none; width: 300px; padding-left: 5px;font-size: 11px;}
+        .mode_buttons p{ display: none; width: 200px; padding-left: 5px;font-size: 11px;}
 
         #parcoords{
             position: relative;
@@ -201,7 +203,7 @@
             width:205px;
             height: 200px;
             display:inline-block;
-            font-size: 17px;
+            font-size: 14px;
         }
 
         #switch p{ width: 180px; padding-left: 10px; padding-top:30px;font-size: 14px;color:gray;}
@@ -587,6 +589,7 @@
             		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
             	})
                 .style('font-family', 'sans-serif')
+                .style('font-size','11px')
                 .style('fill','gray');
           
             var list = d3.select('#list')
@@ -652,7 +655,7 @@
 
         var blue_to_brown = d3.scale.linear()
         .domain([0, 1])
-        .range(["#86F3BB", "#b490ca"])
+        .range(["#4FC5C7", "#b490ca"])
         .interpolate(d3.interpolateLab);
 
         // var color = function(d){return blue_to_brown(d['C1']);};
@@ -662,7 +665,7 @@
             color = function(d){return blue_to_brown(d['C1']);};
         pcz = d3.parcoords()(containerId)
                 .color(color)
-                .alpha(0.6);  
+                .alpha(0.8);  
 
         pcz.data(data)
                 .hideAxis(['name'])
@@ -676,7 +679,7 @@
         var pc;
         pc = d3.parcoords()(containerId)
                 .color(color)
-                .alpha(0.6);  
+                .alpha(0.8);  
 
         pc.data(data)
                 .hideAxis(['name'])
