@@ -5,3 +5,5 @@
 ### radviz.html [演示](http://ipine.coding.me/Text/text-12-18/test-12-18.html)
 
 #### fcm_radviz_2.0.html [演示](http://ipine.coding.me/Text/fcm/fcm_radviz.html)
+
+### index-base.html [演示](http://ipine.coding.me/Text/fuzzy-clustering/index-base.html)
