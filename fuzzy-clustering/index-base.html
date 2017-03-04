@@ -59,24 +59,25 @@
               <li>
                 <a class="trigger right-caret" id="wine">Wine</a>
                 <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
-                  <li><a href="#" id="4">4</a></li>
-                  <li><a href="#" id="5">5</a></li>
-                  <li><a href="#" id="6">6</a></li>
+                  <li><a href="#" id="4" class="number">4</a></li>
+                  <li><a href="#" id="5" class="number">5</a></li>
+                  <li><a href="#" id="6" class="number">6</a></li>
                 </ul>
               </li>
               <li>
                 <a class="trigger right-caret" id="iris">Iris</a>
                 <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
-                  <li><a href="#" id="2">2</a></li>
-                  <li><a href="#" id="3">3</a></li>
-                  <li><a href="#" id="4">4</a></li>
+                  <li><a href="#" id="2" class="number">2</a></li>
+                  <li><a href="#" id="3" class="number">3</a></li>
+                  <li><a href="#" id="4" class="number">4</a></li>
                 </ul>
               </li>
-              <li><a class="trigger right-caret">Ecoli</a>
+              <li>
+                <a class="trigger right-caret" id="ecoli">Ecoli</a>
                 <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
-                  <li><a href="#" id="4">4</a></li>
-                  <li><a href="#" id="5">5</a></li>
-                  <li><a href="#" id="6">6</a></li>
+                  <li><a href="#" id="4" class="number">4</a></li>
+                  <li><a href="#" id="5" class="number">5</a></li>
+                  <li><a href="#" id="6" class="number">6</a></li>
                 </ul>
               </li>
             </ul>
@@ -106,7 +107,6 @@
                            <li style="padding: 0;"><a href="#" class="dataset" id="wine">Wine</a></li>
                            <li style="padding: 0;"><a href="#" class="dataset" id="iris">Iris</a></li>
                            <li style="padding: 0;"><a href="#" class="dataset" id="ecoli">Ecoli</a></li>
-                           <!-- <li><a href="#">This is a longer item that will not fit properly</a></li> -->
                          </ul>
                        </div>
                      </div>
@@ -128,7 +128,9 @@
             </div>
 
             <div id="example" class="parcoords"></div>
-            <div id="inforPanel"></div>
+            <div id="inforPanel">
+              <div id="list"></div>
+            </div>
 
         </div>      
     </div>
@@ -153,7 +155,7 @@
     var dataName = $(this).attr('id'); 
 
     updateData(dataName);
-   })
+   });
 
    function updateData(name){
     d3.select('#pager').selectAll('*').remove();
@@ -193,14 +195,63 @@
   });
 
 
+   $(".number").click(function(){
+    var dataName = $(this).parent().parent().siblings('a').attr("id");
+    var clusterNum = $(this).attr("id");
+        updateCluster(clusterNum,dataName);
+     
+   })
+
+    function updateCluster(k,name){
+      d3.select('#pager').selectAll('*').remove();
+      d3.select('#grid').selectAll('*').remove();
+      d3.select('#MDS').selectAll('*').remove();
+      d3.select("#example").selectAll('*').remove();
+
+      d3.select("svg").selectAll(".arcs").remove();
+      d3.select("svg").selectAll(".hists").remove();
+      d3.select("svg").selectAll(".panel").remove();
+      d3.select("svg").selectAll(".dot").remove();
+
+      cNum = k;
+      var fillName = "data/" + name + "_" + k + ".csv";
+
+             d3.csv(fillName,function(data){
+                    parcoordsRender(data);
+                }); 
+             d3.csv(fillName,function(data){
+
+                renderArcs(data);
+                maxLabel(data);
+
+                radvizConfig.dimensions = dimensions(cNum);
+                var radviz = radvizComponent()
+                .config(radvizConfig)
+                .on('dotEnter', function(d) {
+                    // renderList(d);
+           
+                  parcoords.highlight([d]);
+                    
+                })
+                .on('dotLeave',function(d){
+                    parcoords.unhighlight([d]);
+                });
+
+                radviz.render(data);
+                mdsScatter(data,"#MDS",cNum); 
+
+                }); 
+    }
+
+
 
 
 		var svg = d3.select("#radviz").append("svg")
                 .attr("width",600)
                 .attr("height",600);
 
-         var cNum = 4;
-	var radvizConfig = {
+         var cNum = 7;
+	 var radvizConfig = {
 
 	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
@@ -221,17 +272,16 @@
 	var radviz = radvizComponent()
     .config(radvizConfig)
     .on('dotEnter', function(d) {
-    	 // console.log(d);
-            renderList(d);
+    	 console.log(d);
+            // renderList(d);
         
-        // pcz.highlight([d]);
+       
         parcoords.highlight([d]);
               
     })
     .on('dotLeave', function(d) {
                 // console.log('dotLeave', d);
         
-        // pcz.unhighlight([d]);
         parcoords.unhighlight([d]);
                  
     })
@@ -243,47 +293,48 @@
     });
 
 /*隶属度条型图展示*/
-    var renderList = function(datum) {
+    // var renderList = function(datum) {
 
-    	var height_scale = d3.scale.linear()
-    						.domain([0,1])
-    						.range([0,90]);
+    //   var width_scale = d3.scale.linear()
+    //             .domain([0,1])
+    //             .range([0,100]);
 
-        d3.select('#state').selectAll("div").remove();
+    //     d3.select('#state').selectAll("div").remove();
 
-            var text = d3.select('#state')
-                .append('div')
-                .attr('class',"label");
+    //         var text = d3.select('#state')
+    //             .append('div')
+    //             .attr('class',"label");
 
-            text.text(function(d){
-            		return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
-            	})
-                .style('font-family', 'sans-serif')
-                .style('font-size','11px')
-                .style('fill','gray');
+    //         text.text(function(d){
+    //             return "dot " + (datum.index + 1) + " belongs to " + "cluster " + datum.classId;
+    //           })
+    //             .style('font-family', 'sans-serif')
+    //             .style('font-size','11px')
+    //             .style('fill','gray');
           
-            var list = d3.select('#list')
-                .selectAll('div.item')
-                .data(dimensions(cNum));
+    //         var list = d3.select('#list')
+    //             .selectAll('div.item')
+    //             .data(dimensions(cNum));
 
-            list.enter()
-            	.append('div')
-            	.classed('item', true);
+    //         list.enter()
+    //           .append('div')
+    //           .classed('item', true);
 
-            list.transition()
-            	.style({
-                    height: function(d) {
-                        return height_scale(datum[d]) + 'px';
-                    },
-                })
-                .text(function(d) {
-                    return d + ': ' + datum[d];
-                })
-                .style('font-size','8px')
-                .style('font-family', 'sans-serif');
-            list.exit().remove();
+    //         list.transition()
+    //           .style({
+    //                 width: function(d) {
+    //                     return width_scale(datum[d]) + 'px';
+    //                 },
+    //                 // height: function(d,i){
+    //                 //     return 200 / cNum;
+    //                 // }
+    //             })
+    //             .text(function(d) {
+    //                 return d + ': ' + datum[d];
+    //             });
+    //         list.exit().remove();
             
-        };
+    //     };
 
 
     function dimensions(cNum){

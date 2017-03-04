@@ -7,7 +7,6 @@
             keys.forEach(function(key){
 
                 temp.push(+data[i][key]);
-                // console.log(num);
             })
             num.push(temp);       
         } 
@@ -56,6 +55,7 @@
        
 
        var array = getValue(data);
+       // console.log(array);
        var matrixData = disMatrix(array,dimension);
 
        // console.log(matrixData);
