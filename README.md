@@ -6,4 +6,4 @@
 
 #### fcm_radviz_2.0.html [演示](http://ipine.coding.me/Text/fcm/fcm_radviz.html)
 
-### index-base.html [演示](http://ipine.coding.me/Text/fuzzy-clustering/index-base.html)
+### index-base_0.2.html [演示](http://ipine.coding.me/Text/fuzzy-clustering/index-base.html)
