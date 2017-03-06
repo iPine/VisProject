@@ -49,137 +49,116 @@
 	<div id="leftContainer">
 		<div class="leftTop box">
 			<div class="navStripe">
-				<div class="col-sm-4">
-          <span class="glyphicon glyphicon-stats"></span>Fuzzy Clustering Data    
+				<div class="col-sm-2">
+          <span class="glyphicon glyphicon-stats"></span>   
         </div>
 				
-        <div class="dropdown" style="position:relative;">
-            <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="padding: 0;height: 20px;width: 80px;font-size: 10px;background-color: #D9E3E8;color:#333; border-color: #D9E3E8;padding: 0;vertical-align: top;">Selection <span class="caret"></span></a>
-            <ul class="dropdown-menu" style="font-size: 10px;padding: 0;">
-              <li>
-                <a class="trigger right-caret" id="wine">Wine</a>
-                <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
-                  <li><a href="#" id="4" class="number">4</a></li>
-                  <li><a href="#" id="5" class="number">5</a></li>
-                  <li><a href="#" id="6" class="number">6</a></li>
-                </ul>
-              </li>
-              <li>
-                <a class="trigger right-caret" id="iris">Iris</a>
-                <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
-                  <li><a href="#" id="2" class="number">2</a></li>
-                  <li><a href="#" id="3" class="number">3</a></li>
-                  <li><a href="#" id="4" class="number">4</a></li>
-                </ul>
-              </li>
-              <li>
-                <a class="trigger right-caret" id="ecoli">Ecoli</a>
-                <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
-                  <li><a href="#" id="4" class="number">4</a></li>
-                  <li><a href="#" id="5" class="number">5</a></li>
-                  <li><a href="#" id="6" class="number">6</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
       </div>
 
 			<div id="radviz"></div>
-		
 		</div>      
 	</div>
 
-	<div id="rightContainer">
-		<div class="rightTop box">
-            <div class="navStripe">
+	<div id="rightContainer" class="box">
 
-            <div class="col-sm-3">
-              <span class="glyphicon glyphicon-menu-hamburger"></span>Original Data
-            </div>
-            
-              <div class="col-sm-1">
-                    <div class="panel-body" style="margin: 0; padding: 0;">
-                       <div class="btn-group" style="padding: 0;">
-                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 20px;width: 80px;    background-color: #D9E3E8; padding: 0;">
-                           <span data-bind="label" style="margin-left: -1px;font-size: 10px;vertical-align:top;">Selection</span>&nbsp;<span class="caret"></span>
-                         </button>
-                         <ul class="dropdown-menu" role="menu" style="font-size: 8px;min-width: 80px;padding: 0px 0;">
-                           <li style="padding: 0;"><a href="#" class="dataset" id="wine">Wine</a></li>
-                           <li style="padding: 0;"><a href="#" class="dataset" id="iris">Iris</a></li>
-                           <li style="padding: 0;"><a href="#" class="dataset" id="ecoli">Ecoli</a></li>
-                         </ul>
-                       </div>
-                     </div>
-              </div>
-            </div>
-            
-            <div id="col">
-                <div id="pager"></div>
-                <div id="grid"></div>
-            </div>
-            <div id="MDS"></div>        
-        </div>
+              <ul id="interactionTab" class="navStripe nav nav-tabs">
+                <li class="avtive active">
+                  <a href="#fc" data-toggle="tab" id="fc">Fuzzy Clustering Data</a>
+                </li>
+                <li>
+                  <a href="#od" data-toggle="tab" id="od">Original Data</a>
+                </li>
+                <li>
+                  <!-- <a href="#blank" data-toggle="tab">tab-btn</a> -->
+                  
+                  <div class="dropdown" style="position:relative;">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="padding: 0;height: 20px;width: 80px;font-size: 14px;background-color: #F9C397;color:gray; border-color: #D9E3E8;padding: 0;vertical-align: middle;border-color: #F9C397;"><span id="da">Wine</span><span class="caret" style="margin-left: 2px;"></span></a>
+                    <ul class="dropdown-menu" style="font-size: 10px;padding: 0;min-width: 80px;">
+                      <li>
+                        <a class="trigger right-caret" id="wine">Wine</a>
+                        <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
+                          <li><a href="#" id="4" class="number">4</a></li>
+                          <li><a href="#" id="5" class="number">5</a></li>
+                          <li><a href="#" id="6" class="number">6</a></li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a class="trigger right-caret" id="iris">Iris</a>
+                        <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
+                          <li><a href="#" id="2" class="number">2</a></li>
+                          <li><a href="#" id="3" class="number">3</a></li>
+                          <li><a href="#" id="4" class="number">4</a></li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a class="trigger right-caret" id="ecoli">Ecoli</a>
+                        <ul class="dropdown-menu sub-menu" style="font-size: 10px;padding: 0;">
+                          <li><a href="#" id="4" class="number">4</a></li>
+                          <li><a href="#" id="5" class="number">5</a></li>
+                          <li><a href="#" id="6" class="number">6</a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
 
-        <div class="rightBottom box">
-            <div class="navStripe">
-               <div class="col-sm-4">
-              <span class="glyphicon glyphicon-th"></span>Parallel Coordinates  
-              </div>
-            </div>
+              <div id="tabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="fc"> </div>
+                <div class="tab-pane fade" id="od"></div>
+                
+                <div id="col">
+                        <div id="pager"></div>
+                        <div id="grid"></div>
+                </div>
+                <div id="MDS"></div>   
+                <div id="example" class="parcoords"></div>
 
-            <div id="example" class="parcoords"></div>
-            <div id="inforPanel">
-              <div id="list"></div>
             </div>
-
-        </div>      
     </div>
 	<script>
 
-  //originTag切换
-   $( document.body ).on( 'click', '.dropdown-menu li', function( event ) {
+//加载后：Fuzzydata与Origindata之间的切换
 
-      var $target = $( event.currentTarget );
+  // $('#od').click(function(){   
+   
+  //     d3.select('#pager').selectAll('*').remove();
+  //     d3.select('#grid').selectAll('*').remove();
+  //     d3.select('#MDS').selectAll('*').remove();
+  //     d3.select("#example").selectAll('*').remove();
 
-      $target.closest( '.btn-group' )
-         .find( '[data-bind="label"]' ).text( $target.text() )
-            .end()
-         .children( '.dropdown-toggle' ).dropdown( 'toggle' );
+  //     d3.csv("data/raw/wine-raw.csv",function(data){
+  //     parcoordsRender(data);
+  //     mdsScatter(data,"#MDS",13);
+  //     })  
+  //  });
+  // $('#fc').click(function(){
+  
+  //     d3.select('#pager').selectAll('*').remove();
+  //     d3.select('#grid').selectAll('*').remove();
+  //     d3.select('#MDS').selectAll('*').remove();
+  //     d3.select("#example").selectAll('*').remove();
+  //     d3.csv("data/wine_7.csv",function(data){
+  //     parcoordsRender(data);
+  //     mdsScatter(data,"#MDS",7);
+  //     })
+  //  });
 
-      return false;
 
-   });
+ 
 
-   $('.dataset').click(function(){
-
-    var dataName = $(this).attr('id'); 
-
-    updateData(dataName);
-   });
-
-   function updateData(name){
-    d3.select('#pager').selectAll('*').remove();
-    d3.select('#grid').selectAll('*').remove();
-    d3.select('#MDS').selectAll('*').remove();
-    d3.select("#example").selectAll('*').remove();
-    var fillName = "data/raw/" + name + "-raw.csv";       
-             d3.csv(fillName,function(data){
-                    var dim;
-                    parcoordsRender(data);
-                    if(name == "ecoli") dim = 7;
-                    if(name == "iris") dim = 4;
-                    if(name == "wine") dim = 13;
-                    // if(name == "Synthetic") dim = 12;
-                    mdsScatter(data,"#MDS",dim);
-                }); 
-   }
-
-   //clusterTag切换
+//选择数据集的button设置
    $(function(){
       $(".dropdown-menu > li > a.trigger").on("click",function(e){
 
+        // var $target = $(e.currentTarget);
+
+        $('#da').text($(this).text());
+
         var current=$(this).next();
         var grandparent=$(this).parent().parent();
+
+
         if($(this).hasClass('left-caret')||$(this).hasClass('right-caret'))
           $(this).toggleClass('right-caret left-caret');
         grandparent.find('.left-caret').not(this).toggleClass('right-caret left-caret');
@@ -195,12 +174,87 @@
   });
 
 
+//更新数据集后，OriginData和ClusteringData之间的切换
+  var dataName;
+  var clusterNum;
+
+  $('.navStripe > li:first-child').select(function(){
+    $('.navStripe > li:first-child').addClass('active');
+    $('.navStripe > li:eq(1)').removeClass('active');
+  });
+
    $(".number").click(function(){
-    var dataName = $(this).parent().parent().siblings('a').attr("id");
-    var clusterNum = $(this).attr("id");
-        updateCluster(clusterNum,dataName);
-     
-   })
+    dataName = $(this).parent().parent().siblings('a').attr("id");
+    clusterNum = $(this).attr("id");
+    updateCluster(clusterNum,dataName);  
+
+    $('.navStripe > li:first-child').trigger('select');
+       
+  })
+
+
+  $('#od').click(function(){
+    // updateData(dataName);
+    if($('#da').text() == "Wine"){
+       updateData("wine");
+    }
+    else{
+      updateData(dataName);
+    }
+  }); 
+
+
+   $('#fc').click(function(){
+    // updateCluster(clusterNum,dataName);
+    if(clusterNum) {
+
+      cNum = clusterNum;
+      d3.select('#pager').selectAll('*').remove();
+      d3.select('#grid').selectAll('*').remove();
+      d3.select('#MDS').selectAll('*').remove();
+      d3.select("#example").selectAll('*').remove();
+      var fillName = "data/" + dataName + "_" + cNum + ".csv";
+
+             d3.csv(fillName,function(data){
+                    parcoordsRender(data);
+                    mdsScatter(data,"#MDS",cNum);
+                }); 
+      
+      }
+    else{
+
+      d3.select('#pager').selectAll('*').remove();
+        d3.select('#grid').selectAll('*').remove();
+        d3.select('#MDS').selectAll('*').remove();
+        d3.select("#example").selectAll('*').remove();
+        d3.csv("data/wine_6.csv",function(data){
+          parcoordsRender(data);
+          mdsScatter(data,"#MDS",6);
+        });
+       }
+ });
+   
+  
+
+
+     function updateData(name){
+      d3.select('#pager').selectAll('*').remove();
+      d3.select('#grid').selectAll('*').remove();
+      d3.select('#MDS').selectAll('*').remove();
+      d3.select("#example").selectAll('*').remove();
+
+      var fillName = "data/raw/" + name + "-raw.csv";       
+               d3.csv(fillName,function(data){
+                      var dim;
+                      parcoordsRender(data);
+                      if(name == "ecoli") dim = 7;
+                      if(name == "iris") dim = 4;
+                      if(name == "wine") dim = 13;
+                      // if(name == "Synthetic") dim = 12;
+                      mdsScatter(data,"#MDS",dim);
+                  }); 
+     }
+
 
     function updateCluster(k,name){
       d3.select('#pager').selectAll('*').remove();
@@ -250,7 +304,7 @@
                 .attr("width",600)
                 .attr("height",600);
 
-         var cNum = 7;
+         var cNum = 6;
 	 var radvizConfig = {
 
 	 	el: document.querySelector('#radviz'), // container node or selector
@@ -272,7 +326,7 @@
 	var radviz = radvizComponent()
     .config(radvizConfig)
     .on('dotEnter', function(d) {
-    	 console.log(d);
+    	 // console.log(d);
             // renderList(d);
         
        
@@ -385,7 +439,7 @@
           parcoords = d3.parcoords()("#example")
                           // .alpha(0.4)
                           .mode("queue") // progressive rendering
-                          .height(d3.max([160, 150]))
+                          .height(d3.max([160, 250]))
                           .margin({
                             top: 56,
                             left: 0,
@@ -480,17 +534,17 @@
     }
 
 
-    d3.csv('data/wine_7.csv', function(err,data) {
+    d3.csv('data/wine_6.csv', function(err,data) {
         if(err) throw error;
-
         renderArcs(data);  	  
     	  maxLabel(data);
         radviz.render(data); 
-        mdsScatter(data,"#MDS",cNum);                    
+                            
           	
    });
 
-    d3.csv("data/wine_7.csv",function(err,data){
+    d3.csv("data/wine_6.csv",function(err,data){
+        mdsScatter(data,"#MDS",cNum);
         parcoordsRender(data);
     })
 

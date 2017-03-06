@@ -20,7 +20,7 @@ body {
 .navStripe {
 	/*background-color: #F5F5DC;*/
 	background-color: #F9C397;
-	height:27px;
+	height:28px;
 	color: gray;
 }
 
@@ -56,27 +56,27 @@ body {
 #rightContainer {
 	float: right;
 	width: 48%;
-	min-height: 650px;
+	min-height: 642px;
 }
 
 #rightContainer .navStripe {
-	padding: 5px 8px;
+	padding: 0px 0px;
 	font-size: 12px;
 	font-family: sans-serif;
 }
-.rightTop {
+/*.rightTop {
 	width: 98%;
-	min-height: 315px;
+	min-height: 642px;
 	margin-bottom: 15px;
-}
-.rightBottom {
+}*/
+/*.rightBottom {
 	width: 98%;
 	min-height: 312px;
 	overflow: hidden;
-}
+}*/
 .leftTop {
 	width: 98%;
-	min-height: 642px;
+	min-height: 652px;
 	margin-bottom: 3px;
 }
 
@@ -90,10 +90,10 @@ body {
 
 .navStripe > li {
 	width: 33%;
-	font-size: 16px;
+	font-size: 15px;
 	text-align: center;
-}
 
+}
 .navStripe > li:first-child {
 	margin-left: 0.5%;
 }
@@ -105,7 +105,8 @@ body {
 .navStripe>li>a {
 	color: gray;
 	font-family: sans-serif;
-	padding: 6px 15px;
+	padding: 0px 15px;
+	height: 28px;
 }
 
 .navStripe > .active > a, .navStripe > li > a:hover, .navStripe > li > a:active {
@@ -122,7 +123,7 @@ body {
 }
 
 #tabContent {
-	padding: 20px 10px;
+	padding: 5px 5px;
 }
 
 .form-horizontal .form-group {
@@ -131,7 +132,7 @@ body {
 }
 
 #tabContent label {
-	font-size: 16px;
+	font-size: 10px;
 }
 
 #tabContent label .glyphicon {
@@ -209,16 +210,17 @@ input[type="number"]{
 			position: relative;
             float:left;
             width:600px;
-            height: 160px;
+            height: 300px;
             display:inline-block;
+            margin-top: 40px;
 }
-#inforPanel{
+/*#inforPanel{
 	position: relative;
             float:left;
             width:600px;
             height: 120px;
             display:inline-block;
-}
+}*/
 
 #state {
            

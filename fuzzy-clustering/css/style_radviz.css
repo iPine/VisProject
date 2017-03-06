@@ -19,7 +19,7 @@ body {
 .label-node {
     fill: silver;
 }
-.active {
+.dot.active {
     stroke: black;
 }
 .label {
