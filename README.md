@@ -7,3 +7,5 @@
 #### fcm_radviz_2.0.html [演示](http://ipine.coding.me/Text/fcm/fcm_radviz.html)
 
 ### index-base_0.4.html [演示](http://ipine.coding.me/Text/fuzzy-clustering/index-base.html)
+
+### index_0.1.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-serum10-sort/index.html)
