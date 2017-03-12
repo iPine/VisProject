@@ -150,21 +150,22 @@
       d3.select('#MDS').selectAll('*').remove();
       d3.select("#example").selectAll('*').remove();
      
-      var data;
-      if(clusterNum == 7){data = data_7; }
-      if(clusterNum == 8){data = data_8; }
+      var filmName = "data/serum_c" + clusterNum + "_result.csv";
+      d3.csv(filmName,function(data){
+        mdsScatter(data,"#MDS",cNum);
+        parcoordsRender(data); 
+      });
 
-      mdsScatter(data,"#MDS",cNum);
-      parcoordsRender(data);     
+          
     }
     else{
       d3.select('#pager').selectAll('*').remove();
         d3.select('#grid').selectAll('*').remove();
         d3.select('#MDS').selectAll('*').remove();
         d3.select("#example").selectAll('*').remove();
-        d3.csv("data/serum_c10_result.csv",function(data){
+        d3.csv("data/serum_c11_result.csv",function(data){
 
-          mdsScatter(data,"#MDS",10);
+          mdsScatter(data,"#MDS",11);
           parcoordsRender(data);     
       });
     }
@@ -200,31 +201,48 @@
 
       cNum = k;
 
-      var data;
-      var data1;
-      if(k == 7){data = data_7; data1 = data_7;}
-      if(k == 8){data = data_8; data1 = data_8;}
+      var order = [];
+         var flag = 1;
+         if(flag){
+          if(cNum == 10){order = [1, 10, 9, 8, 7, 6, 5, 2, 3, 4];}
+          if(cNum == 7){order = [1, 5, 7, 4, 2, 6, 3];}
+          if(cNum == 8){order = [1, 4, 3, 7, 8, 5, 6, 2];}
+          if(cNum == 9){order = [1, 6, 8, 5, 7, 4, 9, 3, 2];}
+          if(cNum == 11){order = [1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3];}
+         }
+         else{
+          if(cNum == 10){order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];}
+          if(cNum == 7){order = [1, 2, 3, 4, 5, 6, 7];}
+          if(cNum == 8){order = [1, 2, 3, 4, 5, 6, 7, 8];}
+          if(cNum == 9){order = [1, 2, 3, 4, 5, 6, 7, 8, 9];}
+          if(cNum == 11){order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];}
+         }
+
+      var filmName = "data/serum_c" + k + "_result.csv";
+
+      d3.csv(filmName,function(data){
+        mdsScatter(data,"#MDS",k);
+        parcoordsRender(data); 
+      })
      
-      renderArcs(data);
-      radvizConfig.dimensions = dimensions(cNum);
-      maxLabel(data);
-                var radviz = radvizComponent()
-                .config(radvizConfig)
-                .on('dotEnter', function(d) {
-                    // renderList(d);
-           
-                  parcoords.highlight([d]);
-                    
-                })
-                .on('dotLeave',function(d){
-                    parcoords.unhighlight([d]);
-                });
+      d3.csv(filmName,function(data){
+        renderArcs(data);
+        maxLabel(data);
+        radvizConfig.dimensions = dimensions(k,order);
+                  var radviz = radvizComponent()
+                  .config(radvizConfig)
+                  .on('dotEnter', function(d) {
+                      // renderList(d);
+             
+                    parcoords.highlight([d]);
+                      
+                  })
+                  .on('dotLeave',function(d){
+                      parcoords.unhighlight([d]);
+                  });
 
-      radviz.render(data);
-
-      mdsScatter(data1,"#MDS",cNum);
-      // parcoordsRender(data1);
-         
+        radviz.render(data);
+      });      
     }
 
 	 var svg = d3.select("#radviz").append("svg")
@@ -232,22 +250,15 @@
                 .attr("height",600);
          
          // serum_10实验
-         var cNum = 10;
-         var order;
-         var flag = 0;
-         if(flag){
-            order = [10, 9, 8, 7, 6, 5, 2, 3, 4, 1];
-         }
-         else{
-            order = [1,2,3,4,5,6,7,8,9,10];
-         }
-
+         var cNum = 11;
+         
+// console.log(order);
 	 var radvizConfig = {
 
 	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
         margin: 150, // margin around the circular panel, to leave some room for the labels
-        dimensions: dimensions(cNum,order), // data keys to use as dimensions
+        dimensions: dimensions(cNum,[1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3]), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
         opacityAccessor: function(d){return d.classValue;},
         colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#000080', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#A2CD5A','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
@@ -419,16 +430,16 @@
           };
     }
 
-    d3.csv('data/serum_c10_result.csv', function(err,data) {     
+    d3.csv('data/serum_c11_result.csv', function(err,data) {     
         renderArcs(data);  	  
     	  maxLabel(data);
         radviz.render(data);
         // console.log(data);                          	
    });
 
-    d3.csv("data/serum_c10_result.csv",function(err,data){
+    d3.csv("data/serum_c11_result.csv",function(err,data){
       // console.log(data);
-        mdsScatter(data,"#MDS",10);
+        mdsScatter(data,"#MDS",11);
         parcoordsRender(data);
     })
 

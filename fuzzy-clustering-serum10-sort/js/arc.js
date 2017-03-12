@@ -30,22 +30,33 @@ function renderArcs(classes){
     var arcWidth = 100;      // width
     var arcPad = 1;         // padding between arcs
 
-    var order;
-    var flag = 0;//是否对锚点排序
+    var order = [];
+    
+    var flag = 1;//是否对锚点排序
 
     var classNum = d3.keys(classes[0]).length;
 
-    if(classNum == 10){
-        if(flag)
-            order = [4, 1, 10, 9, 8, 7, 6, 5, 2, 3];
-        else
-            order = [9,10,1,2,3,4,5,6,7,8];
-    }
+        if(flag){
+            if(classNum == 10){order = [3, 4, 1, 10, 9, 8, 7, 6, 5, 2];}
+            if(classNum == 7){order = [3, 1, 5, 7, 4, 2, 6];}
+            if(classNum == 8){order = [6, 2, 1, 4, 3, 7, 8, 5];}
+            if(classNum == 9){order = [3, 2, 1, 6, 8, 5, 7, 4, 9];}
+            if(classNum == 11){order = [5, 3, 1, 9, 2, 10, 4, 7, 6, 8, 11];}
+            
+        }
+        else{
+            if(classNum == 10){order = [9,10,1,2,3,4,5,6,7,8];}
+            if(classNum == 7){order = [7,1,2,3,4,5,6];}
+            if(classNum == 8){order = [7,8,1,2,3,4,5,6];}
+            if(classNum == 9){order = [8, 9, 1, 2, 3, 4, 5, 6, 7];}
+            if(classNum == 11){order = [10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9];}
+            
+            
+            // order = [9,10,1,2,3,4,5,6,7,8];
+        }
 
     // console.log(classNum);
     var className = dimensions(classNum,order);
-
-    // console.log(className);
 
     function dimensions(cNum,order){
          var dimensions = [];
