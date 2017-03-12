@@ -201,8 +201,8 @@
 
       cNum = k;
 
-      var order = [];
-         var flag = 1;
+         var order = [];
+         
          if(flag){
           if(cNum == 10){order = [1, 10, 9, 8, 7, 6, 5, 2, 3, 4];}
           if(cNum == 7){order = [1, 5, 7, 4, 2, 6, 3];}
@@ -226,7 +226,7 @@
       })
      
       d3.csv(filmName,function(data){
-        renderArcs(data);
+        renderArcs(data,flag);
         maxLabel(data);
         radvizConfig.dimensions = dimensions(k,order);
                   var radviz = radvizComponent()
@@ -251,6 +251,7 @@
          
          // serum_10实验
          var cNum = 11;
+         var flag = 0;
          
 // console.log(order);
 	 var radvizConfig = {
@@ -258,7 +259,7 @@
 	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
         margin: 150, // margin around the circular panel, to leave some room for the labels
-        dimensions: dimensions(cNum,[1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3]), // data keys to use as dimensions
+        dimensions: dimensions(cNum,[1,2,3,4,5,6,7,8,9,10,11]), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
         opacityAccessor: function(d){return d.classValue;},
         colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#000080', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#A2CD5A','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
@@ -431,7 +432,7 @@
     }
 
     d3.csv('data/serum_c11_result.csv', function(err,data) {     
-        renderArcs(data);  	  
+        renderArcs(data,flag);  	  
     	  maxLabel(data);
         radviz.render(data);
         // console.log(data);                          	

@@ -1,4 +1,4 @@
-function renderArcs(classes){
+function renderArcs(classes,flag){
 
     var svg = d3.select("svg");
 
@@ -32,7 +32,7 @@ function renderArcs(classes){
 
     var order = [];
     
-    var flag = 1;//是否对锚点排序
+    // var flag = 0;//是否对锚点排序
 
     var classNum = d3.keys(classes[0]).length;
 
