@@ -8,6 +8,8 @@
 
 ### index-base_0.4.html [演示](http://ipine.coding.me/Text/fuzzy-clustering/index-base.html)
 
-### serum_index_0.2.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-serum10-sort/index.html)
+### serum_index_0.3.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-serum10-sort/index.html)
+
+### wholesales_index_0.2.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-wholesales-sort/index.html)
 
 ### food_index_0.1.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-food-sort/index.html)
