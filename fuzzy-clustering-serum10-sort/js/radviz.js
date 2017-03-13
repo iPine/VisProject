@@ -144,7 +144,7 @@ var radvizComponent = function() {
             });
         }
  
- var colorAnchor = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#000080', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#A2CD5A','#FFCEA6', '#bfbfbf']);
+ var colorAnchor = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']);
     
 
         //绘制代表聚类的圆圈

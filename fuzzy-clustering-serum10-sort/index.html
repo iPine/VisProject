@@ -45,11 +45,6 @@
 <script src="js/d3.parcoords.js"></script>
 <script src="js/arc.js"></script>
 <script src="js/mds-scatter.js"></script>
-<script src="data/serum_7.js"></script>
-<script src="data/serum_8.js"></script>
-<script src="data/serum_9.js"></script>
-<script src="data/serum_10.js"></script>
-<script src="data/serum_11.js"></script>
 
 	<div id="leftContainer">
 		<div class="leftTop box">
@@ -249,9 +244,8 @@
                 .attr("width",600)
                 .attr("height",600);
          
-         // serum_10实验
          var cNum = 11;
-         var flag = 0;
+         var flag = 1;
          
 // console.log(order);
 	 var radvizConfig = {
@@ -259,15 +253,18 @@
 	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
         margin: 150, // margin around the circular panel, to leave some room for the labels
-        dimensions: dimensions(cNum,[1,2,3,4,5,6,7,8,9,10,11]), // data keys to use as dimensions
+        dimensions: dimensions(cNum,[1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3]), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
         opacityAccessor: function(d){return d.classValue;},
-        colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#000080', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#A2CD5A','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
+        colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
         drawLinks: false, 
-        zoomFactor: 1, 
+        zoomFactor: 1.1, 
         dotRadius: 3, 
-        useTooltip: false,
-        useRepulsion: true,
+        useTooltip: true,
+        useRepulsion: false,
+        tooltipFormatter: function(d) {
+            return "[" + d.classId + ":" + parseFloat(d.classValue) + "]";
+        },
 	 }
 
 	var radviz = radvizComponent()

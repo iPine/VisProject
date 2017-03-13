@@ -95,7 +95,7 @@ function renderArcs(classes,flag){
     	newNum.push(i+1);
     }
 
-    var colorArc = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#000080', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#A2CD5A','#FFCEA6', '#bfbfbf']);
+    var colorArc = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']);
     
     // bind the data
     var arcs = svg.append("g").selectAll('.arcBound')
@@ -111,24 +111,31 @@ function renderArcs(classes,flag){
         .attr("fill", '#F5F5DC')
         // .attr('stroke','#ccc')
         .attr('stroke',function(d,i){ return colorArc(d); })
-        .attr('stroke-width',2)
+        .attr('stroke-width',4)
         .attr('id',function(d){
             return d;
         })
-        // .on('click',function(class,i){
-        //     d3.selectAll('.dot')
-        //     .data(classes)
-        //     .style('fill',function(d,j){
-        //         if( d.class > 0.3){
-        //             return colorScale(d);
-        //         }else{
-        //             return '#8b8e88';
-        //         }
-        //     })
-        //     .style('opacity',function(d,j){
-        //         return d.classValue;
-        //     })
-        // });
+        .on('click',function(c,i){
+            d3.selectAll('.dot')
+            .data(classes)
+            .style('fill',function(d,j){
+                if( d.classId == c){
+                    return colorArc(c);
+                }else{
+                    return '#8b8e88';
+                }
+            })
+            .style('opacity',function(d,j){
+                // return d.classValue;
+                return 1;
+            });
+
+            arcs.attr('stroke',function(d,j){
+                if(i == j){ return colorArc(d);}
+                else{return '#8b8e88';}
+            })
+        });
+
 
 var counter = 0;
    //var counter = 1;
@@ -160,7 +167,11 @@ var counter = 0;
 
         reducedData.forEach(function(dd){
 
+            dd.id = className[counter];
+
             max = max > dd.value ? max : dd.value;
+
+            return dd;
         })
 
         // var histScale = d3.scale.linear().domain([0,classes.length]).range([0,eachAngle]);
@@ -206,7 +217,6 @@ var counter = 0;
 
         // *** update existing arcs -- redraw them ***
         hists.attr("d", drawHist)
-            // .attr("fill", 'steelblue')
             .attr("fill",function(d,i){
                 var t = linear(i);
                     var color = computeColor(t);
@@ -215,11 +225,34 @@ var counter = 0;
             .attr('stroke','none')
             .on("mouseover",tip.show)
             .on("mouseout",tip.hide)
+            .on("click",function(re,i){
+                d3.selectAll('.dot')
+                .data(classes)
+                .style('fill',function(d,j){
+
+                    if(re.key * 0.05 <= d[re.id] && d[re.id] <= (re.key + 1) * 0.05){
+                        return colorArc(re.id);
+                    }else{
+                        return '#8b8e88';
+                    }
+                    
+                })
+                .style('opacity',function(d,j){
+                // return d.classValue;
+                    return 1;
+                })
+
+                hists.style('stroke',function(d,j){
+                    if(i == j){
+                        return "black";
+                    }
+                });
+            });
 
         // console.log(reducedData);
         // console.log(classes);
-
         counter += 1;
+
 
         //定义一个线性渐变
         var defs = svg.append("defs");
