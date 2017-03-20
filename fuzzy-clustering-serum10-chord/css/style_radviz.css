@@ -1,0 +1,39 @@
+/*radviz雷达图样式*/
+body {
+    font-family: sans-serif;
+}
+.panel {
+    stroke: white;
+    /*stroke: gray;*/
+    fill: white;
+}
+.bg {
+    fill: white;
+}
+.link {
+    stroke: silver;
+    stroke-opacity: 0.05
+}
+.dot {
+    fill-opacity: 0.5;
+}
+.label-node {
+    /*fill: silver;*/
+}
+.dot.active {
+    stroke: black;
+}
+.label {
+    /*fill: gray;*/
+    pointer-events: none;
+}
+#radviz-tooltip {
+    font-size: 12px;
+    margin-top: 22px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+}
+#radviz-tooltip h1 {
+    font-size: 14px;
+    margin: 0;
+}
