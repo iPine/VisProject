@@ -1,0 +1,27 @@
+svg {
+  background: #E6DFCC;
+}
+.point {
+  fill: teal;
+  opacity: 0.8;
+  cursor: pointer;
+}
+.point:hover {
+  opacity: 1;
+}
+.point text {
+  fill: #333;
+  text-anchor: middle;
+  font-family: sans-serif;
+  font-size: 10px;
+}
+
+.link, .indicator {
+  stroke: white;
+  fill: none;
+  visibility: hidden;
+  pointer-events: none;
+}
+.visible.link, .visible.indicator {
+  visibility: visible;
+}

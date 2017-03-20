@@ -43,7 +43,7 @@
 
 <script src="js/radviz.js"></script>
 <script src="js/d3.parcoords.js"></script>
-<script src="js/arc.js"></script>
+<!-- <script src="js/arc.js"></script> -->
 <script src="js/mds-scatter.js"></script>
 
 	<div id="leftContainer">
@@ -72,14 +72,14 @@
                   <!-- <a href="#blank" data-toggle="tab">tab-btn</a> -->
                   
                   <div class="dropdown" style="position:relative;">
-                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="padding: 0;height: 20px;width: 80px;font-size: 14px;background-color: #F9C397;color:gray; border-color: #D9E3E8;padding: 0;vertical-align: middle;border-color: #F9C397;"><span id="da">Food</span><span class="caret" style="margin-left: 2px;"></span></a>
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="padding: 0;height: 20px;width: 80px;font-size: 14px;background-color: #F9C397;color:gray; border-color: #D9E3E8;padding: 0;vertical-align: middle;border-color: #F9C397;"><span id="da">Serum</span><span class="caret" style="margin-left: 2px;"></span></a>
                     <ul class="dropdown-menu" style="font-size: 10px;padding: 0;min-width: 80px;">
                       <li>
-                        <a class="trigger" id="3">3</a>
-                        <a class="trigger" id="4">4</a>
-                        <a class="trigger" id="5">5</a>
-                        <a class="trigger" id="6">6</a>
-                        <!-- <a class="trigger" id="11">11</a>                     -->
+                        <a class="trigger" id="7">7</a>
+                        <a class="trigger" id="8">8</a>
+                        <a class="trigger" id="9">9</a>
+                        <a class="trigger" id="10">10</a>
+                        <a class="trigger" id="11">11</a>                    
                       </li>                      
                     </ul>
                   </div>
@@ -114,7 +114,7 @@
 
 
 //更新数据集后，OriginData和ClusteringData之间的切换
-  var dataName = "food";
+  var dataName = "serum";
   var clusterNum;
 
   $('.navStripe > li:first-child').select(function(){
@@ -145,7 +145,7 @@
       d3.select('#MDS').selectAll('*').remove();
       d3.select("#example").selectAll('*').remove();
      
-      var filmName = "data/food_c" + clusterNum + "_result.csv";
+      var filmName = "data/serum_c" + clusterNum + "_result.csv";
       d3.csv(filmName,function(data){
         mdsScatter(data,"#MDS",cNum);
         parcoordsRender(data); 
@@ -158,9 +158,9 @@
         d3.select('#grid').selectAll('*').remove();
         d3.select('#MDS').selectAll('*').remove();
         d3.select("#example").selectAll('*').remove();
-        d3.csv("data/food_c3_result.csv",function(data){
+        d3.csv("data/serum_c11_result.csv",function(data){
 
-          mdsScatter(data,"#MDS",3);
+          mdsScatter(data,"#MDS",11);
           parcoordsRender(data);     
       });
     }
@@ -172,9 +172,9 @@
       d3.select('#MDS').selectAll('*').remove();
       d3.select("#example").selectAll('*').remove();
       
-      d3.csv("data/raw/food-raw.csv",function(data){
+      d3.csv("data/raw/serum-raw.csv",function(data){
 
-         mdsScatter(data,"#MDS",18);         
+         mdsScatter(data,"#MDS",12);         
          parcoordsRender(data);                  
       }); 
     }
@@ -195,23 +195,23 @@
       d3.select("svg").selectAll('.label').remove();
 
       cNum = k;
-
-         var order = [];
          
          if(flag){
-          if(cNum == 3){order = [1, 3, 2];}
-          if(cNum == 4){order = [1, 4, 2, 3];}
-          if(cNum == 5){order = [1, 2, 3, 4, 5];}
-          if(cNum == 6){order = [1, 3, 2, 5, 6, 4];}
+          if(cNum == 10){order = [1, 10, 9, 8, 7, 6, 5, 2, 3, 4];}
+          if(cNum == 7){order = [1, 5, 7, 4, 2, 6, 3];}
+          if(cNum == 8){order = [1, 4, 3, 7, 8, 5, 6, 2];}
+          if(cNum == 9){order = [1, 6, 8, 5, 7, 4, 9, 3, 2];}
+          if(cNum == 11){order = [1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3];}
          }
          else{
-          if(cNum == 3){order = [1, 2, 3];}
-          if(cNum == 4){order = [1, 2, 3, 4];}
-          if(cNum == 5){order = [1, 2, 3, 4, 5];}
-          if(cNum == 6){order = [1, 2, 3, 4, 5, 6];}
+          if(cNum == 10){order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];}
+          if(cNum == 7){order = [1, 2, 3, 4, 5, 6, 7];}
+          if(cNum == 8){order = [1, 2, 3, 4, 5, 6, 7, 8];}
+          if(cNum == 9){order = [1, 2, 3, 4, 5, 6, 7, 8, 9];}
+          if(cNum == 11){order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];}
          }
 
-      var filmName = "data/food_c" + k + "_result.csv";
+      var filmName = "data/serum_c" + k + "_result.csv";
 
       d3.csv(filmName,function(data){
         mdsScatter(data,"#MDS",k);
@@ -219,7 +219,7 @@
       })
      
       d3.csv(filmName,function(data){
-        renderArcs(data,flag);
+        // renderArcs(data,flag);
         maxLabel(data);
         radvizConfig.dimensions = dimensions(k,order);
                   var radviz = radvizComponent()
@@ -242,9 +242,9 @@
                 .attr("width",600)
                 .attr("height",600);
          
-         // serum_10实验
-         var cNum = 3;
+         var cNum = 11;
          var flag = 1;
+         var order = [1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3];
          
 // console.log(order);
 	 var radvizConfig = {
@@ -252,15 +252,18 @@
 	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
         margin: 150, // margin around the circular panel, to leave some room for the labels
-        dimensions: dimensions(cNum,[1,2,3]), // data keys to use as dimensions
+        dimensions: dimensions(cNum,order), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
         opacityAccessor: function(d){return d.classValue;},
-        colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#000080', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#A2CD5A','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
+        colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
         drawLinks: false, 
         zoomFactor: 1, 
         dotRadius: 3, 
-        useTooltip: false,
-        useRepulsion: true,
+        useTooltip: true,
+        useRepulsion: false,
+        tooltipFormatter: function(d) {
+            return "[" + d.classId + ":" + parseFloat(d.classValue) + "]";
+        },
 	 }
 
 	var radviz = radvizComponent()
@@ -424,16 +427,106 @@
           };
     }
 
-    d3.csv('data/food_c3_result.csv', function(err,data) {     
-        renderArcs(data,flag);  	  
+     function cluster_sum(leaves){
+            // console.log(leaves);
+            // debugger;
+            var total = leaves.length;
+            return {
+                sum: total,
+            }
+    }
+
+    function newData(data){
+         var nested = d3.nest()
+                           .key(function(d) {
+                             // debugger;//检查d及d.date
+                              return d['classId'];
+                           })
+                           .rollup(cluster_sum)
+                           .entries(data);
+        console.log(nested);
+
+        var dataset = [];
+        for(var i=0; i<nested.length; i++){
+            dataset.push([nested[i].key,nested[i].values.sum]);
+        }
+
+        return dataset;
+    }
+
+var sort = r(50,150);
+console.log(sort);
+
+//     d3.csv('data/serum_c11_result.csv',function(data){
+//       maxLabel(data);
+//       var da = newData(data);
+//       // renderArcs(da,flag);
+
+//       console.log(da);
+
+     
+
+//      var svg = d3.select("svg");
+//       var arcMin = 112;        // inner radius of the first arc
+//       var arcWidth = 100;      // width
+//       var arcPad = 1;    
+// var colorArc = d3.scale.ordinal()
+//     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+//       var drawArc = d3.svg.arc()
+//           .innerRadius(function(d, i) {
+//               return  arcMin ;
+//           })
+//           .outerRadius(function(d, i) {
+//               return arcMin + (arcWidth) + arcPad;
+//           })
+         
+//       var pie = d3.layout.pie()
+//                 .sort(null)
+//                 .value(function(d){
+//                   return d;
+//                 })
+//                 .padAngle(.03); 
+
+//        var arcs = svg.append("g").selectAll('.arcBound')
+//         .data(pie(sort))
+//         .enter()
+//         .append('path')
+//         .attr("transform", "translate(300,300)")
+//         .attr("class","arcs")
+//         .attr('id',function(d){
+//           return d.data[0];
+//         })
+
+//         // console.log(pie(sort));
+
+//        arcs.attr("d", drawArc)
+//         .attr("fill", '#F5F5DC')
+//         // .attr('stroke','#ccc')
+//         .attr('stroke',function(d,i){ return colorArc(d[0]); })
+//         .attr('stroke-width',4);
+//     })
+
+function r(min,max){
+  var w=max-min;
+  var ten=[Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min),Math.round(Math.random()*w+min)];
+  ten.sort();
+  return ten;
+  // alert(ten);
+}
+ 
+
+
+    d3.csv('data/serum_c11_result.csv', function(err,data) {     
+        // renderArcs(data,flag);  	  
     	  maxLabel(data);
         radviz.render(data);
         // console.log(data);                          	
    });
 
-    d3.csv("data/food_c3_result.csv",function(err,data){
+    d3.csv("data/serum_c11_result.csv",function(err,data){
       // console.log(data);
-        mdsScatter(data,"#MDS",3);
+        mdsScatter(data,"#MDS",11);
         parcoordsRender(data);
     })
 
