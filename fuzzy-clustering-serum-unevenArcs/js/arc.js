@@ -1,32 +1,3 @@
-
- // /*获取属于每个聚类的数据点，及其个数*/
- //    function cluster_sum(leaves){
- //            // console.log(leaves);
- //            // debugger;
- //            var total = leaves.length;
- //            return {
- //                sum: total,
- //            }
- //    }
-
- //    function newData(data){
- //         var nested = d3.nest()
- //                           .key(function(d) {
- //                             // debugger;//检查d及d.date
- //                              return d['classId'];
- //                           })
- //                           .rollup(cluster_sum)
- //                           .entries(data);
- //        // console.log(nested);
-
- //        var dataset = [];
- //        for(var i=0; i<nested.length; i++){
- //            dataset.push([nested[i].key,nested[i].values.sum]);
- //        }
-
- //        return dataset;
- //    }
-
 function renderArcs(classes,flag){
 
     var svg = d3.select("svg");
@@ -45,7 +16,7 @@ function renderArcs(classes,flag){
 
     svg.call(tip);
 
-	 // classes.forEach(function(meta){
+     // classes.forEach(function(meta){
 
   //       meta.C1 = parseFloat(meta.C1)
   //       meta.C2 = parseFloat(meta.C2)
@@ -54,7 +25,7 @@ function renderArcs(classes,flag){
 
   //   })
 
-	var PI = Math.PI;
+    var PI = Math.PI;
     var arcMin = 112;        // inner radius of the first arc
     var arcWidth = 100;      // width
     var arcPad = 1;         // padding between arcs
@@ -63,27 +34,24 @@ function renderArcs(classes,flag){
     
     // var flag = 0;//是否对锚点排序
 
-    var classNum = d3.keys(classes[0]).length;
+    
 
-        if(flag){
-            if(classNum == 10){order = [3, 4, 1, 10, 9, 8, 7, 6, 5, 2];}
-            if(classNum == 7){order = [3, 1, 5, 7, 4, 2, 6];}
-            if(classNum == 8){order = [6, 2, 1, 4, 3, 7, 8, 5];}
-            if(classNum == 9){order = [3, 2, 1, 6, 8, 5, 7, 4, 9];}
-            if(classNum == 11){order = [5, 3, 1, 9, 2, 10, 4, 7, 6, 8, 11];}
-            
-        }
-        else{
-            if(classNum == 10){order = [9,10,1,2,3,4,5,6,7,8];}
-            if(classNum == 7){order = [7,1,2,3,4,5,6];}
-            if(classNum == 8){order = [7,8,1,2,3,4,5,6];}
-            if(classNum == 9){order = [8, 9, 1, 2, 3, 4, 5, 6, 7];}
-            if(classNum == 11){order = [10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9];}
-            
-            
-            // order = [9,10,1,2,3,4,5,6,7,8];
-        }
+         if(flag){
+          if(cNum == 10){order = [1, 10, 9, 8, 7, 6, 5, 2, 3, 4];}
+          if(cNum == 7){order = [ 6, 3, 1, 5, 7, 4, 2];}
+          if(cNum == 8){order = [1, 4, 3, 7, 8, 5, 6, 2];}
+          if(cNum == 9){order = [1, 6, 8, 5, 7, 4, 9, 3, 2];}
+          if(cNum == 11){order = [11, 5, 3, 1, 9, 2, 10, 4, 7, 6, 8];}
+         }
+         else{
+          if(cNum == 10){order = [6, 7, 8, 9, 10, 1, 2, 3, 4, 5];}
+          if(cNum == 7){order = [1,2, 3, 4, 5, 6, 7];}
+          if(cNum == 8){order = [1, 2, 3, 4, 5, 6, 7, 8];}
+          if(cNum == 9){order = [1, 2, 3, 4, 5, 6, 7, 8, 9];}
+          if(cNum == 11){order = [11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];}
+         }
 
+    var classNum = order.length;
     // console.log(classNum);
     var className = dimensions(classNum,order);
 
@@ -95,10 +63,28 @@ function renderArcs(classes,flag){
          return dimensions;
     };
 
-    // var thetaScale = d3.scale.linear().domain([ 0, classNum ]).range([ 0, Math.PI * 2 ]);
+    var thetaScale = d3.scale.linear().domain([ 0, classNum ]).range([ 0, Math.PI * 2 ]);
 
-    // var eachAngle = 360 * (PI/180) / classNum;
     // var eachAngle = Math.PI * 2 / classNum;
+
+    var da = newData(classes,order);
+       
+    var sum = 0;
+        for(var i=0; i<da.length; i++){
+            sum += da[i][1]; 
+        }
+     
+    console.log(da);
+    var angleSize = getAngle(da,sum,order.length);
+       
+    console.log(angleSize);
+
+    var each = [];
+    for(var i=0; i<angleSize.length - 1; i++){
+        each[i] = angleSize[i+1] - angleSize[i];
+    }
+    console.log(each);
+
 
     var drawArc = d3.svg.arc()
         .innerRadius(function(d, i) {
@@ -107,29 +93,32 @@ function renderArcs(classes,flag){
         .outerRadius(function(d, i) {
             return arcMin;
         })
-        // .startAngle(function(d, i){
+        .startAngle(function(d, i){
 
-        //     return (i) * eachAngle;
-        //     // return thetaScale(i+1)  ;
-        // })
-        // .endAngle(function(d, i) {
+            // return (i) * eachAngle;
+            // return thetaScale(i+1)  ;
+           return angleSize[i];
+            
+        })
+        .endAngle(function(d, i) {
 
-        //     return (i+1) * eachAngle - 5 * (PI/180);
-        //     // return thetaScale(i + 2) - 5 * (PI/180);
-        // });
+            // return (i+1) * eachAngle - 5 * (PI/180);
+            // return thetaScale(i + 2) - 5 * (PI/180);
+            return angleSize[i+1] - 4 * (PI/180);
+        });
 
-    var pie = d3.layout.pie()
-                .sort(null)
-                .value(function(d){
-                    return d.values.sum;
-                });
+    var newNum = [];
+
+    for(var i=0; i<classNum; i++){
+        newNum.push(i+1);
+    }
 
     var colorArc = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']);
     
     // bind the data
     var arcs = svg.append("g").selectAll('.arcBound')
-        // .data(className)
-        .data(pie(classes))
+        // .data(classOrder(order))
+        .data(className)
         .enter()
         .append('path')
         .attr("transform", "translate(300,300)")
@@ -204,8 +193,7 @@ var counter = 0;
         })
 
         // var histScale = d3.scale.linear().domain([0,classes.length]).range([0,eachAngle]);
-        var histScale = d3.scale.linear().domain([0,max]).range([0,eachAngle]);
-
+       
         var drawHist = d3.svg.arc()
             .innerRadius(function(d, i) {
                 return  histMin + d.key*(histWidth) + histPad;
@@ -216,12 +204,14 @@ var counter = 0;
             .startAngle(function(d, i){
 
                 // return (counter) * eachAngle + (eachAngle - histScale(d.value)) / 2 + 5 * (PI/180);
-                return (counter) * eachAngle + (eachAngle - (d.value / max * eachAngle)) / 2;
+                // return (counter) * eachAngle + (eachAngle - (d.value / max * eachAngle)) / 2;
+                return angleSize[counter] + (each[counter]  - (d.value / max * each[counter])) / 2;
             })
             .endAngle(function(d, i) {
                
                 // return (counter) * eachAngle + histScale(d.value) + (eachAngle - histScale(d.value)) / 2;
-                return (counter) * eachAngle + (d.value / max * eachAngle) + (eachAngle - (d.value / max * eachAngle)) / 2 - 5 * (PI/180);
+                // return (counter) * eachAngle + (d.value / max * eachAngle) + (eachAngle - (d.value / max * eachAngle)) / 2 - 3 * (PI/180);
+                return angleSize[counter] + (each[counter] - (d.value / max * each[counter])) / 2 + (d.value / max * each[counter]) - 4 * (PI/180);
                
             });        
 
@@ -281,6 +271,7 @@ var counter = 0;
         // console.log(reducedData);
         // console.log(classes);
         counter += 1;
+        // console.log(counter);
 
 
         //定义一个线性渐变

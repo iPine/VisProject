@@ -3,8 +3,8 @@ body {
     font-family: sans-serif;
 }
 .panel {
-    /*stroke: white;*/
-    stroke: gray;
+    stroke: white;
+    /*stroke: gray;*/
     fill: white;
 }
 .bg {

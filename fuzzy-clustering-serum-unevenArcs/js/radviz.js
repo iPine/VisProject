@@ -29,6 +29,7 @@ var utils = {
     }
 };
 
+
 var radvizComponent = function() {
     var config = {
         el: null,
@@ -56,6 +57,7 @@ var radvizComponent = function() {
             .alpha(0)
             // .linkStrength(0.9)
             .linkDistance(10);
+
     var render = function(data) {
 
         data = addNormalizedValues(data);
@@ -65,38 +67,31 @@ var radvizComponent = function() {
             return d + normalizeSuffix;
         });
 
-        var thetaScale = d3.scale.linear().domain([ 0, dimensionNamesNormalized.length ]).range([ 0, Math.PI * 2 ]);
+        // var thetaScale = d3.scale.linear().domain([ 0, 18]).range([ 0, Math.PI * 2 ]);
 
         
         var chartRadius = config.size / 2 - config.margin - 40;
         var nodeCount = data.length;
         var panelSize = config.size - config.margin * 2 - 190;
 
-    
-        var da = newData(data);
-        console.log(da);
-
+        var da = newData(data,order);
+       
         var sum = 0;
         for(var i=0; i<da.length; i++){
             sum += da[i][1]; 
         }
-        console.log(sum);
-        //dimensionNode order[1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3]
-
-        var sizeOrder = [7,3,9,10,8,4,5,6,2,0,1];
-        // var clusterSize = [35,32,22,6,]
-        // 初始化维度锚点
+        // console.log(sum);
+        // console.log(da);
+    var angleSize = getAngle(da,sum,order.length);
+       
+    // console.log(angleSize);
+        
         var dimensionNodes = config.dimensions.map(function(d, i) {
-           
+           // var orderlist = [4,5,6,9,10,8,3,7,1,0,2];
             // var angle = thetaScale(i);
-            var j = sizeOrder[i];
-            var angleStart = thetaScale(i);
-            // if(da[j][1] < sum / 10){
-
-            // }
-            var angle = angleStart * da[i][1] / sum + angleStart - Math.PI / 2;
+            var angle = angleSize[i] - Math.PI / 2;
             var x = chartRadius + Math.cos(angle) * chartRadius * config.zoomFactor ;
-            var y = chartRadius + Math.sin(angle) * chartRadius * config.zoomFactor ;
+            var y = chartRadius + Math.sin(angle) * chartRadius * config.zoomFactor ;          
             return {
                 index: nodeCount + i,
                 x: x,
@@ -104,6 +99,7 @@ var radvizComponent = function() {
                 fixed: true,
                 name: d
             };
+
         });
 
         //初始化连接线
