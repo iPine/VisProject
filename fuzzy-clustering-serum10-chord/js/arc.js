@@ -18,7 +18,7 @@ function renderArcs(classes,flag){
 
 
 	var PI = Math.PI;
-    var arcMin = 112;        // inner radius of the first arc
+    var arcMin = 152;        // inner radius of the first arc
     var arcWidth = 100;      // width
     var arcPad = 1;         // padding between arcs
 
@@ -61,7 +61,7 @@ function renderArcs(classes,flag){
         })
         .endAngle(function(d, i) {
 
-            return (i+1) * eachAngle - 5 * (PI/180) - eachAngle / 2;
+            return (i+1) * eachAngle - 2 * (PI/180) - eachAngle / 2;
             // return thetaScale(i + 2) - 5 * (PI/180);
         });
 
@@ -79,7 +79,7 @@ function renderArcs(classes,flag){
         .data(className)
         .enter()
         .append('path')
-        .attr("transform", "translate(300,300)")
+        .attr("transform", "translate(310,280)")
         .attr("class","arcs")
 
     // *** update existing arcs -- redraw them ***
@@ -116,7 +116,7 @@ function renderArcs(classes,flag){
 var counter = 0;
    //var counter = 1;
 
-    var histMin = 115;        // inner radius of the first arc
+    var histMin = 155;        // inner radius of the first arc
     var histWidth = (arcWidth - 5)/20;      // width
     var histPad = 1;         // padding between arcs
 
@@ -168,7 +168,7 @@ var counter = 0;
             .endAngle(function(d, i) {
                
                 // return (counter) * eachAngle + histScale(d.value) + (eachAngle - histScale(d.value)) / 2;
-                return (counter) * eachAngle + (d.value / max * eachAngle) + (eachAngle - (d.value / max * eachAngle)) / 2 - 5 * (PI/180) - eachAngle / 2;
+                return (counter) * eachAngle + (d.value / max * eachAngle) + (eachAngle - (d.value / max * eachAngle)) / 2 - 2 * (PI/180) - eachAngle / 2;
                
             });        
 
@@ -177,7 +177,7 @@ var counter = 0;
             .data(reducedData)
             .enter()
             .append('path')
-            .attr("transform", "translate(300,300)")
+            .attr("transform", "translate(310,280)")
             .attr("class","hists")
 
         // var maxValue = d3.max(reducedData,function(d){return d.value;});
@@ -252,7 +252,7 @@ var counter = 0;
         var colorRect = svg.append("rect")
                                     .attr({
                                         x: 20,
-                                        y: 540,
+                                        y: 560,
                                         width: 140,
                                         height: 10
                                     })
@@ -262,7 +262,7 @@ var counter = 0;
                 svg.append("text")
                 .text("membership degree")
                 .attr("x","90")
-                .attr("y","520")
+                .attr("y","540")
                 .attr("font-size","10px")
                 // .attr("font-weight","bold")
                 .attr("text-anchor","middle")
@@ -272,7 +272,7 @@ var counter = 0;
                                         .attr("class","valueText")
                                         .attr({
                                             x: 20,
-                                            y: 540,
+                                            y: 560,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -281,7 +281,7 @@ var counter = 0;
                                         .attr("class","valueText")
                                         .attr({
                                             x: 160,
-                                            y: 540,
+                                            y: 560,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -298,7 +298,7 @@ var counter = 0;
 
         svg.append("g")
                 .attr("class", "axis")
-                .attr("transform", "translate(20,550)")
+                .attr("transform", "translate(20,570)")
                 .attr("fill","gray")
                 .call(axis);     
     })

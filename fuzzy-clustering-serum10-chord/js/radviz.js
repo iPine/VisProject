@@ -50,12 +50,12 @@ var radvizComponent = function() {
     };
     var events = d3.dispatch("panelEnter", "panelLeave", "dotEnter", "dotLeave");
     var force = d3.layout.force()
-            // .chargeDistance(0.5)
-            // .charge(-15)
-            .friction(0.01)
-            // .alpha(0)
+            .chargeDistance(0.5)
+            .charge(-15)
+            .friction(0.05)
+            .alpha(0)
             // .linkStrength(0.9)
-            // .linkDistance(0.1);
+            .linkDistance(10);
     var render = function(data) {
 
         data = addNormalizedValues(data);
@@ -67,9 +67,9 @@ var radvizComponent = function() {
 
         var thetaScale = d3.scale.linear().domain([ 0, dimensionNamesNormalized.length ]).range([ 0, Math.PI * 2 ]);
         
-        var chartRadius = config.size / 2 - config.margin - 40;
+        var chartRadius = config.size / 2 - config.margin ;
         var nodeCount = data.length;
-        var panelSize = config.size - config.margin * 2 - 190;
+        var panelSize = config.size - config.margin * 2 - 150;
 
         //获取聚类关联关系
         function getRelationship(data,dimensions){
@@ -152,7 +152,7 @@ var radvizComponent = function() {
         // });
         
         var root = svg.append("g").attr({
-            transform: "translate(" + [ 190, 190 ] + ")"
+            transform: "translate(" + [ 160, 130 ] + ")"
         });
 
         var panel = root.append("circle").classed("panel", true).attr({
@@ -303,10 +303,10 @@ var radvizComponent = function() {
                             fill: function(d,i) {
                                 return config.colorScale(config.colorAccessor(d));
                             },
-                            opacity: function(d){
-                                return config.opacityAccessor(d);
-                            },
-                            // opacity: 1,
+                            // opacity: function(d){
+                            //     return config.opacityAccessor(d);
+                            // },
+                            opacity: 1,
                              
                             cx: function(d) {
                                 return d.x;
