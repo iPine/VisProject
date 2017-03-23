@@ -53,7 +53,7 @@ var radvizComponent = function() {
     var force = d3.layout.force()
             .chargeDistance(0.5)
             .charge(-15)
-            .friction(0)
+            .friction(0.05)
             .alpha(0)
             // .linkStrength(0.9)
             .linkDistance(10);
@@ -70,9 +70,9 @@ var radvizComponent = function() {
         // var thetaScale = d3.scale.linear().domain([ 0, 18]).range([ 0, Math.PI * 2 ]);
 
         
-        var chartRadius = config.size / 2 - config.margin - 40;
+        var chartRadius = config.size / 2 - config.margin ;
         var nodeCount = data.length;
-        var panelSize = config.size - config.margin * 2 - 190;
+        var panelSize = config.size - config.margin * 2 - 150;
 
         var da = newData(data,order);
        
@@ -82,14 +82,18 @@ var radvizComponent = function() {
         }
         // console.log(sum);
         // console.log(da);
-    var angleSize = getAngle(da,sum,order.length);
+        var angleSize = getAngle(da,sum,order.length);
        
-    // console.log(angleSize);
+         // console.log(angleSize);
+        var eachAngle = [];
+        for(var i=0; i<angleSize.length - 1; i++){
+            eachAngle[i] = angleSize[i+1] - angleSize[i];
+        }
+        console.log(eachAngle);
         
         var dimensionNodes = config.dimensions.map(function(d, i) {
-           // var orderlist = [4,5,6,9,10,8,3,7,1,0,2];
-            // var angle = thetaScale(i);
-            var angle = angleSize[i] - Math.PI / 2;
+           
+            var angle = angleSize[i] - Math.PI / 2 + (eachAngle[i] / 2 - 1*(Math.PI/180));
             var x = chartRadius + Math.cos(angle) * chartRadius * config.zoomFactor ;
             var y = chartRadius + Math.sin(angle) * chartRadius * config.zoomFactor ;          
             return {
@@ -138,7 +142,7 @@ var radvizComponent = function() {
         // });
         
         var root = svg.append("g").attr({
-            transform: "translate(" + [ 190, 190 ] + ")"
+            transform: "translate(" + [ 160, 130 ] + ")"
         });
 
         var panel = root.append("circle").classed("panel", true).attr({

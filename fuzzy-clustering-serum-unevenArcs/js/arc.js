@@ -26,30 +26,10 @@ function renderArcs(classes,flag){
   //   })
 
     var PI = Math.PI;
-    var arcMin = 112;        // inner radius of the first arc
+    var arcMin = 152;        // inner radius of the first arc
     var arcWidth = 100;      // width
     var arcPad = 1;         // padding between arcs
 
-    var order = [];
-    
-    // var flag = 0;//是否对锚点排序
-
-    
-
-         if(flag){
-          if(cNum == 10){order = [1, 10, 9, 8, 7, 6, 5, 2, 3, 4];}
-          if(cNum == 7){order = [ 6, 3, 1, 5, 7, 4, 2];}
-          if(cNum == 8){order = [1, 4, 3, 7, 8, 5, 6, 2];}
-          if(cNum == 9){order = [1, 6, 8, 5, 7, 4, 9, 3, 2];}
-          if(cNum == 11){order = [11, 5, 3, 1, 9, 2, 10, 4, 7, 6, 8];}
-         }
-         else{
-          if(cNum == 10){order = [6, 7, 8, 9, 10, 1, 2, 3, 4, 5];}
-          if(cNum == 7){order = [1,2, 3, 4, 5, 6, 7];}
-          if(cNum == 8){order = [1, 2, 3, 4, 5, 6, 7, 8];}
-          if(cNum == 9){order = [1, 2, 3, 4, 5, 6, 7, 8, 9];}
-          if(cNum == 11){order = [11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];}
-         }
 
     var classNum = order.length;
     // console.log(classNum);
@@ -74,16 +54,16 @@ function renderArcs(classes,flag){
             sum += da[i][1]; 
         }
      
-    console.log(da);
+    // console.log(da);
     var angleSize = getAngle(da,sum,order.length);
        
-    console.log(angleSize);
+    // console.log(angleSize);
 
-    var each = [];
+    var eachAngle = [];
     for(var i=0; i<angleSize.length - 1; i++){
-        each[i] = angleSize[i+1] - angleSize[i];
+        eachAngle[i] = angleSize[i+1] - angleSize[i];
     }
-    console.log(each);
+    // console.log(eachAngle);
 
 
     var drawArc = d3.svg.arc()
@@ -104,7 +84,7 @@ function renderArcs(classes,flag){
 
             // return (i+1) * eachAngle - 5 * (PI/180);
             // return thetaScale(i + 2) - 5 * (PI/180);
-            return angleSize[i+1] - 4 * (PI/180);
+            return angleSize[i+1] - 2 * (PI/180);
         });
 
     var newNum = [];
@@ -121,7 +101,7 @@ function renderArcs(classes,flag){
         .data(className)
         .enter()
         .append('path')
-        .attr("transform", "translate(300,300)")
+        .attr("transform", "translate(310,280)")
         .attr("class","arcs")
 
     // *** update existing arcs -- redraw them ***
@@ -158,7 +138,7 @@ function renderArcs(classes,flag){
 var counter = 0;
    //var counter = 1;
 
-    var histMin = 115;        // inner radius of the first arc
+    var histMin = 155;        // inner radius of the first arc
     var histWidth = (arcWidth - 5)/20;      // width
     var histPad = 1;         // padding between arcs
 
@@ -192,7 +172,6 @@ var counter = 0;
             return dd;
         })
 
-        // var histScale = d3.scale.linear().domain([0,classes.length]).range([0,eachAngle]);
        
         var drawHist = d3.svg.arc()
             .innerRadius(function(d, i) {
@@ -202,16 +181,14 @@ var counter = 0;
                 return histMin + (d.key+1)*(histWidth);
             })
             .startAngle(function(d, i){
-
-                // return (counter) * eachAngle + (eachAngle - histScale(d.value)) / 2 + 5 * (PI/180);
+               
                 // return (counter) * eachAngle + (eachAngle - (d.value / max * eachAngle)) / 2;
-                return angleSize[counter] + (each[counter]  - (d.value / max * each[counter])) / 2;
+                return angleSize[counter] + (eachAngle[counter]  - (d.value / max * eachAngle[counter])) / 2;
             })
             .endAngle(function(d, i) {
                
-                // return (counter) * eachAngle + histScale(d.value) + (eachAngle - histScale(d.value)) / 2;
                 // return (counter) * eachAngle + (d.value / max * eachAngle) + (eachAngle - (d.value / max * eachAngle)) / 2 - 3 * (PI/180);
-                return angleSize[counter] + (each[counter] - (d.value / max * each[counter])) / 2 + (d.value / max * each[counter]) - 4 * (PI/180);
+                return angleSize[counter] + (eachAngle[counter] - (d.value / max * eachAngle[counter])) / 2 + (d.value / max * eachAngle[counter]) - 2 * (PI/180);
                
             });        
 
@@ -220,7 +197,7 @@ var counter = 0;
             .data(reducedData)
             .enter()
             .append('path')
-            .attr("transform", "translate(300,300)")
+            .attr("transform", "translate(310,280)")
             .attr("class","hists")
 
         // var maxValue = d3.max(reducedData,function(d){return d.value;});
@@ -296,7 +273,7 @@ var counter = 0;
         var colorRect = svg.append("rect")
                                     .attr({
                                         x: 20,
-                                        y: 540,
+                                        y: 560,
                                         width: 140,
                                         height: 10
                                     })
@@ -306,8 +283,8 @@ var counter = 0;
                 svg.append("text")
                 .text("membership degree")
                 .attr("x","90")
-                .attr("y","520")
-                .attr("font-size","8px")
+                .attr("y","540")
+                .attr("font-size","12px")
                 // .attr("font-weight","bold")
                 .attr("text-anchor","middle")
                 .attr("fill","gray");
@@ -316,7 +293,7 @@ var counter = 0;
                                         .attr("class","valueText")
                                         .attr({
                                             x: 20,
-                                            y: 540,
+                                            y: 560,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -325,7 +302,7 @@ var counter = 0;
                                         .attr("class","valueText")
                                         .attr({
                                             x: 160,
-                                            y: 540,
+                                            y: 560,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -342,7 +319,7 @@ var counter = 0;
 
         svg.append("g")
                 .attr("class", "axis")
-                .attr("transform", "translate(20,550)")
+                .attr("transform", "translate(20,570)")
                 .attr("fill","gray")
                 .call(axis);     
     })
