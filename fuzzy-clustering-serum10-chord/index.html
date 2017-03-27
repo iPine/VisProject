@@ -246,6 +246,7 @@
          
          var cNum = 11;
          var flag = 1;//是否进行排序，不但影响arc排布，也影响聚类间的弦
+         var showRelation = 1;//是否展示聚类关系，影响数据的显示，数据点的提示条，平行坐标的高亮
          var order = [1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3];
          
 // console.log(order);
@@ -271,8 +272,11 @@
 	var radviz = radvizComponent()
     .config(radvizConfig)
     .on('dotEnter', function(d) {
-     
+      if(showRelation)
+        parcoords.unhighlight([d]);    
+      else
         parcoords.highlight([d]);
+
               
     })
     .on('dotLeave', function(d) {

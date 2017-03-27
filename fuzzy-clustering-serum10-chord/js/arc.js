@@ -79,7 +79,7 @@ function renderArcs(classes,flag){
         .data(className)
         .enter()
         .append('path')
-        .attr("transform", "translate(310,280)")
+        .attr("transform", "translate(310,290)")
         .attr("class","arcs")
 
     // *** update existing arcs -- redraw them ***
@@ -177,7 +177,7 @@ var counter = 0;
             .data(reducedData)
             .enter()
             .append('path')
-            .attr("transform", "translate(310,280)")
+            .attr("transform", "translate(310,290)")
             .attr("class","hists")
 
         // var maxValue = d3.max(reducedData,function(d){return d.value;});
@@ -252,7 +252,7 @@ var counter = 0;
         var colorRect = svg.append("rect")
                                     .attr({
                                         x: 20,
-                                        y: 560,
+                                        y: 570,
                                         width: 140,
                                         height: 10
                                     })
@@ -262,7 +262,7 @@ var counter = 0;
                 svg.append("text")
                 .text("membership degree")
                 .attr("x","90")
-                .attr("y","540")
+                .attr("y","550")
                 .attr("font-size","10px")
                 // .attr("font-weight","bold")
                 .attr("text-anchor","middle")
@@ -272,7 +272,7 @@ var counter = 0;
                                         .attr("class","valueText")
                                         .attr({
                                             x: 20,
-                                            y: 560,
+                                            y: 570,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -281,7 +281,7 @@ var counter = 0;
                                         .attr("class","valueText")
                                         .attr({
                                             x: 160,
-                                            y: 560,
+                                            y: 570,
                                             dy: "-0.3em",
                                             fill: "gray"
                                         })
@@ -298,7 +298,7 @@ var counter = 0;
 
         svg.append("g")
                 .attr("class", "axis")
-                .attr("transform", "translate(20,570)")
+                .attr("transform", "translate(20,580)")
                 .attr("fill","gray")
                 .call(axis);     
     })

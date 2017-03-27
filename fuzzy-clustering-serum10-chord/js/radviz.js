@@ -152,7 +152,7 @@ var radvizComponent = function() {
         // });
         
         var root = svg.append("g").attr({
-            transform: "translate(" + [ 160, 130 ] + ")"
+            transform: "translate(" + [ 160, 140 ] + ")"
         });
 
         var panel = root.append("circle").classed("panel", true).attr({
@@ -172,7 +172,7 @@ var radvizComponent = function() {
             });
         }
 
-
+        // console.log(dimensionNodes);
          //绘制聚类关联关系
          var relationship = getRelationship(data,dimensionNodes);
             for (var i = 0; i < dimensionNodes.length; i++) {
@@ -211,18 +211,22 @@ var radvizComponent = function() {
                               end = dimensionNodes[j];
                             }
                 
-                            var pathStr = 'M' + begin.x + ' ' + begin.y + ' Q0 0 ' + end.x + ' ' + end.y;
+                            // var pathStr = 'M' + begin.x + ',' + begin.y + ' Q0,0 ' + end.x + ',' + end.y;
+                            var pathStr = 'M' + begin.x + ',' + begin.y + ' ' + 'Q' + 160 + ',' + 140 + ' ' + end.x + ',' + end.y;
                             return pathStr;
                         })
-                        .attr('stroke', '#8b8e88')
-                        // .attr('innerRadius',-10)
-                        .attr('stroke-opacity',  0.1 * Math.sqrt(relation))
+                        // .attr('stroke', '#CDCDB4')
+                        .attr('stroke', '#D8BFD8')
+                        .attr('stroke-opacity',  1 )
                         .attr('stroke-width', Math.sqrt(relation))
-                        .attr('fill-opacity', 0)
-                        .style('display','none');
+                        .attr('fill-opacity', 0);             
+                        
                 }
             }
 
+             if(!showRelation){
+                  root.selectAll('.chord').style('display','none');
+             }
         
    
  var colorAnchor = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']);
@@ -306,7 +310,7 @@ var radvizComponent = function() {
                             // opacity: function(d){
                             //     return config.opacityAccessor(d);
                             // },
-                            opacity: 1,
+                            // opacity: 0,
                              
                             cx: function(d) {
                                 return d.x;
@@ -319,7 +323,10 @@ var radvizComponent = function() {
                         .on("mouseenter", function(d) {
                             if (config.useTooltip) {
                                 var mouse = d3.mouse(config.el);
+                                if(!showRelation)
                                 tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
+                                else
+                                    tooltip.hide();
                             }
                             events.dotEnter(d);
                             this.classList.add("active");
@@ -331,6 +338,17 @@ var radvizComponent = function() {
                             events.dotLeave(d);
                             this.classList.remove("active");
                         });
+
+
+                if(showRelation){
+                    root.selectAll('.dot').attr('opacity',0);
+                }
+                else{
+                    root.selectAll('.dot').attr('opacity',function(d){
+                                    return config.opacityAccessor(d);});
+                }
+            
+
         },1);
         
 
