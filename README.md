@@ -17,3 +17,5 @@
 ### serum_chord_index_1.2.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-serum10-chord/index.html)
 
 ### serum_uneven_index_1.1.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-serum-unevenArcs/index.html)
+
+### serum_weight_index_1.0.html [演示](http://ipine.coding.me/Text/fuzzy-clustering-serum10-weight/index.html)
