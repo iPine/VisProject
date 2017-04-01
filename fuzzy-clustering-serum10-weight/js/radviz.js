@@ -67,9 +67,9 @@ var radvizComponent = function() {
 
         var thetaScale = d3.scale.linear().domain([ 0, dimensionNamesNormalized.length ]).range([ 0, Math.PI * 2 ]);
         
-        var chartRadius = config.size / 2 - config.margin ;
+        var chartRadius = config.size / 1.5 - config.margin -70;
         var nodeCount = data.length;
-        var panelSize = config.size - config.margin * 2 - 150;
+        var panelSize = config.size - config.margin * 2 - 120;
 
         //获取聚类关联关系
         function getRelationship(data,dimensions){
@@ -152,7 +152,7 @@ var radvizComponent = function() {
         // });
         
         var root = svg.append("g").attr({
-            transform: "translate(" + [ 160, 140 ] + ")"
+            transform: "translate(" + [ 140, 120 ] + ")"
         });
 
         var panel = root.append("circle").classed("panel", true).attr({
@@ -212,14 +212,20 @@ var radvizComponent = function() {
                             }
                 
                             // var pathStr = 'M' + begin.x + ',' + begin.y + ' Q0,0 ' + end.x + ',' + end.y;
-                            var pathStr = 'M' + begin.x + ',' + begin.y + ' ' + 'Q' + 160 + ',' + 140 + ' ' + end.x + ',' + end.y;
+                            var pathStr = 'M' + begin.x + ',' + begin.y + ' ' + 'Q' + 140 + ',' + 120 + ' ' + end.x + ',' + end.y;
                             return pathStr;
                         })
                         // .attr('stroke', '#CDCDB4')
-                        .attr('stroke', '#D8BFD8')
-                        .attr('stroke-opacity',  1 )
+                        .attr('stroke', '#707476')
+                        .attr('stroke-opacity',  0.1*Math.sqrt(relation) )
                         .attr('stroke-width', Math.sqrt(relation))
-                        .attr('fill-opacity', 0);             
+                        .attr('fill-opacity', 0)
+                        .on('click',function(d,i){
+                            d3.select('.chordSelect').classed('chordSelect',false);
+
+                            
+                            d3.select(this).classed('chordSelect',true);
+                        })             
                         
                 }
             }
@@ -233,23 +239,29 @@ var radvizComponent = function() {
     
 
         // 绘制代表聚类的圆圈
-        var labelNodes = root.selectAll("circle.label-node")
-            .data(dimensionNodes)
-            .enter()
-            .append("circle")
-            .classed("label-node", true)
-            .attr({
-            cx: function(d) {
-                return d.x;
-            },
-            cy: function(d) {
-                return d.y;
-            },
-            r: 4,
-            fill: function(d,i) {                              
-                return colorAnchor(d.name);
-            },
-        });
+        // var labelNodes = root.selectAll("circle.label-node")
+        //     .data(dimensionNodes)
+        //     .enter()
+        //     .append("circle")
+        //     .classed("label-node", true)
+        //     .attr({
+        //     cx: function(d) {
+        //         return d.x;
+        //     },
+        //     cy: function(d) {
+        //         return d.y;
+        //     },
+        //     r: 5,
+        //     fill: function(d,i) {                          
+        //         return colorAnchor(d.name);
+        //     },
+        //     opacity: function(d){
+        //         if(showRelation)
+        //             return 0;
+        //         else
+        //             return 1;
+        //     }
+        // });
 
         //聚类名字
         var labels = root.selectAll("text.label").data(dimensionNodes).enter().append("text").classed("label", true).attr({
@@ -264,20 +276,31 @@ var radvizComponent = function() {
                     return "middle";
                 } else {
                     return d.x > panelSize / 2 ? "start" : "end";
+
                 }
+               
             },
             "dominant-baseline": function(d) {
                 return d.y > panelSize * .6 ? "hanging" : "auto";
             },
-            dx: function(d) {
-                return d.x > panelSize / 2 ? "6px" : "-6px";
-            },
-            dy: function(d) {
-                return d.y > panelSize * .6 ? "6px" : "-6px";
-            }
+            // dx: function(d) {
+            //     return d.x > panelSize / 2 ? "1px" : "-1px";
+            // },
+            // dy: function(d) {
+            //     // return d.y > panelSize * .6 ? "60px" : "-60px";
+            //     return d.y > panelSize * .6 ? "1px" : "-1px";
+            // }
         }).text(function(d) {
             return d.name;
         });
+
+
+        // var bursh = d3.svg.brush()
+        //             .x()
+        //             .y()
+        //             .on('brushstart',brushstart)
+        //             .on('brush',brushmove)
+        //             .on('brushend',brushend);
 
         
         setTimeout(function(){
@@ -339,16 +362,17 @@ var radvizComponent = function() {
                             }
                             events.dotLeave(d);
                             this.classList.remove("active");
-                        });
+                        })
+
 
 
                 if(showRelation){
                     root.selectAll('.dot').attr('opacity',0);
                 }
                 else{
-                    // root.selectAll('.dot').attr('opacity',function(d){
-                    //                 return config.opacityAccessor(d);});
-                    root.selectAll('.dot').attr('opacity',1);
+                    root.selectAll('.dot').attr('opacity',function(d){
+                                    return config.opacityAccessor(d);});
+                    // root.selectAll('.dot').attr('opacity',1);
                 }
             
 

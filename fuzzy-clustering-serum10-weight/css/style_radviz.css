@@ -15,7 +15,7 @@ body {
     stroke-opacity: 0.05
 }
 .dot {
-    /*fill-opacity: 0.5;*/
+    fill-opacity: 0.8;
 }
 .label-node {
     /*fill: silver;*/
@@ -24,8 +24,10 @@ body {
     stroke: black;
 }
 .label {
-    /*fill: gray;*/
+    fill: black;
     pointer-events: none;
+    font-size: 10px;
+    
 }
 #radviz-tooltip {
     width: 122px;
@@ -42,11 +44,15 @@ body {
     margin: 0;
 }
 .item {
-    height: 20px;
+    height: 18px;
     margin:1px;
     border: 1px solid white;
     background-color: #FCA66F;
     opacity: 0.8;
     overflow: visible;
     /*white-space: nowrap;*/
+}
+
+.chordSelect{
+    stroke: #FCA66F;
 }

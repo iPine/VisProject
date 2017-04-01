@@ -19,7 +19,8 @@
     <script src="lib/divgrid.js"></script>
     
 
-	<link rel="stylesheet" type="text/css" href="css/style_radviz.css">
+	  <link rel="stylesheet" type="text/css" href="css/style_radviz.css">
+    <!-- <link rel="stylesheet" type="text/css" href="css/style_arc.css"> -->
     <link rel="stylesheet" type="text/css" href="css/style_tips.css">
     <link rel="stylesheet" type="text/css" href="css/d3.parcoords_top.css">
     <link rel="stylesheet" type="text/css" href="css/style_originTag.css">
@@ -40,10 +41,9 @@
     
 </head>
 <body>
-
+<script src="js/arc.js"></script>
 <script src="js/radviz.js"></script>
 <script src="js/d3.parcoords.js"></script>
-<script src="js/arc.js"></script>
 <script src="js/mds-scatter.js"></script>
 
 	<div id="leftContainer">
@@ -241,7 +241,7 @@
     }
 
 	 var svg = d3.select("#radviz").append("svg")
-                .attr("width",600)
+                .attr("width",620)
                 .attr("height",600);
          
          var cNum = 11;
@@ -261,7 +261,7 @@
         colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
         drawLinks: false, 
         zoomFactor: 1, 
-        dotRadius: 3, 
+        dotRadius: 3.5, 
         useTooltip: true,
         useRepulsion: false,
         // tooltipFormatter: function(d,i) {
@@ -454,7 +454,8 @@
         renderArcs(data,flag);  	  
     	  maxLabel(data);
         radviz.render(data);
-        console.log(data);                          	
+        // console.log(data);  
+               	
    });
 
     d3.csv("data/serum_c11_result.csv",function(err,data){
