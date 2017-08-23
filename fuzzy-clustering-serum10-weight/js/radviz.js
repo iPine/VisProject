@@ -56,6 +56,7 @@ var radvizComponent = function() {
             .alpha(0)
             // .linkStrength(0.9)
             .linkDistance(10);
+
     var render = function(data) {
 
         data = addNormalizedValues(data);
@@ -161,6 +162,234 @@ var radvizComponent = function() {
             cy: chartRadius,
         });
 
+
+        // brush刷;  
+        var x = d3.scale.linear().range([0, chartRadius*2]),
+            y = d3.scale.linear().range([0, chartRadius*2]);
+
+        root.append('g')
+            .attr('class','brush')
+            .call(d3.svg.brush().x(x).y(y)
+            .on("brushstart", brushstart)
+            .on("brush", brushmove)
+            .on("brushend", brushend))
+
+        if(isBrush){
+            root.select('.brush').style("display","block");
+        }
+        else{
+            root.select('.brush').style("display","none");
+        }
+
+        function brushstart() {
+          root.classed("selecting", true);
+        }
+
+        var counter = 0;
+        var PI = Math.PI;
+        var arcMin = 182;        // inner radius of the first arc
+        var arcWidth = 90;      // width
+        var arcPad = 1;         // padding between arcs
+        var histMin = 185;        // inner radius of the first arc
+        // var histWidth = (arcWidth - 5)/20;      // width
+        var histWidth = (arcWidth-16)/10;
+        var histPad = 1;         // padding between arcs
+        var eachAngle = Math.PI * 2 / cNum;
+        var histAngle;
+        var min=0,max=0;
+        
+        function brushmove() {
+          var e = d3.event.target.extent();
+          if(e[0][0]*chartRadius*2 == e[1][0]*chartRadius*2 && e[0][1]*chartRadius*2 == e[1][1]*chartRadius*2){
+                d3.selectAll('circle.dot')
+                .data(data)
+                .style("opacity", function(d){
+                    return d.classValue;
+                })
+                .style("fill",function(d){
+                    return colorAnchor(d.classId);
+                })
+          }
+          var classes = dimensions(cNum,order);
+          var points=[];
+          d3.selectAll('circle.dot')
+            .data(data)
+            .style("opacity", function(d) {
+               
+                var flag = e[0][0]*chartRadius*2 <= d.x && d.x <= e[1][0]*chartRadius*2
+                    && e[0][1]*chartRadius*2 <= d.y && d.y <= e[1][1]*chartRadius*2;
+                if(flag){
+                    points.push(d);
+                    return d.classValue;
+                }else
+                    return 0.5;
+                // return !flag; 
+            })
+            .style("fill", function(d) {
+                
+                var flag = e[0][0]*chartRadius*2 <= d.x && d.x <= e[1][0]*chartRadius*2
+                    && e[0][1]*chartRadius*2 <= d.y && d.y <= e[1][1]*chartRadius*2;
+                if(flag){
+                    return colorAnchor(d.classId);
+                }else
+                    return 'gray';
+            });
+
+            var arr={};
+            // console.log(classes);
+            classes.forEach(function(c,j){
+                
+                var bar = [];
+                for(let i = 0;i<10;i++){
+                    let temp={};
+                    temp.id=c;
+                    temp.value=0;
+                    temp.key=i;
+                    bar.push(temp);
+                }
+
+                // console.log(order);
+                points.forEach(function(d){
+
+                    bar[parseInt(d[c]/0.1)].value++;
+                });
+                var arc=[];
+                for(let i=0;i<10;i++){
+                    if(bar[i].value>0){
+                        arc.push(bar[i]);
+                    }
+                }
+
+                arr[c]=arc;
+
+            });
+
+            // console.log(arr);
+            classes.forEach(function(d,i){
+
+                var reducedData = arr[d];
+                var classData=classesData[i]; 
+                min=0;
+                max=0;
+
+                for(let i=0;i<classData.length;i++){
+                    if(classData[i].value<min){
+                        min=classData[i].value;
+                    }
+                    if(classData[i].value>max){
+                        max=classData[i].value;
+                    }
+                }
+                // console.log(max);
+                histAngle = getHistAngle(classData);
+                // console.log(histAngle);
+                var histsP=svg.select("#arcs").selectAll('.histsP'+d)
+                    .data(reducedData);
+
+                histsP.enter()
+                    .append('path')
+                    .attr("transform", "translate(320,300)")
+                    .attr("class","histsP"+d)
+                    .attr('id','histsP')
+                    .attr("d", drawHist)
+                    .attr("fill",function(d,i){
+                        return "#FCA66F";
+                    });
+
+                histsP.attr("transform", "translate(320,300)")
+                    .attr("class","histsP"+d)
+                    .attr("d", drawHist)
+                    .attr("fill",function(d,i){
+                        return "#FCA66F";
+                    });
+
+                histsP.exit().remove();
+
+                counter++;
+            });
+                
+        }
+
+        function brushend() {
+          root.classed("selecting", !d3.event.target.empty());
+          var e = d3.event.target.extent();
+          if(e[0][0]*chartRadius*2 == e[1][0]*chartRadius*2 && e[0][1]*chartRadius*2 == e[1][1]*chartRadius*2){
+                d3.selectAll('circle.dot')
+                .data(data)
+                .style("opacity", function(d){
+                    return d.classValue;
+                })
+                .style("fill",function(d){
+                    return colorAnchor(d.classId);
+                })
+          }
+        }
+
+        function dimensions(cNum,order){
+             var dimensions = [];
+             for(var i=0; i<cNum; i++){
+                dimensions.push("C" + order[i]);
+             }
+             return dimensions;
+        };
+
+        var getHistAngle = function(reducedData){
+
+            var histMin = 3 * (PI/180),
+                histMax = 30 * (PI/180),
+                histAngle = [];
+
+            for(var i=0; i<reducedData.length; i++){
+                histAngle[i] = histMin + (histMax - histMin) * (reducedData[i].value - min)/(max - min);
+            }
+            // console.log(histAngle);
+            return histAngle;
+        }
+
+        var drawHist = d3.svg.arc()
+            .innerRadius(function(d, i) {
+
+                return  histMin + d.key*(histWidth) + 15;
+            })
+            .outerRadius(function(d, i) {
+                return histMin + (d.key+1)*(histWidth) + 15;
+            })
+            .startAngle(function(d, i){
+                // d.value/s.value*his
+                for(let j=0;j<classesData.length;j++){
+                    if(classesData[j][0].id==d.id){
+                        
+                        for(let k=0;k<classesData[j].length;k++){
+                            var h=classesData[j][k];
+                            if(h.key==d.key){
+                                var p=d.value/h.value;                                
+                                // return (counter) * eachAngle + (eachAngle - (d.value / max * eachAngle)) / 2 - (eachAngle-1 * (PI/180)) / 2;
+                                return (counter) * eachAngle + (eachAngle - histAngle[k]*p) / 2 - (eachAngle-1 * (PI/180)) / 2;
+                            }
+                        }
+                    }
+                }
+
+                
+            })
+            .endAngle(function(d, i) {
+                for(let j=0;j<classesData.length;j++){
+                    if(classesData[j][0].id==d.id){
+                        
+                        for(let k=0;k<classesData[j].length;k++){
+                            var h=classesData[j][k];
+                            if(h.key==d.key){
+                                var p=d.value/h.value;
+                                // return (counter) * eachAngle + (d.value / max * eachAngle) + (eachAngle - (d.value / max * eachAngle)) / 2 - 2 * (PI/180) - (eachAngle-1 * (PI/180))/ 2;
+                                return (counter) * eachAngle + histAngle[k]*p + (eachAngle - histAngle[k]*p) / 2 - 2 * (PI/180) - (eachAngle-1 * (PI/180))/ 2;
+                            }
+                        }
+                    }
+                }
+                
+            }); 
+
+
         if (config.useRepulsion) {
             root.on("mouseenter", function(d) {
                 force.chargeDistance(55).friction(0.35);
@@ -186,13 +415,13 @@ var radvizComponent = function() {
          //  if(cNum == 9){order = [1, 6, 8, 5, 7, 4, 9, 3, 2];}
          //  if(cNum == 11){order = [1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3];}
          // }
-                    var order = [];
+                    var order1 = [];
                     if(flag){
-                        if(cNum == 11) {order = [0,2,10,4,9,6,5,7,1,3,8];}
-                        if(cNum == 10){order = [0, 7, 8, 9, 6, 5, 4, 3, 2, 1];}
-                        if(cNum == 7){order = [0, 4, 6, 3, 1, 5, 2];}
-                        if(cNum == 8){order = [0, 7, 2, 1, 5, 6, 3, 4];}
-                        if(cNum == 9){order = [0, 8, 7, 5, 3, 1, 4, 2, 6];}
+                        if(cNum == 11) {order1 = [0,2,10,4,9,6,5,7,1,3,8];}
+                        if(cNum == 10){order1 = [0, 7, 8, 9, 6, 5, 4, 3, 2, 1];}
+                        if(cNum == 7){order1 = [0, 4, 6, 3, 1, 5, 2];}
+                        if(cNum == 8){order1 = [0, 7, 2, 1, 5, 6, 3, 4];}
+                        if(cNum == 9){order1 = [0, 8, 7, 5, 3, 1, 4, 2, 6];}
                     }
                 
                       // d3.selectAll('.label-node')
@@ -204,15 +433,15 @@ var radvizComponent = function() {
                             var begin;
                             var end;
                             if(flag){
-                              begin = dimensionNodes[order[i]];
-                              end = dimensionNodes[order[j]];
+                              begin = dimensionNodes[order1[i]];
+                              end = dimensionNodes[order1[j]];
                             }else{
                               begin = dimensionNodes[i];
                               end = dimensionNodes[j];
                             }
                 
                             // var pathStr = 'M' + begin.x + ',' + begin.y + ' Q0,0 ' + end.x + ',' + end.y;
-                            var pathStr = 'M' + begin.x + ',' + begin.y + ' ' + 'Q' + 140 + ',' + 120 + ' ' + end.x + ',' + end.y;
+                            var pathStr = 'M' + begin.x + ',' + begin.y + ' ' + 'Q' + 199 + ',' +  188.5 + ' ' + end.x + ',' + end.y;
                             return pathStr;
                         })
                         // .attr('stroke', '#CDCDB4')
@@ -235,7 +464,7 @@ var radvizComponent = function() {
              }
         
    
- var colorAnchor = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']);
+        var colorAnchor = d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']);
     
 
         // 绘制代表聚类的圆圈
@@ -294,19 +523,11 @@ var radvizComponent = function() {
             return d.name;
         });
 
-
-        // var bursh = d3.svg.brush()
-        //             .x()
-        //             .y()
-        //             .on('brushstart',brushstart)
-        //             .on('brush',brushmove)
-        //             .on('brushend',brushend);
-
+                    
         
         setTimeout(function(){
             var n = 100000;
             for(var i = n; i>0; --i){
-
                 force.tick();
             }
 
@@ -374,7 +595,6 @@ var radvizComponent = function() {
                                     return config.opacityAccessor(d);});
                     // root.selectAll('.dot').attr('opacity',1);
                 }
-            
 
         },1);
         

@@ -1,0 +1,26 @@
+body {
+	position: relative;
+}
+#tooltip {
+	background-color: rgba(0,0,0,.6);
+	padding: 5px;
+	border-radius: 5px;
+	width: 80px;
+	color: #fff;
+	text-align: left;
+	font-size: 14px;
+	position: absolute;
+	pointer-events: none;
+}
+
+#tooltip.hidden {
+	display: none;
+}
+
+svg {
+	background-color: #fff;
+}
+
+.hidden {
+	display: none;
+}

@@ -1,0 +1,79 @@
+/*radviz雷达图样式*/
+body {
+    font-family: sans-serif;
+}
+.panel {
+    /*stroke: white;*/
+    /*stroke: silver;*/
+    fill: white;
+}
+.bg {
+    fill: white;
+}
+.link {
+    stroke: silver;
+    stroke-opacity: 0.05
+}
+.dot {
+    fill-opacity: 0.8;
+}
+/*.dot
+.selected{
+    fill: gray;
+}*/
+.label-node {
+    /*fill: silver;*/
+}
+.dot.active {
+    stroke: black;
+}
+.label {
+    fill: black;
+    pointer-events: none;
+    font-size: 10px;
+    
+}
+#radviz-tooltip {
+    width: 122px;
+    font-size: 8px;
+    /*margin-top: 22px;*/
+    margin-left: 2px;
+    background-color: rgba(255, 255, 255, 0.6);
+    /*background-color: #D9E3E8;*/
+    font-family: sans-serif;
+    border-radius: 4px;
+}
+#radviz-tooltip h1 {
+    font-size: 14px;
+    margin: 0;
+}
+.item {
+    height: 18px;
+    margin:1px;
+    border: 1px solid white;
+    background-color: #FCA66F;
+    opacity: 0.8;
+    overflow: visible;
+    /*white-space: nowrap;*/
+}
+
+.chordSelect{
+    stroke: #FCA66F;
+}
+
+
+.brush .extent {
+  stroke: #F5F5F5;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+/*.selecting {
+  fill-opacity: .2;
+}*/
+
+
+.unselected {
+  fill: #F5F5F5;
+  opacity: 0.1;
+}

@@ -1,0 +1,22 @@
+.btn-input {
+   display: block;
+}
+
+.btn-input .btn.form-control {
+    text-align: left;
+}
+
+.btn-input .btn.form-control span:first-child {
+   left: 0px;
+   overflow: hidden;
+   position: absolute;
+   right: 0px;
+
+}
+
+.btn-input .btn.form-control .caret {
+   margin-top: -1px;
+   position: absolute;
+   right: 10px;
+   top: 50%;
+}

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>模糊聚类结果可视化</title>
+	<link rel="stylesheet" href="./plug/bootstrap-3.3.5-dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./css/base.css">
+	<link rel="stylesheet" href="./css/index.css">
+	<script type="text/javascript" src="./plug/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="./plug/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="lib/d3.min.js"></script>
+    <script type="text/javascript" src="lib/crossfilter.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="lib/d3.tip.v0.6.3.js"></script>
+    <script src="lib/numeric-1.2.6.min.js"></script>
+    <script src="lib/mds.js"></script>
+    <script src="lib/d3.svg.multibrush.js"></script>
+    <script src="lib/divgrid.js"></script>
+    
+
+	  <link rel="stylesheet" type="text/css" href="css/style_radviz.css">
+    <!-- <link rel="stylesheet" type="text/css" href="css/style_arc.css"> -->
+    <link rel="stylesheet" type="text/css" href="css/style_tips.css">
+    <link rel="stylesheet" type="text/css" href="css/d3.parcoords_top.css">
+    <link rel="stylesheet" type="text/css" href="css/style_originTag.css">
+    <link rel="stylesheet" type="text/css" href="css/style_clusterTag.css">
+
+<!-- SlickGrid -->
+<link rel="stylesheet" href="lib/slickgrid/slick.grid.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/jquery-ui-1.8.16.custom.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/examples.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/slick.pager.css" type="text/css"/>
+<script src="lib/slickgrid/jquery-1.7.min.js"></script>
+<script src="lib/slickgrid/jquery.event.drag-2.0.min.js"></script>
+<script src="lib/slickgrid/slick.core.js"></script>
+<script src="lib/slickgrid/slick.grid.js"></script>
+<script src="lib/slickgrid/slick.pager.js"></script>
+<script src="lib/slickgrid/slick.dataview.js"></script>
+<!-- End SlickGrid -->
+    
+</head>
+<body>
+<script src="js/arc.js"></script>
+<script src="js/radviz.js"></script>
+<script src="js/d3.parcoords.js"></script>
+<script src="js/mds-scatter.js"></script>
+
+	<div id="leftContainer">
+		<div class="leftTop box">
+			<div class="navStripe">
+				<div class="col-sm-2">
+          <span class="glyphicon glyphicon-stats"></span>   
+        </div>
+				
+      </div>
+
+			<div id="radviz"></div>
+		</div>      
+	</div>
+
+	<div id="rightContainer" class="box">
+
+              <ul id="interactionTab" class="navStripe nav nav-tabs">
+                <li class="avtive active">
+                  <a href="#fc" data-toggle="tab" id="fc">Fuzzy Clustering Data</a>
+                </li>
+                <li>
+                  <a href="#od" data-toggle="tab" id="od">Original Data</a>
+                </li>
+                <li>
+                  <!-- <a href="#blank" data-toggle="tab">tab-btn</a> -->
+                  
+                  <div class="dropdown" style="position:relative;">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="padding: 0;height: 20px;width: 80px;font-size: 14px;background-color: #F9C397;color:gray; border-color: #D9E3E8;padding: 0;vertical-align: middle;border-color: #F9C397;"><span id="da">Pendigits</span><span class="caret" style="margin-left: 2px;"></span></a>
+                    <ul class="dropdown-menu" style="font-size: 10px;padding: 0;min-width: 80px;">
+                      <li>
+                        
+                        <a class="trigger" id="9">9</a>
+                        <a class="trigger" id="10">10</a>
+                                
+                      </li>                      
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+
+              <div id="tabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="fc"> </div>
+                <div class="tab-pane fade" id="od"></div>
+                
+                <div id="col">
+                        <div id="pager"></div>
+                        <div id="grid"></div>
+                </div>
+                <div id="MDS"></div>   
+                <div id="example" class="parcoords"></div>
+
+            </div>
+    </div>
+	<script>
+
+//选择数据集的button设置
+   $(function(){
+      $(".dropdown-menu > li > a.trigger").on("click",function(e){
+
+        $('#da').text($(this).text());
+
+        var current=$(this).next();
+        var grandparent=$(this).parent().parent();
+      }); 
+  });
+
+
+//更新数据集后，OriginData和ClusteringData之间的切换
+  // var dataName = "pendigits-t";
+  var dataName = "pendigits";
+  var clusterNum;
+
+  $('.navStripe > li:first-child').select(function(){
+    $('.navStripe > li:first-child').addClass('active');
+    $('.navStripe > li:eq(1)').removeClass('active');
+  });
+
+   $(".trigger").click(function(){
+    // dataName = $(this).parent().parent().siblings('a').attr("id");
+    clusterNum = $(this).attr("id");
+    updateCluster(clusterNum);  
+
+    $('.navStripe > li:first-child').trigger('select');
+       
+  })
+
+  $('#od').click(function(){
+    updateData();
+  }); 
+
+   $('#fc').click(function(){
+   
+    if(clusterNum) {
+
+      cNum = clusterNum;
+      d3.select('#pager').selectAll('*').remove();
+      d3.select('#grid').selectAll('*').remove();
+      d3.select('#MDS').selectAll('*').remove();
+      d3.select("#example").selectAll('*').remove();
+     
+      var filmName = "data/pendigits_c" + clusterNum + "_result.csv";
+      d3.csv(filmName,function(data){
+        mdsScatter(data,"#MDS",cNum);
+        parcoordsRender(data); 
+      });
+
+          
+    }
+    else{
+      d3.select('#pager').selectAll('*').remove();
+        d3.select('#grid').selectAll('*').remove();
+        d3.select('#MDS').selectAll('*').remove();
+        d3.select("#example").selectAll('*').remove();
+        d3.csv("data/pendigits_result.csv",function(data){
+
+          mdsScatter(data,"#MDS",9);
+          parcoordsRender(data);     
+      });
+    }
+ });
+   
+     function updateData(){
+      d3.select('#pager').selectAll('*').remove();
+      d3.select('#grid').selectAll('*').remove();
+      d3.select('#MDS').selectAll('*').remove();
+      d3.select("#example").selectAll('*').remove();
+      
+      d3.csv("data/raw/pendigits-raw.csv",function(data){
+         mdsScatter(data,"#MDS",16);         
+         parcoordsRender(data);                  
+      }); 
+    }
+
+ 
+    function updateCluster(k){
+      d3.select('#pager').selectAll('*').remove();
+      d3.select('#grid').selectAll('*').remove();
+      d3.select('#MDS').selectAll('*').remove();
+      d3.select("#example").selectAll('*').remove();
+
+      d3.select("svg").selectAll(".arcs").remove();
+      d3.select("svg").selectAll(".colorHist").remove();
+      d3.select("svg").selectAll(".hists").remove();
+      d3.select("svg").selectAll(".panel").remove();
+      d3.select("svg").selectAll(".dot").remove();
+      d3.select("svg").select("#arcs").remove();//histsP的容器
+      d3.select("svg").selectAll('#histsP').remove();
+
+      d3.select("svg").selectAll('.label-node').remove();
+      d3.select("svg").selectAll('.label').remove();
+      d3.select("svg").selectAll('.chord').remove();
+      
+
+      classesData=[];//清空上次展示的数据
+
+      cNum = k;
+
+         
+         if(flag){
+          if(cNum == 10){order = [10, 9, 3, 4, 5, 7, 6, 1, 2, 8];}
+          
+          if(cNum == 9){order = [9, 4, 1, 5, 6, 2, 7, 3, 8];}
+          
+         }
+         else{
+          if(cNum == 10){order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];}
+          
+          if(cNum == 9){order = [1, 2, 3, 4, 5, 6, 7, 8, 9];}
+          
+         }
+
+      var filmName = "data/pendigits_c" + k + "_result.csv";
+
+      d3.csv(filmName,function(data){
+        mdsScatter(data,"#MDS",k);
+        parcoordsRender(data); 
+      })
+     
+      d3.csv(filmName,function(data){
+        renderArcs(data,flag);
+        maxLabel(data);
+        radvizConfig.dimensions = dimensions(k,order);
+                  var radviz = radvizComponent()
+                  .config(radvizConfig)
+                  .on('dotEnter', function(d) {
+                    if(showRelation)
+                      parcoords.unhighlight([d]);    
+                    else
+                      parcoords.highlight([d]);
+                  })
+                  .on('dotLeave',function(d){
+                      parcoords.unhighlight([d]);
+                  });
+
+        radviz.render(data);
+      });      
+    }
+
+	 var svg = d3.select("#radviz").append("svg")
+                .attr("width",620)
+                .attr("height",600);
+         
+         var cNum = 9;
+         var classesData=[];
+         var flag = 1;//是否进行排序，不但影响arc排布，也影响聚类间的弦
+         var showRelation = 0;//是否展示聚类关系，影响数据的显示，数据点的提示条，平行坐标的高亮
+         var isBrush = 0;//是否使用brush刷功能，影响条的点击，以及聚类关系
+         var order = [9, 4, 1, 5, 6, 2, 7, 3, 8];
+         
+// console.log(order);
+	 var radvizConfig = {
+
+	 	el: document.querySelector('#radviz'), // container node or selector
+        size: 600, 
+        margin: 150, // margin around the circular panel, to leave some room for the labels
+        dimensions: dimensions(cNum,order), // data keys to use as dimensions
+        colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
+        opacityAccessor: function(d){return d.classValue;},
+        colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
+        drawLinks: false, 
+        zoomFactor: 1, 
+        dotRadius: 3.5, 
+        useTooltip: true,
+        useRepulsion: false,
+        // tooltipFormatter: function(d,i) {
+        //   var name = [];
+        //   var str = [];
+        //   var set = [];
+        //   var m = []
+        //   for(var j=0; j<cNum; j++){
+        //     name[j] = 'C' + (j+1);
+        //     set.push(d[name[j]]);
+        //     m[j] = set[j].toFixed(3);
+        //     str[j] = " <span> " + name[j] + ":" + m[j] + " </span></br>";
+        //   }
+        //   // console.log(name);
+        //   return str;
+        // },
+        tooltipFormatter: function(d){
+          return d;
+        },
+	 }
+
+
+	var radviz = radvizComponent()
+    .config(radvizConfig)
+    .on('dotEnter', function(d) {
+      if(showRelation)
+        parcoords.unhighlight([d]);    
+      else
+        parcoords.highlight([d]);
+
+              
+    })
+    .on('dotLeave', function(d) {
+  
+        parcoords.unhighlight([d]);
+                 
+    })
+    .on('panelEnter', function() {
+        // mouse entered the circular panel
+    })
+    .on('panelLeave', function() {
+        // mouse left the circular panel
+    });
+
+ 
+
+    function dimensions(cNum,order){
+	 	 var dimensions = [];
+		 for(var i=0; i<cNum; i++){
+		 	dimensions.push("C" + order[i]);
+		 }
+		 return dimensions;
+	};
+   
+    function maxLabel(data){
+        for(var i=0; i<data.length; i++){
+
+            var keys = d3.keys(data[i]);
+
+            var max = 0, maxlabel = '';
+            // var j = 0;
+
+            keys.forEach(function(key){
+
+                var num = +data[i][key] + 0.0;
+
+                maxlabel = max > num ? maxlabel : key;
+                 max = max > num ? max : num;
+
+
+            })
+
+            data[i].classId = maxlabel;
+            data[i].classValue = max;
+            data[i].id = parseInt(maxlabel.substring(1));
+        }
+    }
+
+    /*平行坐标及table的绘制*/
+    var parcoords;
+     function parcoordsRender(data){
+
+        var blue_to_brown = d3.scale.linear()
+        .domain([0, 1])
+        .range(["#4FC5C7", "#b490ca"])
+        .interpolate(d3.interpolateLab);
+
+        // var colorline = function(d){return blue_to_brown(d['C1']||d['15MIN']);};
+         var colorline = function(d){return blue_to_brown(d3.keys(data[0]));};
+
+         data.forEach(function(d,i) { d.id = d.id || i; });
+
+          parcoords = d3.parcoords()("#example")
+                          .mode("queue") // progressive rendering
+                          .height(d3.max([160, 250]))
+                          .margin({
+                            top: 56,
+                            left: 20,
+                            right: 0,
+                            bottom: 5
+                          });
+
+          parcoords
+            .data(data)
+            // .color(colorline)
+            .alpha(0.35)
+            .render()
+            .reorderable()
+            .brushMode("2D-strums");
+
+          // setting up grid
+          var column_keys = d3.keys(data[0]);
+          var columns = column_keys.map(function(key,i) {
+            return {
+              id: key,
+              name: key,
+              field: key,
+              sortable: true
+            }
+          });
+
+          var options = {
+            enableCellNavigation: true,
+            enableColumnReorder: false,
+            multiColumnSort: false
+          };
+
+          var dataView = new Slick.Data.DataView();
+          var grid = new Slick.Grid("#grid", dataView, columns, options);
+          var pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
+
+          // wire up model events to drive the grid
+          dataView.onRowCountChanged.subscribe(function (e, args) {
+            grid.updateRowCount();
+            grid.render();
+          });
+
+          dataView.onRowsChanged.subscribe(function (e, args) {
+            grid.invalidateRows(args.rows);
+            grid.render();
+          });
+
+          // column sorting
+          var sortcol = column_keys[0];
+          var sortdir = 1;
+
+          function comparer(a, b) {
+            var x = a[sortcol], y = b[sortcol];
+            return (x == y ? 0 : (x > y ? 1 : -1));
+          }
+          
+          // click header to sort grid column
+          grid.onSort.subscribe(function (e, args) {
+            sortdir = args.sortAsc ? 1 : -1;
+            sortcol = args.sortCol.field;
+
+            if ($.browser.msie && $.browser.version <= 8) {
+              dataView.fastSort(sortcol, args.sortAsc);
+            } else {
+              dataView.sort(comparer, args.sortAsc);
+            }
+          });
+
+          // highlight row in chart
+          grid.onMouseEnter.subscribe(function(e,args) {
+            var i = grid.getCellFromEvent(e).row;
+            var d = parcoords.brushed() || data;
+            parcoords.highlight([d[i]]);
+          });
+          grid.onMouseLeave.subscribe(function(e,args) {
+            parcoords.unhighlight();
+          });
+
+          // fill grid with data
+          gridUpdate(data);
+
+          // update grid on brush
+          parcoords.on("brush", function(d) {
+            gridUpdate(d);
+          });
+
+          function gridUpdate(data) {
+            dataView.beginUpdate();
+            dataView.setItems(data);
+            dataView.endUpdate();
+          };
+    }
+
+    d3.csv('data/pendigits_c9_result.csv', function(err,data) {     
+        renderArcs(data,flag);  	  
+    	  maxLabel(data);
+        radviz.render(data);
+        // console.log(data);  
+               	
+   });
+
+    d3.csv("data/pendigits_c9_result.csv",function(err,data){
+      // console.log(data);
+        mdsScatter(data,"#MDS",9);
+        parcoordsRender(data);
+    })
+
+	</script>
+</body>
+</html>

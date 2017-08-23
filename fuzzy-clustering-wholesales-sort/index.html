@@ -195,8 +195,6 @@
       d3.select("svg").selectAll('.label').remove();
 
       cNum = k;
-
-         var order = [];
          
          if(flag){
           if(cNum == 6){order = [1, 3, 2, 4, 6, 5];}
@@ -247,6 +245,7 @@
          // serum_10实验
          var cNum = 6;
          var flag = 1;
+        var order = [1, 3, 2, 4, 6, 5];
          
 // console.log(order);
 	 var radvizConfig = {
@@ -254,12 +253,12 @@
 	 	el: document.querySelector('#radviz'), // container node or selector
         size: 600, 
         margin: 150, // margin around the circular panel, to leave some room for the labels
-        dimensions: dimensions(cNum,[1, 3, 2, 4, 6, 5]), // data keys to use as dimensions
+        dimensions: dimensions(cNum,order), // data keys to use as dimensions
         colorAccessor: function(d){return d.classId;}, // dimension to use for coloring
         opacityAccessor: function(d){return d.classValue;},
         colorScale: d3.scale.ordinal().domain(['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12']).range(['#FF4500', '#de3669', '#00D998', 'teal', '#00CD00','#f2cc03', '#9400D3', '#b58453', '#e3701e', '#F07484','#FFCEA6', '#bfbfbf']),//d3.scale.category10(), // color palette
         drawLinks: false, 
-        zoomFactor: 1.1, 
+        zoomFactor: 1, 
         dotRadius: 3, 
         useTooltip: true,
         useRepulsion: false,

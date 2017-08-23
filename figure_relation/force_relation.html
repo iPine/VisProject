@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>force relation</title>
+		<script type ="text/javascript" src="d3/d3.js" ></script>
+		<style type="text/css">
+		.nodetext {
+		font-size: 12px ;
+		font-family: SimSun;
+		fill:#000000;
+		}
+		.linetext {
+		font-size: 12px ;
+		font-family: SimSun;
+		fill-opacity:0.0;
+		}
+		</style>
+	</head>
+	<body>
+	<svg width="800" height="600" style="border:2px solid blue;">
+		<defs>
+		<marker id="arrow" 
+				markerUnits="strokeWidth" 
+				markerWidth="12" 
+				markerHeight="12" 
+				viewBox="0 0 12 12" 
+				refX="6" 
+				refY="6" 
+				orient="auto">
+				<!-- 生成箭头的路径 -->
+		        <path d="M2,2 L10,6 L2,10 L6,6 L2,2" style="fill: #ccc;" />
+		</marker>
+		</defs>
+	</svg>
+		<script type="text/javascript">
+			var svgHeight = 600;
+			var svgWidth = 800;
+			var img_H = 120;
+			var img_W = 80;
+			// var svg = d3.select("body")
+			// 			.append("svg")
+			// 			.attr({
+			// 				width: svgWidth,
+			// 				height: svgHeight,
+			// 				//"stroke": "black",
+			// 				"stroke-width": "1px",
+			// 			});
+			var svg = d3.select("svg");
+			var headline = svg.append("text")
+							.text("《人民的名义》人物关系")
+							.attr("x",(svgWidth/2))
+							.attr("y",20)
+							.attr("font-size","18px")
+							.attr("font-weight","bold")
+							.attr("text-anchor","middle")
+							.attr("fill","black");
+			d3.json('figure_relation.json', function(err, data) {
+				if (err)
+					console.log(err);
+				console.log(data);
+				var force = d3.layout.force()
+									.nodes(data.nodes)
+									.links(data.edges)
+									.size([svgWidth,svgHeight])
+									.linkDistance(300)
+									.charge(-1600)
+									.start();
+				console.log(data.nodes);
+				console.log(data.edges);
+				
+				var edges_line = svg.selectAll("line")
+									.data(data.edges)
+									.enter()
+									.append("line")
+									.style("stroke","#ccc")
+									.style("stroke-width",1);
+									// //添加箭头
+									// .attr("marker-end","url(#arrow)");
+				var edges_text = svg.selectAll(".linetext")
+									.data(data.edges)
+									.enter()
+									.append("text")
+									.attr('class',"linetext" )
+									.text(function(d){
+										return d.relation;
+									})
+									.attr("fill","teal");
+
+				//当拖拽开始时，被拖拽顶点设定为固定的，默认情况下是没有固定
+				var drag = force.drag()
+								.on("dragstart",function(d){
+									d.fixed = true;
+								})
+
+				//为每个人添加图片
+				var nodes_img = svg.selectAll("image")
+									.data(data.nodes)
+									.enter()
+									.append("image")
+									.attr({
+										width: img_W,
+										height: img_H,
+										"xlink:href": function(d){
+											return d.image;
+										}
+									})
+									.on("mouseover",function(d){
+										//这里传的参数可以任意命名，都能获取到source和target
+										edges_text.style("fill-opacity",function(edges){
+											if (d == edges.source || d == edges.target)
+												return 1.0;
+										});
+									})
+									.on("mouseout",function(d){
+										edges_text.style("fill-opacity",function(edge){
+											if (d == edge.source || d == edge.target)
+												return 0.0;
+										});
+									})
+									//当双击顶点时，对顶点解锁
+									.on("dblclick",function(d){
+										d.fixed = false;
+									})
+									.call(drag);
+
+
+				//为每个图片标注名字
+				var nodes_text = svg.selectAll(".nodetext")
+									.data(data.nodes)
+									.enter()
+									.append("text")
+									.attr('class',"nodetext")
+									.attr({
+										dx: -20,
+										dy: 20
+									})
+									.text(function(d){
+										return d.name;
+									});
+				//为每次拖动更新
+				force.on("tick", function(){
+					
+					//限制结点的边界
+					data.nodes.forEach(function(d,i){
+						d.x = d.x - img_W/2 < 0     ? img_W/2 : d.x ;
+						d.x = d.x + img_W/2 > svgWidth ? svgWidth - img_W/2 : d.x ;
+						d.y = d.y - img_H/2 < 0      ? img_H/2 : d.y ;
+						d.y = d.y + img_H/2 + 20 > svgHeight ? svgHeight - img_H/2 - 20 : d.y ;
+					});
+				
+					//更新连接线的位置
+					edges_line.attr("x1",function(d){ return d.source.x; });
+					edges_line.attr("y1",function(d){ return d.source.y; });
+					edges_line.attr("x2",function(d){ return d.target.x; });
+					edges_line.attr("y2",function(d){ return d.target.y; });
+					
+					//更新连接线上文字的位置
+					edges_text.attr("x",function(d){ return (d.source.x + d.target.x) / 2 ; });
+					edges_text.attr("y",function(d){ return (d.source.y + d.target.y) / 2 ; });
+					
+					
+					//更新结点图片和文字
+					nodes_img.attr("x",function(d){ return d.x - img_W/2; });
+					nodes_img.attr("y",function(d){ return d.y - img_H/2; });
+					
+					nodes_text.attr("x",function(d){ return d.x });
+					nodes_text.attr("y",function(d){ return d.y + img_H/2; });
+				});
+			});
+		</script>
+	</body>
+</html>

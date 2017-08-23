@@ -187,13 +187,19 @@
       d3.select("#example").selectAll('*').remove();
 
       d3.select("svg").selectAll(".arcs").remove();
+      d3.select("svg").selectAll(".colorHist").remove();
       d3.select("svg").selectAll(".hists").remove();
       d3.select("svg").selectAll(".panel").remove();
       d3.select("svg").selectAll(".dot").remove();
+      d3.select("svg").select("#arcs").remove();//histsP的容器
+      d3.select("svg").selectAll('#histsP').remove();
 
       d3.select("svg").selectAll('.label-node').remove();
       d3.select("svg").selectAll('.label').remove();
       d3.select("svg").selectAll('.chord').remove();
+      
+
+      classesData=[];//清空上次展示的数据
 
       cNum = k;
 
@@ -245,8 +251,10 @@
                 .attr("height",600);
          
          var cNum = 11;
+         var classesData=[];
          var flag = 1;//是否进行排序，不但影响arc排布，也影响聚类间的弦
          var showRelation = 0;//是否展示聚类关系，影响数据的显示，数据点的提示条，平行坐标的高亮
+         var isBrush = 1;//是否使用brush刷功能，影响条的点击，以及聚类关系
          var order = [1, 9, 2, 10, 4, 7, 6, 8, 11, 5, 3];
          
 // console.log(order);

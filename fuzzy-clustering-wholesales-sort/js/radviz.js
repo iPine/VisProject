@@ -76,7 +76,7 @@ var radvizComponent = function() {
         //初始化维度锚点
         var dimensionNodes = config.dimensions.map(function(d, i) {
            
-            var angle = thetaScale(i);
+            var angle = thetaScale(i) - Math.PI / 2;
             var x = chartRadius + Math.cos(angle) * chartRadius * config.zoomFactor ;
             var y = chartRadius + Math.sin(angle) * chartRadius * config.zoomFactor ;
             return {
