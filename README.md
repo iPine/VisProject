@@ -2,7 +2,7 @@
 ## index.html [演示](http://ipine.coding.me/project/fuzzy-clustering-serum-interaction/index.html)
 
 
-## project_old
+# project_old
 ### fcm_radviz_2.0.html [演示](http://ipine.coding.me/project/fcm/fcm_radviz.html)
 
 ### index-base_0.4.html [演示](http://ipine.coding.me/project/fuzzy-clustering/index-base.html)
@@ -19,7 +19,8 @@
 
 ### serum_weight_index_1.1.html [演示](http://ipine.coding.me/project/fuzzy-clustering-serum10-weight/index.html)
 
-## others
+
+# others
 ### tests 12.1.2016
 ### tests about scale 12.2
 ### Trump [演示](http://ipine.coding.me/project/myTrump/Trump.html)
